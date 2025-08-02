@@ -51,12 +51,12 @@ An intelligent cross-platform application built using **.NET MAUI** and **MVVM a
 ## 🧱 Architecture
 
 Follows the **MVVM (Model-View-ViewModel)** pattern:
-├── Models # User, Job, Response models
-├── ViewModels # UI logic and command binding
-├── Views # XAML UI pages
-├── Services # API requests, SQLite DB, OpenAI integration
-├── Utils # Helper functions, converters
-└── Resources # Images, styles
+- ├── Models # User, Job, Response models
+- ├── ViewModels # UI logic and command binding
+- ├── Views # XAML UI pages
+- ├── Services # API requests, SQLite DB, OpenAI integration
+- ├── Utils # Helper functions, converters
+- └── Resources # Images, styles
 
 - **SQLite**: For local persistent user data.
 - **HTTPClient + JSON**: For calling external APIs.
@@ -80,10 +80,10 @@ Inspired by modern job hunting frustrations and the need for automated personali
 
 ---
 
-🧑‍💻 Author
-Naresh Koirala
-💼 [LinkedIn](www.linkedin.com/in/naresh-koirala-6205582b3)
-📫 [Email](mailto:chelseanaresh10@gmail.com)
+#🧑‍💻 Author
+##Naresh Koirala
+###💼 [LinkedIn](www.linkedin.com/in/naresh-koirala-6205582b3)
+###📫 [Email](mailto:chelseanaresh10@gmail.com)
 
 
 
