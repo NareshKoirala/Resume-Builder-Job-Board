@@ -10,9 +10,9 @@ namespace Resume_Builder_MAUI.Services
         public async static Task CreateResumeAsync(GenJobsModel? model)
         {
             UserModel? user =  await GlobalVarables.service.GetUserAsync();
-            List<EducationEntry> education = await GlobalVarables.service.GetEducationAsync();
-            List<WorkEntry> experience = await GlobalVarables.service.GetWorkAsync();
-            List<CertificateEntry> certificates = await GlobalVarables.service.GetCertificationsAsync();
+            List<EducationEntry>? education = user?.Education;
+            List<WorkEntry>? experience = user?.WorkExperience;
+            List<CertificateEntry>? certificates = user?.Certificates;
             ResumeModel? resume = model?.Resume;
             List<ProjectsModel>? projects = resume?.Projects;
 
@@ -58,12 +58,12 @@ namespace Resume_Builder_MAUI.Services
                 BulletList(doc, new List<string>
                     {
                         $"Programming Languages: {resume?.ProgramingLanguage}",
-                        $"Framework & Libaries: {resume?.Frameworks}",
+                        $"Framework & Libraries: {resume?.Frameworks}",
                         $"Relevant Skills: {resume?.RelevantKeywords}"
                     },
                     1);
 
-                if (experience.Count > 0)
+                if (experience?.Count > 0)
                 {
                     // Add experience section
                     AddTitles(doc, "EXPERIENCE", 18);
@@ -79,7 +79,7 @@ namespace Resume_Builder_MAUI.Services
                             );
                     }
                 }
-                if (certificates.Count > 0)
+                if (certificates?.Count > 0)
                 {
                     // Add certifications section
                     AddTitles(doc, "CERTIFICATIONS", 18);
@@ -96,7 +96,7 @@ namespace Resume_Builder_MAUI.Services
                     }
                 }
 
-                if (education.Count > 0)
+                if (education?.Count > 0)
                 {
                     // Add education section
                     AddTitles(doc, "EDUCATION", 18);
@@ -173,9 +173,11 @@ namespace Resume_Builder_MAUI.Services
                 );
                 // Add the cover letter content
                 Paragraph(doc, cover?.Title, false, false, 20, false);
-                Paragraph(doc, cover?.Body1, false, false, 20, false);
-                Paragraph(doc, cover?.Body2, false, false, 20, false);
-                Paragraph(doc, cover?.Body3, false, false, 20, false);
+                Spacing(doc);
+                Spacing(doc);
+                Paragraph(doc, cover?.Body1, false, false, 15, false);
+                Paragraph(doc, cover?.Body2, false, false, 15, false);
+                Paragraph(doc, cover?.Body3, false, false, 15, false);
                 // Save the document
                 doc.Save();
             }

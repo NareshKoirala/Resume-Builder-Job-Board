@@ -1,14 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\chels\\OneDrive\\Desktop\\MineRepo\\Project\\ResumeBuilder\\",
+  "WorkspaceRootPath": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AFE32BC3-3874-4BAC-99B6-272ECECF39E0}|Resume Builder MAUI\\Resume Builder MAUI.csproj|c:\\users\\chels\\onedrive\\desktop\\minerepo\\project\\resumebuilder\\resume builder maui\\view\\usersetting.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AFE32BC3-3874-4BAC-99B6-272ECECF39E0}|Resume Builder MAUI\\Resume Builder MAUI.csproj|solutionrelative:resume builder maui\\view\\usersetting.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AFE32BC3-3874-4BAC-99B6-272ECECF39E0}|Resume Builder MAUI\\Resume Builder MAUI.csproj|c:\\users\\chels\\onedrive\\desktop\\minerepo\\project\\resumebuilder\\resume builder maui\\view\\usersetting.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{AFE32BC3-3874-4BAC-99B6-272ECECF39E0}|Resume Builder MAUI\\Resume Builder MAUI.csproj|solutionrelative:resume builder maui\\view\\usersetting.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Resume Builder MAUI\\Resume Builder MAUI.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     }
   ],
   "DocumentGroupContainers": [
@@ -17,7 +13,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 163,
+          "DockedWidth": 200,
           "SelectedChildIndex": 1,
           "Children": [
             {
@@ -26,34 +22,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserSetting.xaml",
-              "DocumentMoniker": "C:\\Users\\chels\\OneDrive\\Desktop\\MineRepo\\Project\\ResumeBuilder\\Resume Builder MAUI\\View\\UserSetting.xaml",
-              "RelativeDocumentMoniker": "Resume Builder MAUI\\View\\UserSetting.xaml",
-              "ToolTip": "C:\\Users\\chels\\OneDrive\\Desktop\\MineRepo\\Project\\ResumeBuilder\\Resume Builder MAUI\\View\\UserSetting.xaml",
-              "RelativeToolTip": "Resume Builder MAUI\\View\\UserSetting.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-08-01T13:55:32.966Z",
-              "EditorCaption": ""
-            }
-          ]
-        },
-        {
-          "DockedWidth": 163,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "UserSetting.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\chels\\OneDrive\\Desktop\\MineRepo\\Project\\ResumeBuilder\\Resume Builder MAUI\\View\\UserSetting.xaml.cs",
-              "RelativeDocumentMoniker": "Resume Builder MAUI\\View\\UserSetting.xaml.cs",
-              "ToolTip": "C:\\Users\\chels\\OneDrive\\Desktop\\MineRepo\\Project\\ResumeBuilder\\Resume Builder MAUI\\View\\UserSetting.xaml.cs",
-              "RelativeToolTip": "Resume Builder MAUI\\View\\UserSetting.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-01T13:55:51.587Z",
+              "Title": "Resume Builder MAUI.csproj",
+              "DocumentMoniker": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
+              "RelativeDocumentMoniker": "Resume Builder MAUI\\Resume Builder MAUI.csproj",
+              "ToolTip": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
+              "RelativeToolTip": "Resume Builder MAUI\\Resume Builder MAUI.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-08-02T15:37:38.535Z",
               "EditorCaption": ""
             }
           ]

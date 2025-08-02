@@ -19,6 +19,7 @@ namespace Resume_Builder_MAUI
             await GlobalVarables.service.InitializeTablesAsync();
 
             var user = await GlobalVarables.service.GetUserAsync();
+
             if (user == null)
             {
                 await Shell.Current.GoToAsync("//UserInput");

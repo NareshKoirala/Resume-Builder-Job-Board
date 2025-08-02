@@ -60,6 +60,13 @@ public partial class DocsGen : ContentPage
                     }
 
                     await OpenAIService.JobDetailsAsync(jobDesc, applyURL);
+
+
+                    UrlExternalLink.Text = "";
+                    JobDescription.Text = "";
+                    JobName.Text = "";
+                    CompanyName.Text = "";
+
                 }
                 else
                 {
@@ -87,6 +94,11 @@ public partial class DocsGen : ContentPage
                         JobName = jobName,
                         Jobs = jobs
                     };
+
+                    UrlExternalLink.Text = "";
+                    JobDescription.Text = "";
+                    JobName.Text = "";
+                    CompanyName.Text = "";
 
                     await OpenAIService.PercentageAsync(genJob);
                 }

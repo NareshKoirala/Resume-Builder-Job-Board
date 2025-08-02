@@ -16,7 +16,7 @@ public static class JobsViewModel
             return null;
         }
 
-        var remotiveUrl = $"{RemotiveBaseUrl}category={GlobalVarables.userInfo.JobField}&limit=10";
+        var remotiveUrl = $"{RemotiveBaseUrl}category={GlobalVarables.userInfo.JobField}";
         var jsearchUrl = $"{JSearchBaseUrl}query={GlobalVarables.userInfo.JobField}%20jobs%20in%20{GlobalVarables.userInfo.Location}&" +
                          $"country={GlobalVarables.userInfo.Location}&date_posted=all";
 
