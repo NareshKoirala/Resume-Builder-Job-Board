@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Resume_Builder_MAUI.ViewModel"
+             xmlns:model="clr-namespace:Resume_Builder_MAUI.Model"
+             x:Class="Resume_Builder_MAUI.View.UserSetting"
+             Title="User Settings"
+             x:DataType="model:UserModel"
+             BackgroundColor="#1b0233">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Header with profile image -->
+            <Grid HeightRequest="120" BackgroundColor="#2d1846">
+                <Border
+                    Stroke="#FFD93B"
+                    StrokeThickness="3"
+                    BackgroundColor="#FFD93B"
+                    HeightRequest="100"
+                    WidthRequest="100"
+                    StrokeShape="Ellipse"
+                    HorizontalOptions="Center"
+                    VerticalOptions="End"
+                    Margin="0,0,0,-50"
+                    ZIndex="1"
+                    Shadow="2,2,8,Black">
+                    <Image Source="home_icon.png"
+                           Aspect="AspectFill"
+                           HeightRequest="94"
+                           WidthRequest="94"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <!-- Main user info card -->
+            <Border Margin="20,60,20,0"
+                    Padding="28"
+                    Stroke="#FFD93B"
+                    StrokeThickness="2"
+                    BackgroundColor="#f8f3e6"
+                    StrokeShape="RoundRectangle 28"
+                    Shadow="2,2,12,#FFD93B">
+                <VerticalStackLayout Spacing="28">
+
+                    <!-- DISPLAY MODE -->
+                    <VerticalStackLayout>
+                        <!-- Name and Email Centered -->
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding FirstName}" FontAttributes="Bold" FontSize="30" TextColor="#2d1846" />
+                            <Label Text="{Binding LastName}" FontSize="24" TextColor="#2d1846" />
+                            <Label Text="{Binding Email}" FontSize="16" TextColor="#6c5b7b" />
+                        </VerticalStackLayout>
+
+                        <!-- Two-column basic info -->
+                        <Grid ColumnDefinitions="*,*"
+                              RowSpacing="12"
+                              Margin="0,22,0,0">
+                            <VerticalStackLayout Spacing="10" Grid.Column="0">
+                                <Label Text="Mobile:" FontAttributes="Bold" FontSize="16" TextColor="#2d1846"/>
+                                <Label Text="Location:" FontAttributes="Bold" FontSize="16" TextColor="#2d1846"/>
+                                <Label Text="Job Field:" FontAttributes="Bold" FontSize="16" TextColor="#2d1846"/>
+                                <Label Text="Portfolio URL:" FontAttributes="Bold" FontSize="16" TextColor="#2d1846"/>
+                                <Label Text="LinkedIn URL:" FontAttributes="Bold" FontSize="16" TextColor="#2d1846"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="10" Grid.Column="1">
+                                <Label Text="{Binding Mobile}" FontSize="16" TextColor="#6c5b7b"/>
+                                <Label Text="{Binding Location}" FontSize="16" TextColor="#6c5b7b"/>
+                                <Label Text="{Binding JobField}" FontSize="16" TextColor="#6c5b7b"/>
+                                <Label Text="{Binding PortfolioUrl}" FontSize="16" TextColor="#6c5b7b"/>
+                                <Label Text="{Binding LinkedInUrl}" FontSize="16" TextColor="#6c5b7b"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Section: Education -->
+                        <Label Text="Education" FontAttributes="Bold" FontSize="20" Margin="0,22,0,0" TextColor="#2d1846"/>
+                        <CollectionView ItemsSource="{Binding Education}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:EducationEntry">
+                                    <Border BackgroundColor="#fffbe6" Stroke="#FFD93B" StrokeThickness="1.5" Margin="0,8,0,0" Padding="14" StrokeShape="RoundRectangle 14" Shadow="1,1,6,#FFD93B">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding InstitutionName}" FontAttributes="Bold" FontSize="17" TextColor="#2d1846"/>
+                                            <Label Text="{Binding Location}" FontSize="15" TextColor="#6c5b7b"/>
+                                            <Label Text="{Binding Date}" FontSize="14" TextColor="#6c5b7b"/>
+                                            <Label Text="{Binding Details}" FontSize="13" TextColor="#8d99ae"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Education Entry Form with Toggle -->
+                        <Border BackgroundColor="#A259F7"
+                                Stroke="#FFD93B"
+                                StrokeThickness="1.5"
+                                Margin="0,18,0,0"
+                                Padding="18"
+                                StrokeShape="RoundRectangle 16"
+                                Shadow="2,2,8,#A259F7">
+                            <VerticalStackLayout x:Name="EducationSection" Spacing="10" x:DataType="model:EducationEntry">
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Label Text="Add Education" FontAttributes="Bold" FontSize="18" TextColor="White" VerticalOptions="Center" />
+                                    <ImageButton x:Name="ToggleEducationButton"
+                                             Source="arrow_downward.png"
+                                             Clicked="ToggleEducationButton_Clicked"
+                                             BackgroundColor="Transparent"
+                                             HeightRequest="16"
+                                             WidthRequest="16"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <!-- Dropdown Entry Container -->
+                                <StackLayout x:Name="EducationDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+                                    <Entry Placeholder="Institution Name" HorizontalOptions="Fill" Text="{Binding InstitutionName}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Entry Placeholder="Location" HorizontalOptions="Fill" Text="{Binding Location}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Entry Placeholder="Date (e.g. 2020-2024)" HorizontalOptions="Fill" Text="{Binding Date}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Editor Placeholder="What did you learn?" AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding Details}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Button Text="Add Education"
+                                        x:Name="AddEducationBTN"
+                                        Clicked="OnAddEducationClicked"
+                                        HorizontalOptions="Fill"
+                                        BackgroundColor="#FFD93B"
+                                        TextColor="#2d1846"
+                                        FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        HeightRequest="40"
+                                        Margin="0,8,0,0" />
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Section: Work Experience -->
+                        <Label Text="Work Experience" FontAttributes="Bold" FontSize="20" Margin="0,22,0,0" TextColor="#2d1846"/>
+                        <CollectionView ItemsSource="{Binding WorkExperience}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:WorkEntry">
+                                    <Border BackgroundColor="#fffbe6" Stroke="#FFD93B" StrokeThickness="1.5" Margin="0,8,0,0" Padding="14" StrokeShape="RoundRectangle 14" Shadow="1,1,6,#FFD93B">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding CompanyName}" FontAttributes="Bold" FontSize="17" TextColor="#2d1846"/>
+                                            <Label Text="{Binding Location}" FontSize="15" TextColor="#6c5b7b"/>
+                                            <Label Text="{Binding Date}" FontSize="14" TextColor="#6c5b7b"/>
+                                            <Label Text="{Binding Details}" FontSize="13" TextColor="#8d99ae"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Work Entry Form -->
+                        <Border BackgroundColor="#A259F7"
+                                Stroke="#FFD93B"
+                                StrokeThickness="1.5"
+                                Margin="0,18,0,0"
+                                Padding="18"
+                                StrokeShape="RoundRectangle 16"
+                                Shadow="2,2,8,#A259F7">
+                            <VerticalStackLayout x:Name="WorkSection" Spacing="10" x:DataType="model:WorkEntry">
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Label Text="Add Work Experience" FontAttributes="Bold" FontSize="18" TextColor="White" VerticalOptions="Center" />
+                                    <ImageButton x:Name="ToggleWorkButton"
+                                                 Source="arrow_downward.png"
+                                                 Clicked="ToggleWorkButton_Clicked"
+                                                 BackgroundColor="Transparent"
+                                                 HeightRequest="16"
+                                                 WidthRequest="16"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <StackLayout x:Name="WorkDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+                                    <Entry Placeholder="Company Name" HorizontalOptions="Fill" Text="{Binding CompanyName}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Entry Placeholder="Location" HorizontalOptions="Fill" Text="{Binding Location}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Entry Placeholder="Date (e.g. 2022-2025)" HorizontalOptions="Fill" Text="{Binding Date}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Editor Placeholder="What did you learn?" AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding Details}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Button Text="Add Work/Project Experience"
+                                            x:Name="AddWorkBTN"
+                                            Clicked="OnAddWorkClicked"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="#FFD93B"
+                                            TextColor="#2d1846"
+                                            FontAttributes="Bold"
+                                            CornerRadius="12"
+                                            HeightRequest="40"
+                                            Margin="0,8,0,0" />
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Section: Certificates -->
+                        <Label Text="Certificates" FontAttributes="Bold" FontSize="20" Margin="0,22,0,0" TextColor="#2d1846"/>
+                        <CollectionView ItemsSource="{Binding Certificates}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:CertificateEntry">
+                                    <Border BackgroundColor="#fffbe6" Stroke="#FFD93B" StrokeThickness="1.5" Margin="0,8,0,0" Padding="14" StrokeShape="RoundRectangle 14" Shadow="1,1,6,#FFD93B">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding CertificateName}" FontAttributes="Bold" FontSize="17" TextColor="#2d1846"/>
+                                            <Label Text="{Binding Details}" FontSize="13" TextColor="#8d99ae"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Certificate Entry Form with Toggle -->
+
+                        <Border BackgroundColor="#A259F7"
+                                Stroke="#FFD93B"
+                                StrokeThickness="1.5"
+                                Margin="0,18,0,0"
+                                Padding="18"
+                                StrokeShape="RoundRectangle 16"
+                                Shadow="2,2,8,#A259F7">
+                            <VerticalStackLayout x:Name="CertificateSection" Spacing="10" x:DataType="model:CertificateEntry">
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Label Text="Add Certificate" FontAttributes="Bold" FontSize="18" TextColor="White" VerticalOptions="Center" />
+                                    <ImageButton x:Name="ToggleCertificateButton"
+                                             Source="arrow_downward.png"
+                                             Clicked="ToggleCertificateButton_Clicked"
+                                             BackgroundColor="Transparent"
+                                             HeightRequest="16"
+                                             WidthRequest="16"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <StackLayout x:Name="CertificateDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+                                    <Entry Placeholder="Certificate Name" HorizontalOptions="Fill" Text="{Binding CertificateName}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Editor Placeholder="Details (optional)" AutoSize="TextChanges" HeightRequest="40" HorizontalOptions="Fill" Text="{Binding Details}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Button Text="Add Certificate"
+                                        x:Name="AddCertBTN"
+                                        Clicked="OnAddCertificateClicked"
+                                        HorizontalOptions="Fill"
+                                        BackgroundColor="#FFD93B"
+                                        TextColor="#2d1846"
+                                        FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        HeightRequest="40"
+                                        Margin="0,8,0,0" />
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Section: Skills -->
+                        <Label Text="Skills" FontAttributes="Bold" FontSize="20" Margin="0,22,0,0" TextColor="#2d1846"/>
+                        <CollectionView ItemsSource="{Binding Skills}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:SkillEntry">
+                                    <Border BackgroundColor="#fffbe6" Stroke="#FFD93B" StrokeThickness="1.5" Margin="0,8,0,0" Padding="14" StrokeShape="RoundRectangle 14" Shadow="1,1,6,#FFD93B">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding SkillName}" FontAttributes="Bold" FontSize="17" TextColor="#2d1846"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Skill Entry Form with Toggle -->
+
+                        <Border BackgroundColor="#A259F7"
+                                Stroke="#FFD93B"
+                                StrokeThickness="1.5"
+                                Margin="0,18,0,0"
+                                Padding="18"
+                                StrokeShape="RoundRectangle 16"
+                                Shadow="2,2,8,#A259F7">
+                            <VerticalStackLayout x:Name="SkillSection" Spacing="10" x:DataType="model:SkillEntry">
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Label Text="Add Skill" FontAttributes="Bold" FontSize="18" TextColor="White" VerticalOptions="Center" />
+                                    <ImageButton x:Name="ToggleSkillButton"
+                                             Source="arrow_downward.png"
+                                             Clicked="ToggleSkillButton_Clicked"
+                                             BackgroundColor="Transparent"
+                                             HeightRequest="16"
+                                             WidthRequest="16"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <StackLayout x:Name="SkillDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+                                    <Entry Placeholder="Skill Name" HorizontalOptions="Fill" Text="{Binding SkillName}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Button Text="Add Skill"
+                                        x:Name="AddSkillBTN"
+                                        Clicked="OnAddSkillClicked"
+                                        HorizontalOptions="Fill"
+                                        BackgroundColor="#FFD93B"
+                                        TextColor="#2d1846"
+                                        FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        HeightRequest="40"
+                                        Margin="0,8,0,0" />
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                        
+                        <!-- Section: Projects -->
+                        <Label Text="Projects" FontAttributes="Bold" FontSize="20" Margin="0,22,0,0" TextColor="#2d1846"/>
+                        <CollectionView ItemsSource="{Binding Projects}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:ProjectEntry">
+                                    <Border BackgroundColor="#fffbe6" Stroke="#FFD93B" StrokeThickness="1.5" Margin="0,8,0,0" Padding="14" StrokeShape="RoundRectangle 14" Shadow="1,1,6,#FFD93B">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding ProjectName}" FontAttributes="Bold" FontSize="17" TextColor="#2d1846"/>
+                                            <Label Text="{Binding Description}" FontSize="13" TextColor="#8d99ae"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Project Entry Form with Toggle -->
+
+                        <Border BackgroundColor="#A259F7"
+                                Stroke="#FFD93B"
+                                StrokeThickness="1.5"
+                                Margin="0,18,0,0"
+                                Padding="18"
+                                StrokeShape="RoundRectangle 16"
+                                Shadow="2,2,8,#A259F7">
+                            <VerticalStackLayout x:Name="ProjectSection" Spacing="10" x:DataType="model:ProjectEntry">
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Label Text="Add Project" FontAttributes="Bold" FontSize="18" TextColor="White" VerticalOptions="Center" />
+                                    <ImageButton x:Name="ToggleProjectButton"
+                                             Source="arrow_downward.png"
+                                             Clicked="ToggleProjectButton_Clicked"
+                                             BackgroundColor="Transparent"
+                                             HeightRequest="16"
+                                             WidthRequest="16"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <StackLayout x:Name="ProjectDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+                                    <Entry Placeholder="Project Name" HorizontalOptions="Fill" Text="{Binding ProjectName}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Editor Placeholder="Description" AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding Description}" BackgroundColor="White" TextColor="#2d1846"/>
+                                    <Button Text="Add Project"
+                                        x:Name="AddProjectBTN"
+                                        Clicked="OnAddProjectClicked"
+                                        HorizontalOptions="Fill"
+                                        BackgroundColor="#FFD93B"
+                                        TextColor="#2d1846"
+                                        FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        HeightRequest="40"
+                                        Margin="0,8,0,0" />
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                        
+                        <Button Text="Delete User Database"
+                                BackgroundColor="#e63946"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Clicked="OnDeleteDbClicked"
+                                CornerRadius="14"
+                                HeightRequest="48"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

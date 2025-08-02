@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:Resume_Builder_MAUI.Model"
+             xmlns:viewmodel="clr-namespace:Resume_Builder_MAUI.ViewModel"
+             x:Class="Resume_Builder_MAUI.View.UserInput"
+             x:DataType="viewmodel:UserViewModel"
+             Title="User Input"
+             BackgroundColor="#110e17">
+
+    <ScrollView Padding="20">
+        <Border Background="#1a1622" StrokeShape="RoundRectangle 10" Padding="24" HorizontalOptions="Center" VerticalOptions="Center">
+            <VerticalStackLayout Padding="0" Spacing="25" HorizontalOptions="Center" VerticalOptions="Center">
+
+
+                <Label 
+                        Text="Welcome to User Input Section"
+                        FontAttributes="Bold"
+                        FontSize="30"
+                        HorizontalTextAlignment="Center"
+                        TextColor="AliceBlue"
+                        Padding="20"
+                        HorizontalOptions="Center"/>
+
+                <BoxView HeightRequest="2" Color="#A259F7" WidthRequest="600" HorizontalOptions="Center" />
+
+                <!-- Name and Age Row -->
+                <Grid ColumnSpacing="15" HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="First Name:" TextColor="White" />
+                        <Entry x:Name="FirstNameEntry" TextColor="White" Placeholder="First Name" HorizontalOptions="Fill" Text="{Binding FirstName}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Last Name:" TextColor="White" />
+                        <Entry x:Name="LastNameEntry" TextColor="White" Placeholder="Last Name" HorizontalOptions="Fill" Text="{Binding LastName}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Contact Info Row -->
+                <Grid ColumnSpacing="15" HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="Email:" TextColor="White" />
+                        <Entry x:Name="EmailEntry" TextColor="White" Placeholder="xxxxxxx@xxxx.com" Keyboard="Email" HorizontalOptions="Fill" Text="{Binding Email}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Mobile (10 Digits):" TextColor="White" />
+                        <Entry x:Name="MobileEntry" TextColor="White" Placeholder="0000000000" Keyboard="Numeric" HorizontalOptions="Fill" Text="{Binding Mobile}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Location and Job Field -->
+                <Grid ColumnSpacing="15" HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="Location:" TextColor="White" />
+                        <Picker x:Name="CountryPicker"
+                                TitleColor="White"
+                                TextColor="White"
+                                Title="Select Country"
+                                ItemsSource="{Binding LocationOptions}"
+                                SelectedItem="{Binding Location}" 
+                                SelectedIndexChanged="LocationItemChanged"
+                                HorizontalOptions="Fill" />
+
+                        <Picker x:Name="ProvincePicker"
+                                TitleColor="White"
+                                TextColor="White"
+                                IsVisible="False"
+                                Title="Select Province"
+                                SelectedItem="{Binding Province}" 
+                                HorizontalOptions="Fill" />
+                        
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Field:" TextColor="White" />
+                        
+                        <Picker x:Name="JobFieldPicker"
+                                TitleColor="White"
+                                BackgroundColor="Transparent"
+                                TextColor="White"
+                                Title="Select Job Field"
+                                ItemsSource="{Binding JobFieldOptions}"
+                                SelectedItem="{Binding JobField}" 
+                                HorizontalOptions="Fill" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Portfolio and LinkedIn -->
+                <Grid ColumnSpacing="15" HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="Portfolio Website:" TextColor="White" />
+                        <Entry x:Name="PortfolioEntry" Placeholder="Portfolio URL" Keyboard="Url" HorizontalOptions="Fill" Text="{Binding PortfolioUrl}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="LinkedIn:" TextColor="White" />
+                        <Entry x:Name="LinkedInEntry" Placeholder="LinkedIn URL" Keyboard="Url" HorizontalOptions="Fill" Text="{Binding LinkedInUrl}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+
+                <Editor Placeholder="Give quick summary about yourself? needed how lonag have you been doing your jobfeild, passonate about, what make you who you are, which would help in build your personal cover letter for each jobs." 
+                        AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding UserSummary}" />
+
+                <!-- Education Section -->
+                <VerticalStackLayout x:Name="EducationSection" Spacing="10" x:DataType="model:EducationEntry">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Label Text="Education" FontAttributes="Bold" FontSize="16" TextColor="AliceBlue" VerticalOptions="Center" />
+                        <ImageButton x:Name="ToggleEducationButton"
+                                         Source="arrow_downward.png"
+                                         Clicked="ToggleEducationButton_Clicked"
+                                         BackgroundColor="Transparent"
+                                         HeightRequest="10"
+                                         WidthRequest="10"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Dropdown Entry Container -->
+                    <StackLayout x:Name="EducationDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+
+                        <Entry Placeholder="Institution Name" HorizontalOptions="Fill" Text="{Binding InstitutionName}" />
+                        <Entry Placeholder="Location" HorizontalOptions="Fill" Text="{Binding Location}"/>
+                        <Entry Placeholder="Date (e.g. 2020-2024)" HorizontalOptions="Fill" Text="{Binding Date}"/>
+                        <Editor Placeholder="What did you learn?" AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding Details}" />
+
+                        <Button Text="Add Education"
+                            x:Name="AddEducationBTN"
+                            Clicked="OnAddEducationClicked"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#A259F7"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="40"
+                            WidthRequest="220"
+                            Margin="0,8,0,0" />
+                        
+                    </StackLayout>
+                </VerticalStackLayout>
+
+                <!-- Work Experience Section -->
+                <VerticalStackLayout x:Name="WorkSection" Spacing="10" x:DataType="model:WorkEntry">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Label Text="Work Experience" FontAttributes="Bold" FontSize="16" TextColor="AliceBlue" VerticalOptions="Center" />
+                        <ImageButton x:Name="ToggleWorkButton"
+                                     Source="arrow_downward.png"
+                                     Clicked="ToggleWorkButton_Clicked"
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="10"
+                                     WidthRequest="10"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Dropdown Entry Container -->
+                    <StackLayout x:Name="WorkDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+
+                        <Entry Placeholder="Company Name" HorizontalOptions="Fill" Text="{Binding CompanyName}" />
+                        <Entry Placeholder="Location" HorizontalOptions="Fill" Text="{Binding Location}" />
+                        <Entry Placeholder="Date (e.g. 2022-2025)" HorizontalOptions="Fill" Text="{Binding Date}" />
+                        <Editor Placeholder="What did you learn?" AutoSize="TextChanges" HeightRequest="60" HorizontalOptions="Fill" Text="{Binding Details}" />
+
+                        <Button Text="Add Work/Project Experience"
+                            x:Name="AddWorkBTN"
+                            Clicked="OnAddWorkClicked"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#A259F7"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="40"
+                            WidthRequest="220"
+                            Margin="0,8,0,0" />
+                    </StackLayout>
+                </VerticalStackLayout>
+
+                <!-- Certificates Section -->
+                <VerticalStackLayout x:Name="CertificateSection" Spacing="10" x:DataType="model:CertificateEntry">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Label Text="Certificates" FontAttributes="Bold" FontSize="16" TextColor="AliceBlue" VerticalOptions="Center" />
+                        <ImageButton x:Name="ToggleCertificateButton"
+                                     Source="arrow_downward.png"
+                                     Clicked="ToggleCertificateButton_Clicked"
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="10"
+                                     WidthRequest="10"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Dropdown Entry Container -->
+                    <StackLayout x:Name="CertificateDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+
+                        <Entry Placeholder="Certificate Name" HorizontalOptions="Fill" Text="{Binding CertificateName}" />
+                        <Editor Placeholder="Details" AutoSize="TextChanges" HeightRequest="40" HorizontalOptions="Fill" Text="{Binding Details}" />
+
+                        <Button Text="Add Certificate"
+                            x:Name="AddCertBTN"
+                            Clicked="OnAddCertificateClicked"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#A259F7"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="40"
+                            WidthRequest="220"
+                            Margin="0,8,0,0" />
+                    </StackLayout>
+                </VerticalStackLayout>
+
+                <!-- Skills Section -->
+                <VerticalStackLayout x:Name="SkillSection" Spacing="10" x:DataType="model:SkillEntry">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Label Text="Skills" FontAttributes="Bold" FontSize="16" TextColor="AliceBlue" VerticalOptions="Center" />
+                        <ImageButton x:Name="ToggleSkillButton"
+                                     Source="arrow_downward.png"
+                                     Clicked="ToggleSkillButton_Clicked"
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="10"
+                                     WidthRequest="10"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Dropdown Entry Container -->
+                    <StackLayout x:Name="SkillDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+
+                        <Entry Placeholder="Skill Name" HorizontalOptions="Fill" Text="{Binding SkillName}" />
+
+                        <Button Text="Add Skill"
+                            x:Name="AddSkillBTN"
+                            Clicked="OnAddSkillClicked"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#A259F7"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="40"
+                            WidthRequest="220"
+                            Margin="0,8,0,0" />
+                    </StackLayout>
+                </VerticalStackLayout>
+
+                <!-- Projects Section -->
+                <VerticalStackLayout x:Name="ProjectSection" Spacing="10" x:DataType="model:ProjectEntry">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Label Text="Projects" FontAttributes="Bold" FontSize="16" TextColor="AliceBlue" VerticalOptions="Center" />
+                        <ImageButton x:Name="ToggleProjectButton"
+                                     Source="arrow_downward.png"
+                                     Clicked="ToggleProjectButton_Clicked"
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="10"
+                                     WidthRequest="10"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Dropdown Entry Container -->
+                    <StackLayout x:Name="ProjectDropdown" IsVisible="False" Spacing="10" Margin="10,0,0,0">
+
+                        <Entry Placeholder="Project Name" HorizontalOptions="Fill" Text="{Binding ProjectName}" />
+                        <Editor Placeholder="Description" AutoSize="TextChanges" HeightRequest="40" HorizontalOptions="Fill" Text="{Binding Description}" />
+
+                        <Button Text="Add Project"
+                            x:Name="AddProjectBTN"
+                            Clicked="OnAddProjectClicked"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#A259F7"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="40"
+                            WidthRequest="220"
+                            Margin="0,8,0,0" />
+                    </StackLayout>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="2" Color="#A259F7" WidthRequest="600" HorizontalOptions="Center" />
+
+                <Button 
+                        Text="Submit"
+                        Clicked="SubmitUserInfo"
+                        HorizontalOptions="Center"
+                        FontAttributes="Bold"
+                        BackgroundColor="#A259F7"
+                        TextColor="White"
+                        CornerRadius="12"
+                        HeightRequest="50"
+                        WidthRequest="320"
+                        Margin="0,24,0,0" />
+
+            </VerticalStackLayout>
+        </Border>
+    </ScrollView>
+</ContentPage>

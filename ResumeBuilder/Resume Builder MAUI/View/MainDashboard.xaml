@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Resume_Builder_MAUI.View.MainDashboard"
+             xmlns:model="clr-namespace:Resume_Builder_MAUI.Model"
+             Title="MainDashboard"
+             BackgroundColor="#110e17">
+    <Grid RowSpacing="0" Padding="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Job Listings Section -->
+        <Label Grid.Row="0"
+               Text="Job Listings"
+               FontSize="28"
+               FontAttributes="Bold"
+               Margin="0,30,0,16"
+               HorizontalOptions="Center"
+               TextColor="#F8F8FF"/>
+
+        <!-- Loading Animation -->
+        <ActivityIndicator 
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            Color="#23235B"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            HeightRequest="48"
+            WidthRequest="48"/>
+
+        <Border Grid.Row="2"
+                Margin="16,0"
+                Stroke="#E0E0E0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Background="#F3F4FB">
+            <CollectionView 
+                x:Name="JobsCollectionView" 
+                BackgroundColor="#F3F4FB"
+                VerticalOptions="Fill">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:JobsModel">
+                        <Border
+                            Margin="16,8"
+                            Padding="18"
+                            Background="White"
+                            Stroke="#E0E0E0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 18">
+                            <VerticalStackLayout Spacing="8">
+                                <!-- Status Label -->
+                                <Label
+                                    Text="{Binding jobPublisher}"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="Gray"
+                                    Margin="0,0,0,4"/>
+
+                                <!-- Job Title -->
+                                <Label
+                                    Text="{Binding jobTitle}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="#23235B"/>
+
+                                <!-- Subtitle / Company / Description -->
+                                <Label
+                                    Text="{Binding companyName}"
+                                    FontSize="14"
+                                    TextColor="#A0A0B2"/>
+
+                                <Label x:Name="DetailsLBl"
+                                    FontSize="14"
+                                    TextColor="#A0A0B2"/>
+
+                                <!-- Meta Row -->
+                                <HorizontalStackLayout Spacing="18" Margin="0,8,0,0">
+                                    <!-- Time Icon and Text -->
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="clock_icon.png" HeightRequest="16" WidthRequest="16"/>
+                                        <Label Text="{Binding jobPostedAt}" FontSize="13" TextColor="#A0A0B2"/>
+                                    </HorizontalStackLayout>
+                                    <!-- People Icon and Text (example: use jobCategory or other info) -->
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Image Source="people_icon.png" HeightRequest="16" WidthRequest="16"/>
+                                        <Label Text="{Binding jobCategory}" FontSize="13" TextColor="#A0A0B2"/>
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
+
+                                <!-- Action Buttons Row -->
+                                <HorizontalStackLayout Spacing="12" Margin="0,8,0,0">
+                                    <Button 
+                                        Text="Details"
+                                        BackgroundColor="#23235B"
+                                        TextColor="White"
+                                        Clicked="OnDetailsClicked"
+                                        FontSize="14"
+                                        Padding="12,4"/>
+                                    <Button 
+                                        Text="Generate"
+                                        BackgroundColor="#4F8EF7"
+                                        TextColor="White"
+                                        Clicked="OnGenerateClicked"
+                                        FontSize="14"
+                                        Padding="12,4"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </Border>
+    </Grid>
+</ContentPage>

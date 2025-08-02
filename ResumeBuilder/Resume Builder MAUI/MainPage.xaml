@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Resume_Builder_MAUI.MainPage"
+             xmlns:local="clr-namespace:Resume_Builder_MAUI"
+             BackgroundColor="#110e17">
+
+    <ScrollView Padding="10">
+        <Border
+            Background="#1a1622"
+            StrokeShape="RoundRectangle 10"
+            Padding="50"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            
+            <VerticalStackLayout
+                VerticalOptions="Center"
+                Spacing="25">
+
+                <Image
+                    Source="home_icon.png"
+                    HeightRequest="300"
+                    Aspect="AspectFit"
+                    SemanticProperties.Description="home icon for the app" />
+                
+                <BoxView HeightRequest="2" Color="#A259F7" WidthRequest="600" HorizontalOptions="Center" />
+
+
+                <Label 
+                    Padding="20"
+                    Text="Resume Builder"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="AliceBlue"
+                    HorizontalOptions="Center"
+                    SemanticProperties.HeadingLevel="Level1" />
+                
+                <BoxView HeightRequest="2" Color="#A259F7" WidthRequest="600" HorizontalOptions="Center" />
+                
+                <Label
+                    Text="Welcome to Job Listing App With Custom Resume and Cover Letter Builder."
+                    FontSize="15"
+                    TextColor="White"
+                    Padding="20,12"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center"/>
+
+                <Button
+                    x:Name="NavToUserInfoPage"
+                    Text="Ready To Get Started"
+                    SemanticProperties.Hint="Navigating to your information section."
+                    HorizontalOptions="Center"
+                    BackgroundColor="#A259F7"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    WidthRequest="320"/>
+
+
+
+            </VerticalStackLayout>
+        </Border>
+    </ScrollView>
+
+</ContentPage>

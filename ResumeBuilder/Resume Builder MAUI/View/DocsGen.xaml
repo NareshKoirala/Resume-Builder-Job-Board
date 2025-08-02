@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Resume_Builder_MAUI.View.DocsGen"
+             xmlns:model="clr-namespace:Resume_Builder_MAUI.Model"
+             xmlns:view="clr-namespace:Resume_Builder_MAUI.View"
+             x:DataType="view:DocsGen"
+             Title="Generated Documents"
+             BackgroundColor="#110e17">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Spacing="24" Padding="18">
+                <Label 
+                    Text="Generated Documents"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    TextColor="#F8F8FF"
+                    Margin="0,24,0,12"/>
+
+                <Border
+                    Background="#23235B"
+                    Stroke="#4F8EF7"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 18"
+                    Margin="0,0,0,12"
+                    Padding="18">
+                    <Grid
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                        ColumnDefinitions="*">
+                        <Label
+                            Grid.Row="0"
+                            Text="Add URL to External Job"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#F8F8FF"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,8"/>
+                        <Picker
+                            Grid.Row="1"
+                            x:Name="JobPicker"
+                            TitleColor="White"
+                            TextColor="White"
+                            Title="Select Job Board"
+                            ItemsSource="{Binding JobBoard}"
+                            SelectedIndexChanged="JobBoardChanged"
+                            BackgroundColor="#2d2440"
+                            FontSize="14"
+                            Margin="0,0,0,8"
+                            HorizontalOptions="Fill"/>
+                        <Entry
+                            Grid.Row="2"
+                            x:Name="JobName"
+                            IsVisible="False"
+                            Placeholder="Enter Job Name"
+                            TextColor="White"
+                            BackgroundColor="#2d2440"
+                            FontSize="14"
+                            Margin="0,0,0,8"
+                            HorizontalOptions="Fill"/>
+                        <Entry
+                            Grid.Row="3"
+                            x:Name="CompanyName"
+                            IsVisible="False"
+                            Placeholder="Enter Company Name"
+                            TextColor="White"
+                            BackgroundColor="#2d2440"
+                            FontSize="14"
+                            Margin="0,0,0,8"
+                            HorizontalOptions="Fill"/>
+                        <Editor
+                            Grid.Row="4"
+                            x:Name="JobDescription"
+                            IsVisible="False"
+                            Placeholder="Enter Job Description"
+                            BackgroundColor="#2d2440"
+                            TextColor="White"
+                            FontSize="14"
+                            Margin="0,0,0,8"
+                            AutoSize="TextChanges"
+                            HeightRequest="80"/>
+                        <Entry
+                            Grid.Row="5"
+                            x:Name="UrlExternalLink"
+                            IsVisible="False"
+                            Placeholder="Enter URL to External Job"
+                            TextColor="White"
+                            BackgroundColor="#2d2440"
+                            FontSize="14"
+                            Margin="0,0,0,8"
+                            HorizontalOptions="Fill"/>
+                        <Button
+                            Grid.Row="6"
+                            x:Name="AddURL"
+                            Text="Add"
+                            TextColor="White"
+                            FontSize="16"
+                            BackgroundColor="#4F8EF7"
+                            Padding="0"
+                            CornerRadius="12"
+                            HeightRequest="44"
+                            HorizontalOptions="Fill"
+                            Margin="0,8,0,0"/>
+                    </Grid>
+                </Border>
+
+                <CollectionView x:Name="GenJobsCollectionView"
+                                ItemsSource="{Binding GenJobs}"
+                                BackgroundColor="#F3F4FB"
+                                Margin="0,0,0,12">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:GenJobsModel">
+                            <Border
+                                Margin="0,8"
+                                Padding="18"
+                                Background="White"
+                                Stroke="#E0E0E0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18">
+                                <VerticalStackLayout Spacing="10">
+                                    <Label
+                                        Text="{Binding JobName}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#23235B"/>
+
+                                    <Label
+                                        Text="{Binding jobPercentage}"
+                                        FontSize="14"
+                                        TextColor="#4F8EF7"/>
+
+                                    <Label FontSize="14" TextColor="#4F8EF7">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="Keywords: {0}">
+                                                <Binding Path="jobKeywords"/>
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    
+                                    <HorizontalStackLayout Spacing="16" Margin="0,12,0,0">
+                                        <Button
+                                            Text="Generate Resume and Cover Letter"
+                                            BackgroundColor="#23235B"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            Padding="12,4"
+                                            Clicked="OnDownloadResume"/>
+                                        <Button
+                                            Text="Job Link"
+                                            BackgroundColor="BlueViolet"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            Padding="12,4"
+                                            Clicked="ApplyToLinkClicked"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
