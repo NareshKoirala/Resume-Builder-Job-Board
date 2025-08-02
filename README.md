@@ -80,10 +80,9 @@ Inspired by modern job hunting frustrations and the need for automated personali
 
 ---
 
-#🧑‍💻 Author
-##Naresh Koirala
-###💼 [LinkedIn](www.linkedin.com/in/naresh-koirala-6205582b3)
-###📫 [Email](mailto:chelseanaresh10@gmail.com)
+🧑‍💻 Author: Naresh Koirala
+💼 [LinkedIn](www.linkedin.com/in/naresh-koirala-6205582b3)
+📫 [Email](mailto:chelseanaresh10@gmail.com)
 
 
 
