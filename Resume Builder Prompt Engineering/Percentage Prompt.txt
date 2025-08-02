@@ -1,0 +1,12 @@
+Based on the following job context, infer the key technical skills required and list 5–10 relevant keywords for the job.
+Then compare the job's technical skills with the user's skills and return only a single percentage showing how well they match.
+
+Do not explain anything. Format output as:
+
+Keywords: [comma-separated job-related keywords]
+Match: [e.g., "65"]
+
+Job Title: [Job Title]
+Company: [Company Name]
+Summary: [3-line job summary]
+User Skills: [comma-separated user skills]

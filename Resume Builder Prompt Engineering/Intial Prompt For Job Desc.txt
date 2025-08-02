@@ -1,0 +1,68 @@
+Just write me a detail short job description for the job underneath topic it as JOB:, on SKILLS give me a list of skills needed for this job -> that include a Programming Languages, Tools & Platforms and Frameworks & Libraries. On EXPRERIONS 
+
+Job Description:
+
+Responsible for creation of concept, design, development, testing and maintenance of applications for reliability, security, manageability, scalability, extensibility, performance and re-use; provides technical expertise in the areas of architecture, design, and implementation. 
+Works with technical and business team members to create excellent software. 
+Determines the best implementation that will meet the design of the Application Architect. Ensures that thorough unit and component testing is carried out. 
+Sets and adheres to software coding and style guides to ensure consistency. Performs code reviews to ensure consistency to style standards and code quality.
+
+
+Skill Set:
+
+BS in computer science or equivalent. 7-9 years of Software engineering development experience which includes Java/J2ee specific experience. Robust understanding of Java, an in depth understanding of other Java technologies including Servlets, JSP, JDBC, and other J2EE technologies; and familiarity with XML, XSD, and XSL. 
+Other object-oriented design experience, experience applying design patterns, and UML familiarity is essential. 
+Hands-on SQL/RDBMS experience, Oracle strongly preferred. Full lifecycle development experience on large projects, creating distributed and scalable eCommerce systems. 
+Experience in developing and driving SOA strategies within large enterprises and deploying SOA implementations to production a big plus. 
+Hands on experience with Agile methodologies highly desirable. Strong communication skills.
+
+
+
+___________________________________________________________________________________________________________________________________________________________
+
+
+JOB:
+As a Senior Software Engineer, you will be responsible for the end-to-end development lifecycle of enterprise-grade applications, including concept creation, design, implementation, testing, and maintenance. You will collaborate with cross-functional teams to deliver scalable, secure, and high-performing software solutions. Your role includes setting coding standards, conducting code reviews, ensuring unit/component testing, and supporting architectural decisions aligned with business and technical goals.
+
+SKILLS:
+
+
+Programming Languages:
+
+Java (Core, J2EE)
+
+SQL
+
+XML, XSLT
+
+
+
+Tools & Platforms:
+
+Oracle Database
+
+Version Control (e.g., Git)
+
+JIRA or other Agile project management tools
+
+Build tools (e.g., Maven, Gradle)
+
+Application Servers (e.g., Apache Tomcat, WebLogic)
+
+IDEs (e.g., IntelliJ IDEA, Eclipse)
+
+
+
+Frameworks & Libraries:
+
+JSP, Servlets
+
+JDBC
+
+Spring Framework (Spring Core, Spring MVC)
+
+Hibernate (or other ORM frameworks)
+
+SOA (Service-Oriented Architecture) principles and tools
+
+JUnit or TestNG for testing

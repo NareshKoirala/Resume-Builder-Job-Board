@@ -1,0 +1,31 @@
+You are generating an resume and cover letter for [Job Title] in [Job Company] from the provided user data.
+Only use the actual [User Skills] and [User Projects].
+Align the content with the job using phrasing and structure, but do NOT invent new skills or experience.
+Use the [Job Description] and [Job Keywords] only to guide language and formatting.
+Follow the structure exactly as shown below.
+
+TITLE Keyword: keyword1 | keyword2 | keyword3
+(Choose the top 3 title-style keywords most relevant to the job, e.g., “Full Stack Developer | Web Developer | .NET Engineer”)
+
+SUMMARY:
+Write a 3-sentence summary in XYZ format:
+- X = background/experience
+- Y = skills/projects or achievements
+- Z = how it fits this job role
+
+SKILLS:
+Programming Languages: [Only from user skills that overlap with job needs]
+Frameworks & Libraries: [Same rule — must be user-provided]
+Relevant Keywords: [Only use keywords that are in both user input and job context — like “REST APIs”, “Cloud”, “Agile”]
+
+PROJECTS:
+Select the top 3 most relevant projects. For each:
+
+- **Project Title**
+- 2–3 sentence summary in XYZ format
+- • Bullet 1 – Main task/responsibility
+- • Bullet 2 – Contribution/result
+- • Bullet 3 (optional) – Any measurable outcome or tool used
+
+COVER LETTER:
+[Cover Letter]
