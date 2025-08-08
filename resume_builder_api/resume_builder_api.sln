@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "resume_builder_api", "resume_builder_api.csproj", "{9E705A7F-B450-9FB7-6709-FAF331F8F0F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E705A7F-B450-9FB7-6709-FAF331F8F0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E705A7F-B450-9FB7-6709-FAF331F8F0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E705A7F-B450-9FB7-6709-FAF331F8F0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E705A7F-B450-9FB7-6709-FAF331F8F0F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFB6E69B-1FBE-4468-A185-CAB6855E44F1}
+	EndGlobalSection
+EndGlobal
