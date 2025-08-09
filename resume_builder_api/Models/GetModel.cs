@@ -1,5 +1,11 @@
 ﻿namespace Desktop.Resume_Builder_API.resume_builder_api.Models;
 
+public class JobModel
+{
+    public string JobName { get; set; } = string.Empty;
+    public string JobDescription { get; set; } = string.Empty;
+}
+
 public class UserModel
 {
     public string FirstName { get; set; } = string.Empty;
@@ -12,8 +18,6 @@ public class UserModel
     public string PortfolioUrl { get; set; } = string.Empty;
     public string LinkedInUrl { get; set; } = string.Empty;
     public string UserSummary { get; set; } = string.Empty;
-    public string JobDescription { get; set; } = string.Empty;
-    public string JobName { get; set; } = string.Empty;
     public List<EducationEntry> Education { get; set; } = [];
     public List<WorkEntry> WorkExperience { get; set; } = [];
     public List<CertificateEntry> Certificates { get; set; } = [];
