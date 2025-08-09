@@ -1,5 +1,6 @@
 using DotNetEnv;
 using Desktop.Resume_Builder_API.resume_builder_api.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Register services
 builder.Services.AddSingleton<OpenAIService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration["SQL_Connection_String"]));
 
 var app = builder.Build();
 
