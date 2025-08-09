@@ -1,9 +1,21 @@
+using DotNetEnv;
+using Desktop.Resume_Builder_API.resume_builder_api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Load environment variables from .env file
+Env.Load();
+
+// Add configuration for environment variables
+builder.Configuration.AddEnvironmentVariables();
+
+// Register services
+builder.Services.AddSingleton<OpenAIService>();
 
 var app = builder.Build();
 

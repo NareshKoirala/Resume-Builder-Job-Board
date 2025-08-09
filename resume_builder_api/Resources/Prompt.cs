@@ -5,7 +5,7 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.Resources
     public static class Prompt
     {
         private static readonly string JsonFilePath = "Resources/prompt.json";
-        private static readonly Lazy<PromptData> _data = new Lazy<PromptData>(LoadPromptData);
+        private static readonly Lazy<PromptData> _data = new(LoadPromptData);
 
         public static string PercentPrompt => _data.Value.PercentPrompt ?? "";
         public static string ResumePrompt => _data.Value.ResumePrompt ?? "";
