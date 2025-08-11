@@ -49,9 +49,13 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9B01AEAB3A9142C59C112A8728C6BB08 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E04CB20428334BA89208E6E0F15B619F }}
 
+      - name: List deploy folder contents
+        run: dir .net-app
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'resume-builder-api'
           slot-name: 'Production'
-          package: .net-app
+          package: .net-app/
+
