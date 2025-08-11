@@ -11,14 +11,21 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.Controllers;
 public class UserController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
-    public UserController(AppDbContext dbContext)
+    private readonly IConfiguration _configuration;
+    public UserController(AppDbContext dbContext, IConfiguration configuration)
     {
         _dbContext = dbContext;
+        _configuration = configuration;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
     {
+        if (userRegisterDto.Pass != _configuration["ADMIN_PASS"])
+        {
+            return BadRequest("Invalid pass. Contact Naresh at (https://www.nareshkoirala.dev/contact) to get a pass.");
+        }
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -48,9 +55,6 @@ public class UserController : ControllerBase
     [HttpPost("update")]
     public async Task<IActionResult> Update(UpdateUserDTO updateUserDTO)
     {
-        // var existingUser = await _dbContext.Users
-        //     .FirstOrDefaultAsync(u => u.PublicId == updateUserDTO.PublicId);
-
         var existingUser = await _dbContext.Users
             .Include(u => u.Education)
             .Include(u => u.WorkExperience)

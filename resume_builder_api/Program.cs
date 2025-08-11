@@ -32,6 +32,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
+app.MapGet("/", async context =>
+{ 
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("Resources/index.html");
+});
+
 app.MapControllers();
 
 app.Run();

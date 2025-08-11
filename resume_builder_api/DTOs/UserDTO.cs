@@ -6,6 +6,10 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.DTOs;
 
 public class UserRegisterDto : IValidatableObject
 {
+    [Required(ErrorMessage = "Pass is required")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Contact Naresh at (https://www.nareshkoirala.dev/contact) to get a pass.")]
+    public string Pass { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "First name is required")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "First name can only contain letters and spaces")]
