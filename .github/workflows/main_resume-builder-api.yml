@@ -32,29 +32,31 @@ jobs:
           name: .net-app
           path: ./publish
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
+deploy:
+  runs-on: windows-latest
+  needs: build
+  permissions:
+    id-token: write
+    contents: read
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8063ACF54126472996E446E1612ED03F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9B01AEAB3A9142C59C112A8728C6BB08 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E04CB20428334BA89208E6E0F15B619F }}
+  steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: .net-app
+    
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8063ACF54126472996E446E1612ED03F }}
+        tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9B01AEAB3A9142C59C112A8728C6BB08 }}
+        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E04CB20428334BA89208E6E0F15B619F }}
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'resume-builder-api'
-          slot-name: 'Production'
-          package: ./publish
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'resume-builder-api'
+        slot-name: 'Production'
+        package: .net-app
+
+
