@@ -23,16 +23,20 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Clear();
+app.Urls.Add($"http://*:{port}");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+// Optional: skip HTTPS redirection in production on Cloud Run
+// app.UseHttpsRedirection();
 
-// Configure static files to use Resources folder
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -41,7 +45,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.MapGet("/", async context =>
-{ 
+{
     context.Response.ContentType = "text/html";
     await context.Response.SendFileAsync("Resources/index.html");
 });
