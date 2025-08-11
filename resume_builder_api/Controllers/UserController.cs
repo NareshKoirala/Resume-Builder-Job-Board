@@ -27,6 +27,38 @@ public class UserController : ControllerBase
         
         try
         {
+            var educationEntries = userRegisterDto.Education.Select(e => new EducationEntry
+            {
+                InstitutionName = e.InstitutionName,
+                Date = e.Date,
+                Location = e.Location,
+                Details = e.Details
+            }).ToList();
+
+            var workExperienceEntries = userRegisterDto.WorkExperience.Select(w => new WorkEntry
+            {
+                CompanyName = w.CompanyName,
+                Location = w.Location,
+                Details = w.Details
+            }).ToList();
+
+            var certificateEntries = userRegisterDto.Certificates.Select(c => new CertificateEntry
+            {
+                CertificateName = c.CertificateName,
+                Details = c.Details
+            }).ToList();
+
+            var skillsEntries = userRegisterDto.Skills.Select(s => new SkillEntry
+            {
+                SkillName = s.SkillName
+            }).ToList();
+
+            var projectsEntries = userRegisterDto.Projects.Select(p => new ProjectEntry
+            {
+                ProjectName = p.ProjectName,
+                Description = p.Description
+            }).ToList();
+
             var user = new UserModel
             {
                 FirstName = userRegisterDto.FirstName,
@@ -39,11 +71,11 @@ public class UserController : ControllerBase
                 PortfolioUrl = userRegisterDto.PortfolioUrl,
                 LinkedInUrl = userRegisterDto.LinkedInUrl,
                 UserSummary = userRegisterDto.UserSummary,
-                Education = userRegisterDto.Education,
-                WorkExperience = userRegisterDto.WorkExperience,
-                Certificates = userRegisterDto.Certificates,
-                Skills = userRegisterDto.Skills,
-                Projects = userRegisterDto.Projects
+                Education = educationEntries,
+                WorkExperience = workExperienceEntries,
+                Certificates = certificateEntries,
+                Skills = skillsEntries,
+                Projects = projectsEntries
             };
 
             // Save user first to get the generated ID and PublicId

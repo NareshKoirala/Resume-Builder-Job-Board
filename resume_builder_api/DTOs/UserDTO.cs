@@ -1,4 +1,5 @@
 using Desktop.Resume_Builder_API.resume_builder_api.Models;
+using ResumeBuilderApi.DTOs;
 using System.ComponentModel.DataAnnotations;
 
 namespace Desktop.Resume_Builder_API.resume_builder_api.DTOs;
@@ -47,17 +48,17 @@ public class UserRegisterDto : IValidatableObject
 
     [Required(ErrorMessage = "At least one education entry is required")]
     [MinLength(1, ErrorMessage = "At least one education entry is required")]
-    public List<EducationEntry> Education { get; set; } = [];
+    public List<EducationEntryDto> Education { get; set; } = new();
 
-    public List<WorkEntry> WorkExperience { get; set; } = [];
+    public List<WorkEntryDto> WorkExperience { get; set; } = new();
 
-    public List<CertificateEntry> Certificates { get; set; } = [];
+    public List<CertificateEntryDto> Certificates { get; set; } = new();
 
     [Required(ErrorMessage = "At least one skill is required")]
     [MinLength(1, ErrorMessage = "At least one skill is required")]
-    public List<SkillEntry> Skills { get; set; } = [];
+    public List<SkillsEntryDto> Skills { get; set; } = new();
 
-    public List<ProjectEntry> Projects { get; set; } = [];
+    public List<ProjectEntryDto> Projects { get; set; } = new();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

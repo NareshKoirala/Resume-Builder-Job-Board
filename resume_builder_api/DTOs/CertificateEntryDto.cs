@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ResumeBuilderApi.DTOs
 {
-    public class CreateCertificateEntryDto
+    public class CertificateEntryDto
     {
         [Required]
         [StringLength(200)]
