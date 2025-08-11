@@ -75,7 +75,7 @@ public class JobController : ControllerBase
         
         return Ok(new
         {
-            JobName = returnJob.JobName,
+            jobName = returnJob.JobName,
             MatchPercentage = returnJob.JobPercentage,
             KeySkills = returnJob.JobKeywords
         });

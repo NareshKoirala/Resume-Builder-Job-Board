@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Desktop.Resume_Builder_API.resume_builder_api.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+// Configure static files to use Resources folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Resources")),
+    RequestPath = "/resources"
+});
 
 app.MapGet("/", async context =>
 { 
