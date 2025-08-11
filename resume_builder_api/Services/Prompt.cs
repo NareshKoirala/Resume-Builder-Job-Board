@@ -1,6 +1,6 @@
 using Desktop.Resume_Builder_API.resume_builder_api.Models;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.Resources
+namespace Desktop.Resume_Builder_API.resume_builder_api.Services
 {
     public static class Prompt
     {
@@ -44,7 +44,7 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.Resources
 
         public static string Percentage(UserModel user, JobModel job)
         {
-            var skills = string.Join(", ", user.Skills);
+            var skills = string.Join(", ", user.Skills.Select(s => s.SkillName));
 
             var promptUpdate = PercentPrompt
                 .Replace("[JobName]", job.JobName)
@@ -56,7 +56,7 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.Resources
 
         public static string Resume(UserModel user, JobModel job)
         {
-            var skills = string.Join(", ", user.Skills);
+            var skills = string.Join(", ", user.Skills.Select(s => s.SkillName));
             var projects = string.Join(", ", user.Projects.Select(p => $"{p.ProjectName}: {p.Description}"));
             var experiences = string.Join(", ", user.WorkExperience.Select(e => $"{e.CompanyName} at {e.Location} with {e.Details} at {e.Date}"));
             var education = string.Join(", ", user.Education.Select(e => $"{e.Date} in {e.Details} from {e.InstitutionName}"));
