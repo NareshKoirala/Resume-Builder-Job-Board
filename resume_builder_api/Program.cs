@@ -1,4 +1,3 @@
-using DotNetEnv;
 using Desktop.Resume_Builder_API.resume_builder_api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -10,16 +9,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Load environment variables from .env file
-Env.Load();
+// **Remove Env.Load();**
 
-// Add configuration for environment variables
-builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddEnvironmentVariables();  // This is fine
 
 // Register services
 builder.Services.AddSingleton<OpenAIService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["SQL_Connection_String"]));
+    options.UseNpgsql(builder.Configuration["SQL_Connection_String"]));  // Use env var
+
+// ... rest of your code unchanged ...
 builder.Services.AddControllers();
 
 var app = builder.Build();

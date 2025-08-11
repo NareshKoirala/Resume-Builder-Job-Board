@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("resume_builder_api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+293fc2198cbb923f4d4911789026fefafd1ab011")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0115c4d55af81f7843ec1f55a45fba44770d030b")]
 [assembly: System.Reflection.AssemblyProductAttribute("resume_builder_api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("resume_builder_api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
