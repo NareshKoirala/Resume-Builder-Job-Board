@@ -52,7 +52,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("update")]
+    [HttpPut("update")]
     public async Task<IActionResult> Update(UpdateUserDTO updateUserDTO)
     {
         var existingUser = await _dbContext.Users
@@ -116,7 +116,7 @@ public class UserController : ControllerBase
         return Ok(new { Message = "User updated successfully" });
     }
 
-    [HttpPost("delete")]
+    [HttpDelete("delete/{publicId}")]
     public async Task<IActionResult> Delete(string publicId)
     {
         var user = await _dbContext.Users
@@ -134,5 +134,23 @@ public class UserController : ControllerBase
         await _dbContext.SaveChangesAsync();
 
         return Ok(new { Message = "User deleted successfully" });
+    }
+
+    
+    [HttpGet("getUser/{publicId}")]
+    public async Task<IActionResult> GetUser(string publicId)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.Education)
+            .Include(u => u.WorkExperience)
+            .Include(u => u.Certificates)
+            .Include(u => u.Skills)
+            .Include(u => u.Projects)
+            .FirstOrDefaultAsync(u => u.PublicId == publicId);
+
+        if (user == null)
+            return NotFound("User not found");
+
+        return Ok(user);
     }
 }
