@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj": {}
+    "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder_FirstVersion_Maui\\Resume Builder MAUI\\Resume Builder MAUI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj": {
+    "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder_FirstVersion_Maui\\Resume Builder MAUI\\Resume Builder MAUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
+        "projectUniqueName": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder_FirstVersion_Maui\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
         "projectName": "Resume Builder MAUI",
-        "projectPath": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
+        "projectPath": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder_FirstVersion_Maui\\Resume Builder MAUI\\Resume Builder MAUI.csproj",
         "packagesPath": "C:\\Users\\chels\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder\\Resume Builder MAUI\\obj\\",
+        "outputPath": "C:\\Users\\chels\\Desktop\\Resume-Builder-App\\ResumeBuilder_FirstVersion_Maui\\Resume Builder MAUI\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [

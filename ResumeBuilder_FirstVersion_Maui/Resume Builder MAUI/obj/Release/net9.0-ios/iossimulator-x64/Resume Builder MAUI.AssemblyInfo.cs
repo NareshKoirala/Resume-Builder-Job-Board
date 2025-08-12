@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Resume Builder MAUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+6ea54919c9847aeddf7208ea1221263bb820ce64")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+44e0316f5c592ccce8cc70e098b2bc22716b517f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Resume Builder MAUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Resume Builder MAUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
