@@ -9,12 +9,12 @@ WORKDIR /src
 
 # Copy the csproj and restore dependencies
 # This handles both cases: building from repo root or from project folder
-COPY resume_builder_api/*.csproj ./ 
+COPY *.csproj ./
 RUN dotnet restore
 
-# Copy all files and publish
-COPY resume_builder_api/. ./
+COPY . ./
 RUN dotnet publish -c Release -o /app/publish
+
 
 # Stage 3: Final runtime image
 FROM base AS final
