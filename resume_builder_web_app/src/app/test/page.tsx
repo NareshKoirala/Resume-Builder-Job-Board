@@ -1,7 +1,9 @@
 "use client";
-import UserInfo from "../../components/user-info";
-import { UpdateUserDto } from "../../model/data-structure";
+import UserInfo from "@/components/user-info";
+import { UpdateUserDto } from "@/model/data-structure";
 import { useState } from "react";
+import SignUp from "@/components/sign-up";
+import SignIn from "@/components/sign-in";
 
 // Example user data for update mode
 const sampleUserData: UpdateUserDto = {
@@ -54,18 +56,24 @@ const sampleUserData: UpdateUserDto = {
 };
 
 export default function Test() {
-
-  const handleFormSubmit = (data: any) => {
-    alert(
-        `Form submitted successfully! Data: ${JSON.stringify(data, null, 2)}`
-    );
-  };
-
   return (
-      <UserInfo
-        mode="update" // Change to "register" for register mode
-        userInfo={sampleUserData} // Change to "null" for register mode
-        onSubmit={handleFormSubmit}
-      />
+    <div>
+      <SignUp />
+      <SignIn />
+    </div>
   );
+
+  // const handleFormSubmit = (data: any) => {
+  //   alert(
+  //       `Form submitted successfully! Data: ${JSON.stringify(data, null, 2)}`
+  //   );
+  // };
+
+  // return (
+  //     <UserInfo
+  //       mode="update" // Change to "register" for register mode
+  //       userInfo={sampleUserData} // Change to "null" for register mode
+  //       onSubmit={handleFormSubmit}
+  //     />
+  // );
 }

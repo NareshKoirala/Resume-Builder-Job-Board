@@ -1,0 +1,178 @@
+/* Authentication Components Styles */
+
+.authContainer {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.authForm {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(15px);
+  border: 2px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+}
+
+.authTitle {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-shadow: 0 2px 8px rgba(167, 139, 250, 0.5);
+}
+
+.errorMessage {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 15px;
+  color: #fca5a5;
+  font-size: 14px;
+}
+
+.successMessage {
+  background-color: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 15px;
+  color: #86efac;
+  font-size: 14px;
+}
+
+.fieldGroup {
+  margin-bottom: 15px;
+}
+
+.fieldGroupLast {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--light-purple);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.inputWithIcon {
+  width: 100%;
+  padding: 10px 35px 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.toggleButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--primary-purple);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.toggleButton:hover {
+  color: var(--accent-purple);
+}
+
+.errorText {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #fca5a5;
+}
+
+.hintText {
+  font-size: 11px;
+  margin-top: 4px;
+  color: var(--secondary-purple);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.linkSection {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.linkText {
+  color: var(--secondary-purple);
+  font-size: 14px;
+  margin: 0;
+}
+
+.link {
+  color: var(--primary-purple);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--accent-purple);
+}
+
+.forgotPasswordLink {
+  display: block;
+  text-align: right;
+  color: var(--primary-purple);
+  text-decoration: none;
+  font-size: 12px;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+  color: var(--accent-purple);
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-purple);
+}
+
+.checkboxLabel {
+  font-size: 13px;
+  color: var(--light-purple);
+  cursor: pointer;
+}
