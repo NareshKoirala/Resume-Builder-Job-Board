@@ -224,69 +224,127 @@ WorkEntryDto
         <p class="text-gray-700 mb-4">The API is organized into controllers for jobs and users. Below are the available endpoints.</p>
 
         <!-- Job Controller -->
-        <div class="bg-white p-4 rounded-lg shadow mb-6 table-scroll">
-            <h3 class="text-xl font-medium">JobController</h3>
-            <div class="overflow-x-auto mt-4">
-            <table class="min-w-[900px] w-full border-collapse text-sm">
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <h3 class="text-xl font-medium">JobController</h3>
+        
+        <!-- Mobile View - Stack Cards -->
+        <div class="block md:hidden mt-4 space-y-4">
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/fetch-rcl-json</div>
+            <div class="text-sm text-gray-600 mb-3">Fetch Resume & Cover Letter JSON data</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{jobName, ResumeJson, CoverLetterJson}</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/get-matchKeys</div>
+            <div class="text-sm text-gray-600 mb-3">Get match skills percentage and key job skills to improve</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{jobName, MatchPercentage, KeySkills}</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/get-all</div>
+            <div class="text-sm text-gray-600 mb-3">Get complete job analysis with resume, cover letter, and match data</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{complete ReturnJobModel object}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop View - Table -->
+        <div class="hidden md:block overflow-x-auto mt-4">
+        <table class="min-w-full w-full border-collapse text-sm">
             <thead>
                 <tr class="bg-gray-200">
-                <th class="border p-2 text-left">Endpoint</th>
-                <th class="border p-2 text-left">Method</th>
-                <th class="border p-2 text-left">Description</th>
-                <th class="border p-2 text-left">Expected Format</th>
-                <th class="border p-2 text-left">Response Format</th>
+                <th class="border p-2 text-left min-w-[180px]">Endpoint</th>
+                <th class="border p-2 text-left min-w-[60px]">Method</th>
+                <th class="border p-2 text-left min-w-[200px]">Description</th>
+                <th class="border p-2 text-left min-w-[250px]">Expected Format</th>
+                <th class="border p-2 text-left min-w-[250px]">Response Format</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                <td class="border p-2"><code>/Job/fetch-rcl-json</code></td>
-                <td class="border p-2">GET</td>
+                <td class="border p-2"><code class="text-xs">/Job/fetch-rcl-json</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
                 <td class="border p-2">Fetch Resume & Cover Letter JSON data</td>
                 <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-    "publicId": "string",
-    "jobName": "string",
-    "jobDescription": "string"            
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
 }</code></pre></td>
                 <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-    jobName = returnJob.JobName,
-    ResumeJson = returnJob.Resume,
-    CoverLetterJson = returnJob.CoverLetter
-}</code></pre></td>
-                </tr>
-                <tr>
-                <td class="border p-2"><code>/Job/get-matchKeys</code></td>
-                <td class="border p-2">GET</td>
-                <td class="border p-2">Get match skills percentage with the job description. And key job skills still need to improve.</td>
-                <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-    "publicId": "string",
-    "jobName": "string",
-    "jobDescription": "string"            
-}</code></pre></td>
-                <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-    jobName = returnJob.JobName,
-    MatchPercentage = returnJob.JobPercentage,
-    KeySkills = returnJob.JobKeywords
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "resumeJson": {...},
+  "coverLetterJson": {...}
 }</code></pre></td>
                 </tr>
                 <tr>
-                <td class="border p-2"><code>/Job/get-all</code></td>
-                <td class="border p-2">GET</td>
-                <td class="border p-2">Get both keys & match percentage. As well as resume, cover letter in one process.</td>
+                <td class="border p-2"><code class="text-xs">/Job/get-matchKeys</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+                <td class="border p-2">Get match skills percentage and key job skills to improve</td>
                 <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-    "publicId": "string",
-    "jobName": "string",
-    "jobDescription": "string"            
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
 }</code></pre></td>
                 <td class="border p-2">
-                <pre class="bg-gray-100 p-2 rounded"><code>{
-                
-        returnJob
-
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "matchPercentage": "string",
+  "keySkills": "string"
+}</code></pre></td>
+                </tr>
+                <tr>
+                <td class="border p-2"><code class="text-xs">/Job/get-all</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+                <td class="border p-2">Get complete job analysis with resume, cover letter, and match data</td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
+}</code></pre></td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "resume": {...},
+  "coverLetter": {...},
+  "jobKeywords": "string",
+  "jobPercentage": "string"
 }</code></pre></td>
                 </tr>
             </tbody>
@@ -295,44 +353,101 @@ WorkEntryDto
         </div>
 
       <!-- User Controller -->
-      <div class="bg-white p-4 rounded-lg shadow mb-6 table-scroll">
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
         <h3 class="text-xl font-medium">UserController</h3>
-        <div class="overflow-x-auto mt-4">
-        <table class="min-w-[900px] w-full border-collapse text-sm">
+        
+        <!-- Mobile View - Stack Cards -->
+        <div class="block md:hidden mt-4 space-y-4">
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">POST /User/register</div>
+            <div class="text-sm text-gray-600 mb-3">Register a new user</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">BODY:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">UserRegisterDto JSON</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message + public ID</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-orange-600 mb-2">PUT /User/update</div>
+            <div class="text-sm text-gray-600 mb-3">Update an existing user</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">BODY:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">UpdateUserDto JSON</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-red-600 mb-2">DELETE /User/delete/{publicId}</div>
+            <div class="text-sm text-gray-600 mb-3">Delete a user by public ID</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">PARAMETER:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">publicId (path)</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /User/getUser/{publicId}</div>
+            <div class="text-sm text-gray-600 mb-3">Retrieve a user by public ID</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">PARAMETER:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">publicId (path)</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">User details JSON</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop View - Table -->
+        <div class="hidden md:block overflow-x-auto mt-4">
+        <table class="min-w-full w-full border-collapse text-sm">
           <thead>
             <tr class="bg-gray-200">
-              <th class="border p-2 text-left">Endpoint</th>
-              <th class="border p-2 text-left">Method</th>
-              <th class="border p-2 text-left">Description</th>
-              <th class="border p-2 text-left">Parameters/Body</th>
-              <th class="border p-2 text-left">Response</th>
+              <th class="border p-2 text-left min-w-[200px]">Endpoint</th>
+              <th class="border p-2 text-left min-w-[80px]">Method</th>
+              <th class="border p-2 text-left min-w-[200px]">Description</th>
+              <th class="border p-2 text-left min-w-[250px]">Parameters/Body</th>
+              <th class="border p-2 text-left min-w-[200px]">Response</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="border p-2"><code>/User/register</code></td>
-              <td class="border p-2">POST</td>
+              <td class="border p-2"><code class="text-xs">/User/register</code></td>
+              <td class="border p-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">POST</span></td>
               <td class="border p-2">Register a new user</td>
               <td class="border p-2">JSON body containing user details (UserRegisterDto)</td>
-                <td class="border p-2">JSON response with Success message and public ID</td>
+              <td class="border p-2">JSON response with Success message and public ID</td>
             </tr>
             <tr>
-              <td class="border p-2"><code>/User/update</code></td>
-              <td class="border p-2">PUT</td>
+              <td class="border p-2"><code class="text-xs">/User/update</code></td>
+              <td class="border p-2"><span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">PUT</span></td>
               <td class="border p-2">Update an existing user</td>
               <td class="border p-2">JSON body containing updated user details (UpdateUserDto)</td>
               <td class="border p-2">JSON response with Success message</td>
             </tr>
             <tr>
-              <td class="border p-2"><code>/User/delete/{publicId}</code></td>
-              <td class="border p-2">DELETE</td>
+              <td class="border p-2"><code class="text-xs">/User/delete/{publicId}</code></td>
+              <td class="border p-2"><span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">DELETE</span></td>
               <td class="border p-2">Delete a user by public ID</td>
               <td class="border p-2"><code>publicId</code> (path) - Unique public ID of the user</td>
               <td class="border p-2">JSON response with Success message</td>
             </tr>
             <tr>
-              <td class="border p-2"><code>/User/getUser/{publicId}</code></td>
-              <td class="border p-2">GET</td>
+              <td class="border p-2"><code class="text-xs">/User/getUser/{publicId}</code></td>
+              <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
               <td class="border p-2">Retrieve a user by public ID</td>
               <td class="border p-2"><code>publicId</code> (path) - Unique public ID of the user</td>
               <td class="border p-2">JSON response with user details</td>
