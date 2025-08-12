@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: linear-gradient(135deg, #2d1b69, #1e1b4b, #312e81);
+  --foreground: #f1f5f9;
+  --primary-purple: #a78bfa;
+  --secondary-purple: #c4b5fd;
+  --light-purple: #ddd6fe;
+  --accent-purple: #8b5cf6;
+  --card-bg: rgba(167, 139, 250, 0.12);
+  --input-bg: rgba(167, 139, 250, 0.08);
+  --border-color: rgba(167, 139, 250, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: linear-gradient(135deg, #0f0a1f, #1a0d33, #2d1b69);
+    --foreground: #ffffff;
+    --primary-purple: #c4b5fd;
+    --secondary-purple: #ddd6fe;
+    --light-purple: #e9d5ff;
+    --accent-purple: #a78bfa;
+    --card-bg: rgba(196, 181, 253, 0.15);
+    --input-bg: rgba(196, 181, 253, 0.1);
+    --border-color: rgba(196, 181, 253, 0.3);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+/* Additional purple theme enhancements */
+.purple-gradient-text {
+  background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.purple-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.purple-card:hover {
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.purple-button-primary {
+  background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.purple-button-primary:hover {
+  background: linear-gradient(135deg, var(--accent-purple), #5b21b6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.purple-input {
+  background: var(--input-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--foreground);
+  transition: all 0.3s ease;
+}
+
+.purple-input:focus {
+  outline: none;
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--input-bg);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-purple);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-purple);
+}
+
+/* Selection color */
+::selection {
+  background: var(--light-purple);
+  color: var(--accent-purple);
 }
