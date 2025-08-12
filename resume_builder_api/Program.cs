@@ -46,9 +46,11 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapGet("/", async context =>
 {
+    var filePath = Path.Combine(app.Environment.ContentRootPath, "Resources", "index.html");
     context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync("Resources/index.html");
+    await context.Response.SendFileAsync(filePath);
 });
+
 
 app.MapControllers();
 
