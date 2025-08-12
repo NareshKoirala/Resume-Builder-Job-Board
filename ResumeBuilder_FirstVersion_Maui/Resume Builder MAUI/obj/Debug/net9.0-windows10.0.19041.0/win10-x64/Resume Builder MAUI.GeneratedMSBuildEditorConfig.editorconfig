@@ -1,0 +1,101 @@
+is_global = true
+build_property.TargetFramework = net9.0-windows10.0.19041.0
+build_property.TargetPlatformMinVersion = 10.0.17763.0
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 9A19103F-16F7-4668-BE54-9A1E7A4F7556
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Resume_Builder_MAUI
+build_property.ProjectDir = C:\Users\chels\Desktop\Resume-Builder-App\ResumeBuilder\Resume Builder MAUI\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTAotOptimizerEnabled = true
+build_property.CsWinRTAotExportsEnabled = 
+build_property.CsWinRTRcwFactoryFallbackGeneratorForceOptIn = 
+build_property.CsWinRTRcwFactoryFallbackGeneratorForceOptOut = 
+build_property.CsWinRTCcwLookupTableGeneratorEnabled = true
+build_property.CsWinRTMergeReferencedActivationFactories = 
+build_property.CsWinRTAotWarningLevel = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/chels/.nuget/packages/microsoft.visualstudio.threading.analyzers/17.14.15/buildTransitive/AdditionalFiles/vs-threading.LegacyThreadSwitchingMembers.txt]
+build_metadata.AdditionalFiles.GenKind = 
+build_metadata.AdditionalFiles.ManifestResourceName = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.RelativePath = 
+
+[C:/Users/chels/.nuget/packages/microsoft.visualstudio.threading.analyzers/17.14.15/buildTransitive/AdditionalFiles/vs-threading.MainThreadAssertingMethods.txt]
+build_metadata.AdditionalFiles.GenKind = 
+build_metadata.AdditionalFiles.ManifestResourceName = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.RelativePath = 
+
+[C:/Users/chels/.nuget/packages/microsoft.visualstudio.threading.analyzers/17.14.15/buildTransitive/AdditionalFiles/vs-threading.MainThreadSwitchingMethods.txt]
+build_metadata.AdditionalFiles.GenKind = 
+build_metadata.AdditionalFiles.ManifestResourceName = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.RelativePath = 
+
+[C:/Users/chels/.nuget/packages/microsoft.visualstudio.threading.analyzers/17.14.15/buildTransitive/AdditionalFiles/vs-threading.MembersRequiringMainThread.txt]
+build_metadata.AdditionalFiles.GenKind = 
+build_metadata.AdditionalFiles.ManifestResourceName = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.RelativePath = 
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/App.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.App.xaml
+build_metadata.AdditionalFiles.TargetPath = App.xaml
+build_metadata.AdditionalFiles.RelativePath = App.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/AppShell.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.AppShell.xaml
+build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
+build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/Resources/Styles/Colors.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.Resources.Styles.Colors.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/Resources/Styles/Styles.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.Resources.Styles.Styles.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/View/DocsGen.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.View.DocsGen.xaml
+build_metadata.AdditionalFiles.TargetPath = View\DocsGen.xaml
+build_metadata.AdditionalFiles.RelativePath = View\DocsGen.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/View/MainDashboard.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.View.MainDashboard.xaml
+build_metadata.AdditionalFiles.TargetPath = View\MainDashboard.xaml
+build_metadata.AdditionalFiles.RelativePath = View\MainDashboard.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/View/UserInput.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.View.UserInput.xaml
+build_metadata.AdditionalFiles.TargetPath = View\UserInput.xaml
+build_metadata.AdditionalFiles.RelativePath = View\UserInput.xaml
+
+[C:/Users/chels/Desktop/Resume-Builder-App/ResumeBuilder/Resume Builder MAUI/View/UserSetting.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = Resume_Builder_MAUI.View.UserSetting.xaml
+build_metadata.AdditionalFiles.TargetPath = View\UserSetting.xaml
+build_metadata.AdditionalFiles.RelativePath = View\UserSetting.xaml
