@@ -16,7 +16,11 @@ interface SignUpErrors {
   general?: string;
 }
 
-const SignUp: React.FC = () => {
+interface SignUpProps {
+  onToggleMode: () => void;
+}
+
+const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
   const [formData, setFormData] = useState<SignUpFormData>({
     email: '',
     password: '',
@@ -241,9 +245,13 @@ const SignUp: React.FC = () => {
           <div className={styles.linkSection}>
             <p className={styles.linkText}>
               Already have an account?{' '}
-              <a href="/sign-in" className={styles.link}>
+              <button 
+                type="button"
+                onClick={onToggleMode}
+                className={styles.link}
+              >
                 Sign In
-              </a>
+              </button>
             </p>
           </div>
         </form>

@@ -222,6 +222,29 @@
   }
 }
 
+@keyframes twinkle {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+}
+
 @keyframes heartbeat {
   0% {
     transform: scale(1);
@@ -374,6 +397,10 @@
 
 .blink {
   animation: blink 1s step-start infinite;
+}
+
+.twinkle {
+  animation: twinkle 2s ease-in-out infinite;
 }
 
 .heartbeat {
