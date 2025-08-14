@@ -1,7 +1,8 @@
 import { UUID } from "crypto";
 import supabase from "./connection";
+import { UserRegisterDto } from "@/model/data-structure";
 
-export const emailFetch = async (email: string) => {
+export const emailFetch = async (email: string) : Promise<any> => {
   const { data, error } = await supabase
     .from("credentials")
     .select("*")
@@ -15,7 +16,7 @@ export const emailFetch = async (email: string) => {
   return data;
 };
 
-export const userFetch = async (userId: string) => {
+export const userFetch = async (userId: string): Promise<UserRegisterDto | null | any> => {
   const { data, error } = await supabase
     .from("users")
     .select("*")

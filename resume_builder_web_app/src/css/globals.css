@@ -34,7 +34,7 @@ body {
   min-height: 100vh;
 }
 
-/* Additional purple theme enhancements */
+/* Purple theme utilities */
 .purple-gradient-text {
   background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
   -webkit-background-clip: text;
@@ -88,7 +88,7 @@ body {
   background: rgba(139, 92, 246, 0.1);
 }
 
-/* Scrollbar customization */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -107,7 +107,7 @@ body {
   background: var(--primary-purple);
 }
 
-/* Selection color */
+/* Selection */
 ::selection {
   background: var(--light-purple);
   color: var(--accent-purple);

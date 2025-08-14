@@ -1,13 +1,95 @@
 import { UUID } from "crypto";
 import supabase from "./connection";
+import { UserRegisterDto } from "@/model/data-structure";
 
 interface UserCredentials {
   email: string;
   password_hash: string;
 }
 
-// Insert a single user record
-export const userInsert = async (userData: object) => {
+// Comprehensive user registration function
+export const userRegisterComplete = async (userData: UserRegisterDto): Promise<any> => {
+  try {
+    // Extract user data for the users table (excluding arrays and password)
+    const { pass, education, work_experience, certificates, skills, projects, ...userTableData } = userData;
+    
+    // Insert user into users table
+    const { data: userResult, error: userError } = await supabase
+      .from("users")
+      .insert(userTableData)
+      .select()
+      .single();
+
+    if (userError) {
+      console.error("Error inserting user:", userError);
+      return null;
+    }
+
+    const userId = userResult.id;
+
+    // Insert related data in parallel
+    const insertPromises = [];
+
+    // Insert education records
+    if (education && education.length > 0) {
+      const educationRecords = education.map(edu => ({ ...edu, user_id: userId }));
+      insertPromises.push(
+        supabase.from("education").insert(educationRecords)
+      );
+    }
+
+    // Insert work experience records
+    if (work_experience && work_experience.length > 0) {
+      const workRecords = work_experience.map(work => ({ ...work, user_id: userId }));
+      insertPromises.push(
+        supabase.from("work_experience").insert(workRecords)
+      );
+    }
+
+    // Insert certificate records
+    if (certificates && certificates.length > 0) {
+      const certRecords = certificates.map(cert => ({ ...cert, user_id: userId }));
+      insertPromises.push(
+        supabase.from("certificates").insert(certRecords)
+      );
+    }
+
+    // Insert skill records
+    if (skills && skills.length > 0) {
+      const skillRecords = skills.map(skill => ({ ...skill, user_id: userId }));
+      insertPromises.push(
+        supabase.from("skills").insert(skillRecords)
+      );
+    }
+
+    // Insert project records
+    if (projects && projects.length > 0) {
+      const projectRecords = projects.map(project => ({ ...project, user_id: userId }));
+      insertPromises.push(
+        supabase.from("projects").insert(projectRecords)
+      );
+    }
+
+    // Wait for all inserts to complete
+    if (insertPromises.length > 0) {
+      const results = await Promise.allSettled(insertPromises);
+      
+      // Check for any failed inserts
+      const failures = results.filter(result => result.status === 'rejected');
+      if (failures.length > 0) {
+        console.warn("Some related data inserts failed:", failures);
+      }
+    }
+
+    return [userResult]; // Return in array format to match existing expectation
+  } catch (error) {
+    console.error("Error during complete user registration:", error);
+    return null;
+  }
+};
+
+// Insert a single user record (legacy function)
+export const userInsert = async (userData: object): Promise<UserRegisterDto | null | any> => {
   const { data, error } = await supabase
     .from("users")
     .insert(userData)

@@ -1,23 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DashboardHeader from '@/components/dashboard-header';
 import DashboardStats from '@/components/dashboard-stats';
 import QuickActions, { QuickAction } from '@/components/quick-actions';
 import JobListings, { Job } from '@/components/job-listings';
 import RecentActivity, { Activity } from '@/components/recent-activity';
 import Stars from '@/components/stars';
-import {userFetch, emailFetch} from '@/api/supabase/dbFetch';
+import UserInfo from '@/components/user-info';
+import {userFetch, emailFetch, dbFetch} from '@/api/supabase/dbFetch';
+import { UserRegisterDto, UpdateUserDto } from '@/model/data-structure';
+import { userRegisterComplete } from '@/api/supabase/dbInsert';
+import { credentialsUserIdUpdate, usersUpdate, dbUpdate } from '@/api/supabase/dbUpdate';
 
-interface DashboardStats {
+interface DashboardStatsData {
   totalApplications: number;
   activeResumes: number;
   lastUpdated: string;
   profileCompletion: number;
 }
 
-export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const userEmail = searchParams.get('email') || '';
+  
+  const [stats, setStats] = useState<DashboardStatsData>({
     totalApplications: 0,
     activeResumes: 0,
     lastUpdated: 'Never',
@@ -27,6 +35,10 @@ export default function Dashboard() {
   const [userName, setUserName] = useState('User');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [userExists, setUserExists] = useState<boolean | null>(null); // null = loading, true = exists, false = needs registration
+  const [isLoading, setIsLoading] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(null);
 
   const quickActions: QuickAction[] = [
     {
@@ -52,32 +64,300 @@ export default function Dashboard() {
     }
   ];
 
-  useEffect(async () => {
-    // TODO: Replace with actual API calls
-    const fetchDB = await emailFetch();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userEmail) {
+        try {
+          setIsLoading(true);
+          
+          const fetchUserId = await emailFetch(userEmail);
+          if (fetchUserId && fetchUserId.length > 0) {
+            const fetchUser = await userFetch(fetchUserId[0].user_id);
 
-    // Fetch user stats
-    // setStats(fetchedStats);
-    
-    // Fetch user name
-    // setUserName(fetchedUserName);
-    
-    // Fetch jobs data
-    // setJobs(fetchedJobs);
-    
-    // Fetch recent activities
-    // setActivities(fetchedActivities);
-  }, []);
+            if (fetchUser == null || fetchUser.length === 0) {
+              setUserExists(false); // User needs to register
+            } else {
+              setUserExists(true); // User exists, show dashboard
+              
+              // Set user name from the fetched user data
+              const userData = fetchUser[0];
+              setUserName(userData.first_name || userEmail.split('@')[0]);
+              
+              // Fetch all related data from separate tables
+              const userId = userData.id;
+              console.log('Fetching data for user ID:', userId);
+              
+              const [educationData, workData, certificatesData, skillsData, projectsData] = await Promise.all([
+                dbFetch(userId, 'education'),
+                dbFetch(userId, 'work_experience'),
+                dbFetch(userId, 'certificates'),
+                dbFetch(userId, 'skills'),
+                dbFetch(userId, 'projects')
+              ]);
+              
+              console.log('Fetched data:', {
+                education: educationData,
+                work: workData,
+                certificates: certificatesData,
+                skills: skillsData,
+                projects: projectsData
+              });
+              
+              // Ensure the user data has all required array properties for UserInfo component
+              const formattedUserData: UpdateUserDto = {
+                publicId: userData.id || '',
+                first_name: userData.first_name || '',
+                last_name: userData.last_name || '',
+                email: userData.email || userEmail,
+                mobile: userData.mobile || '',
+                location: userData.location || '',
+                province: userData.province || '',
+                job_field: userData.job_field || '',
+                portfolio_url: userData.portfolio_url || '',
+                linkedin_url: userData.linkedin_url || '',
+                user_summary: userData.user_summary || '',
+                education: educationData || [],
+                work_experience: workData || [],
+                certificates: certificatesData || [],
+                skills: skillsData || [],
+                projects: projectsData || []
+              };
+              
+              console.log('Formatted user data:', formattedUserData);
+              setCurrentUserData(formattedUserData);
+            }
+          } else {
+            setUserExists(false); // No credentials found, user needs to register
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          setUserExists(false); // On error, assume user needs registration
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [userEmail]);
 
   const handleSettingsClick = () => {
-    // TODO: Navigate to settings or open settings modal
-    console.log('Settings clicked');
+    setShowSettings(true);
   };
 
   const handleSignOutClick = () => {
-    // TODO: Implement sign out logic
-    console.log('Sign out clicked');
+    if (confirm('Are you sure you want to sign out?')) {
+      window.location.href = '/';
+    }
   };
+
+  const handleUserRegistration = async (userData: UserRegisterDto | UpdateUserDto) => {
+    try {
+      // Use the comprehensive registration function for new registrations
+      const response = await userRegisterComplete(userData as UserRegisterDto);
+      
+      if (response === null || !response || response.length === 0) {
+        throw new Error('User registration failed');
+      }
+
+      // Extract the user ID from the response
+      const userId = response[0].id;
+      
+      // Update the credentials table with the new user_id
+      const updatedCredentials = {
+        user_id: userId
+      };
+      const credentialsResponse = await credentialsUserIdUpdate(userEmail, updatedCredentials);
+
+      // After successful registration, update the state to show dashboard
+      setUserExists(true);
+      
+      // Set the user name from the registration data
+      if ('first_name' in userData && typeof userData.first_name === 'string' && userData.first_name) {
+        setUserName(userData.first_name);
+      } else {
+        setUserName(userEmail.split('@')[0]);
+      }
+      
+      alert('User registered successfully!');
+    } catch (error) {
+      console.error('Error registering user:', error);
+      alert('Failed to register user. Please try again.');
+    }
+  };
+
+  const handleUserUpdate = async (userData: UserRegisterDto | UpdateUserDto) => {
+    try {
+      console.log('Updating user data:', userData);
+      
+      const updateUserData = userData as UpdateUserDto;
+      
+      // Validate that we have a valid user ID
+      if (!updateUserData.publicId) {
+        throw new Error('User ID is required for updates');
+      }
+      
+      // Update the main user profile data
+      const userProfileUpdates = {
+        first_name: updateUserData.first_name,
+        last_name: updateUserData.last_name,
+        email: updateUserData.email,
+        mobile: updateUserData.mobile,
+        location: updateUserData.location,
+        province: updateUserData.province,
+        job_field: updateUserData.job_field,
+        portfolio_url: updateUserData.portfolio_url || null,
+        linkedin_url: updateUserData.linkedin_url || null,
+        user_summary: updateUserData.user_summary || null
+      };
+      
+      console.log('Updating user profile with ID:', updateUserData.publicId);
+      console.log('Profile updates:', userProfileUpdates);
+      
+      // Try to update user profile
+      try {
+        const userUpdateResult = await usersUpdate(updateUserData.publicId as any, userProfileUpdates);
+        console.log('User update result:', userUpdateResult);
+        
+        if (userUpdateResult === null) {
+          throw new Error('usersUpdate returned null - check database connection and user ID');
+        }
+      } catch (updateError) {
+        console.error('Error in usersUpdate:', updateError);
+        const errorMessage = updateError instanceof Error ? updateError.message : 'Unknown error';
+        throw new Error(`Failed to update user profile: ${errorMessage}`);
+      }
+      
+      // Update related data in separate tables
+      const updatePromises: Promise<any>[] = [];
+      const updateLabels: string[] = [];
+      
+      if (updateUserData.education && updateUserData.education.length >= 0) {
+        console.log('Updating education data:', updateUserData.education);
+        updatePromises.push(dbUpdate(updateUserData.publicId as any, 'education', updateUserData.education));
+        updateLabels.push('education');
+      }
+      
+      if (updateUserData.work_experience && updateUserData.work_experience.length >= 0) {
+        console.log('Updating work experience data:', updateUserData.work_experience);
+        updatePromises.push(dbUpdate(updateUserData.publicId as any, 'work_experience', updateUserData.work_experience));
+        updateLabels.push('work_experience');
+      }
+      
+      if (updateUserData.certificates && updateUserData.certificates.length >= 0) {
+        console.log('Updating certificates data:', updateUserData.certificates);
+        updatePromises.push(dbUpdate(updateUserData.publicId as any, 'certificates', updateUserData.certificates));
+        updateLabels.push('certificates');
+      }
+      
+      if (updateUserData.skills && updateUserData.skills.length >= 0) {
+        console.log('Updating skills data:', updateUserData.skills);
+        updatePromises.push(dbUpdate(updateUserData.publicId as any, 'skills', updateUserData.skills));
+        updateLabels.push('skills');
+      }
+      
+      if (updateUserData.projects && updateUserData.projects.length >= 0) {
+        console.log('Updating projects data:', updateUserData.projects);
+        updatePromises.push(dbUpdate(updateUserData.publicId as any, 'projects', updateUserData.projects));
+        updateLabels.push('projects');
+      }
+      
+      // Wait for all related data updates to complete
+      if (updatePromises.length > 0) {
+        const updateResults = await Promise.all(updatePromises);
+        console.log('All update results:', updateResults);
+        
+        // Check if any updates failed and provide specific error information
+        const failedUpdates: string[] = [];
+        updateResults.forEach((result, index) => {
+          if (result === null) {
+            failedUpdates.push(updateLabels[index]);
+          }
+        });
+        
+        if (failedUpdates.length > 0) {
+          throw new Error(`Failed to update: ${failedUpdates.join(', ')}. Check console for detailed error messages.`);
+        }
+        
+        console.log('All related data updates completed successfully');
+      }
+      
+      // Update local state only after successful database updates
+      setCurrentUserData(updateUserData);
+      if (updateUserData.first_name) {
+        setUserName(updateUserData.first_name);
+      }
+      
+      setShowSettings(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating user:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Please try again.';
+      alert(`Failed to update profile: ${errorMessage}`);
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex items-center justify-center">
+        <Stars />
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // User needs to register
+  if (userExists === false) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
+        <Stars />
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-white mb-4">Complete Your Profile</h1>
+            <p className="text-gray-300">Please provide your information to get started with Resume Builder</p>
+          </div>
+          <UserInfo 
+            mode="register" 
+            onSubmit={handleUserRegistration}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Show settings/profile update
+  if (showSettings && currentUserData) {
+    console.log('Rendering settings with data:', currentUserData);
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
+        <Stars />
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-center flex-1">
+              <h1 className="text-3xl font-bold text-white mb-4">Update Your Profile</h1>
+              <p className="text-gray-300">Update your personal information and resume details</p>
+            </div>
+            <button
+              onClick={() => setShowSettings(false)}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors ml-4"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+          {currentUserData && (
+            <UserInfo 
+              mode="update" 
+              userInfo={currentUserData}
+              onSubmit={handleUserUpdate}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
@@ -107,5 +387,18 @@ export default function Dashboard() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex items-center justify-center">
+        <Stars />
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }

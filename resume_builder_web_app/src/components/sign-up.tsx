@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from '../css/auth.module.css';
 
 interface SignUpFormData {
@@ -21,6 +22,7 @@ interface SignUpProps {
 }
 
 const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState<SignUpFormData>({
     email: '',
     password: '',
@@ -111,7 +113,6 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
       const result = await response.json();
 
       if (!result.success) {
-        // Handle specific errors
         if (result.message === 'Email already exists') {
           setErrors({ email: result.message });
         } else {
@@ -123,14 +124,15 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
       // Success
       alert('Account created successfully!');
       
+      // Redirect to dashboard with email parameter
+      router.push(`/dashboard?email=${encodeURIComponent(formData.email)}`);
+      
       // Reset form
       setFormData({
         email: '',
         password: '',
         confirmPassword: '',
       });
-
-      
       
     } catch (error) {
       setErrors({ general: 'Failed to create account. Please try again.' });

@@ -25,18 +25,18 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
         }
         return {
             pass: '',
-            firstName: '',
-            lastName: '',
+            first_name: '',
+            last_name: '',
             email: '',
             mobile: '',
             location: '',
             province: '',
-            jobField: '',
-            portfolioUrl: '',
-            linkedInUrl: '',
-            userSummary: '',
+            job_field: '',
+            portfolio_url: '',
+            linkedin_url: '',
+            user_summary: '',
             education: [],
-            workExperience: [],
+            work_experience: [],
             certificates: [],
             skills: [],
             projects: []
@@ -72,20 +72,18 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addEducation = () => {
         setFormData(prev => ({
             ...prev,
-            education: [...prev.education, { institutionName: '', date: '', location: '', details: '' }]
+            education: [...prev.education, { institution_name: '', date: '', location: '', details: '' }]
         }));
     };
 
     const updateEducation = (index: number, field: keyof EducationEntryDto, value: string) => {
         setFormData(prev => ({
             ...prev,
-            education: prev.education.map((edu, i) => 
+            education: prev.education.map((edu, i) =>
                 i === index ? { ...edu, [field]: value } : edu
             )
         }));
-    };
-
-    const removeEducation = (index: number) => {
+    };    const removeEducation = (index: number) => {
         setFormData(prev => ({
             ...prev,
             education: prev.education.filter((_, i) => i !== index)
@@ -96,14 +94,14 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addWorkExperience = () => {
         setFormData(prev => ({
             ...prev,
-            workExperience: [...prev.workExperience, { companyName: '', date: '', location: '', details: '' }]
+            work_experience: [...prev.work_experience, { company_name: '', date: '', location: '', details: '' }]
         }));
     };
 
     const updateWorkExperience = (index: number, field: keyof WorkEntryDto, value: string) => {
         setFormData(prev => ({
             ...prev,
-            workExperience: prev.workExperience.map((work, i) => 
+            work_experience: prev.work_experience.map((work, i) =>
                 i === index ? { ...work, [field]: value } : work
             )
         }));
@@ -112,15 +110,13 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const removeWorkExperience = (index: number) => {
         setFormData(prev => ({
             ...prev,
-            workExperience: prev.workExperience.filter((_, i) => i !== index)
+            work_experience: prev.work_experience.filter((_, i) => i !== index)
         }));
-    };
-
-    // Certificate handlers
+    };    // Certificate handlers
     const addCertificate = () => {
         setFormData(prev => ({
             ...prev,
-            certificates: [...prev.certificates, { certificateName: '', details: '' }]
+            certificates: [...prev.certificates, { certificate_name: '', details: '' }]
         }));
     };
 
@@ -144,7 +140,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addSkill = () => {
         setFormData(prev => ({
             ...prev,
-            skills: [...prev.skills, { skillName: '' }]
+            skills: [...prev.skills, { skill_name: '' }]
         }));
     };
 
@@ -152,7 +148,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
         setFormData(prev => ({
             ...prev,
             skills: prev.skills.map((skill, i) => 
-                i === index ? { ...skill, skillName: value } : skill
+                i === index ? { ...skill, skill_name: value } : skill
             )
         }));
     };
@@ -168,7 +164,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addProject = () => {
         setFormData(prev => ({
             ...prev,
-            projects: [...prev.projects, { projectName: '', description: '' }]
+            projects: [...prev.projects, { project_name: '', description: '' }]
         }));
     };
 
@@ -214,18 +210,18 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                     <div className={styles.formRow}>
                         <input 
                             type="text" 
-                            name="firstName" 
-                            placeholder={mode === 'update' && formData.firstName ? formData.firstName : "First Name"} 
-                            value={formData.firstName}
+                            name="first_name" 
+                            placeholder={mode === 'update' && formData.first_name ? formData.first_name : "First Name"} 
+                            value={formData.first_name}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                             required
                         />
                         <input 
                             type="text" 
-                            name="lastName" 
-                            placeholder={mode === 'update' && formData.lastName ? formData.lastName : "Last Name"} 
-                            value={formData.lastName}
+                            name="last_name" 
+                            placeholder={mode === 'update' && formData.last_name ? formData.last_name : "Last Name"} 
+                            value={formData.last_name}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                             required
@@ -274,9 +270,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                     <div className={styles.formRow}>
                         <input 
                             type="text" 
-                            name="jobField" 
-                            placeholder={mode === 'update' && formData.jobField ? formData.jobField : "Job Field/Industry"} 
-                            value={formData.jobField}
+                            name="job_field" 
+                            placeholder={mode === 'update' && formData.job_field ? formData.job_field : "Job Field/Industry"} 
+                            value={formData.job_field}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                             required
@@ -285,26 +281,26 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                     <div className={styles.formRow}>
                         <input 
                             type="url" 
-                            name="portfolioUrl" 
-                            placeholder={mode === 'update' && formData.portfolioUrl ? formData.portfolioUrl : "Portfolio URL (optional)"} 
-                            value={formData.portfolioUrl || ''}
+                            name="portfolio_url" 
+                            placeholder={mode === 'update' && formData.portfolio_url ? formData.portfolio_url : "Portfolio URL (optional)"} 
+                            value={formData.portfolio_url || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                         />
                         <input 
                             type="url" 
-                            name="linkedInUrl" 
-                            placeholder={mode === 'update' && formData.linkedInUrl ? formData.linkedInUrl : "LinkedIn URL (optional)"} 
-                            value={formData.linkedInUrl || ''}
+                            name="linkedin_url" 
+                            placeholder={mode === 'update' && formData.linkedin_url ? formData.linkedin_url : "LinkedIn URL (optional)"} 
+                            value={formData.linkedin_url || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                         />
                     </div>
                     <div className={styles.formRow}>
                         <textarea 
-                            name="userSummary" 
-                            placeholder={mode === 'update' && formData.userSummary ? formData.userSummary : "Professional Summary (optional)"} 
-                            value={formData.userSummary || ''}
+                            name="user_summary" 
+                            placeholder={mode === 'update' && formData.user_summary ? formData.user_summary : "Professional Summary (optional)"} 
+                            value={formData.user_summary || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoTextarea} 
                             rows={4}
@@ -324,8 +320,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Institution Name" 
-                                    value={edu.institutionName}
-                                    onChange={(e) => updateEducation(index, 'institutionName', e.target.value)}
+                                    value={edu.institution_name}
+                                    onChange={(e) => updateEducation(index, 'institution_name', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -365,14 +361,14 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                         <h3>Work Experience</h3>
                         <button type="button" onClick={addWorkExperience} className={styles.addButton}>+ Add Work Experience</button>
                     </div>
-                    {formData.workExperience.map((work, index) => (
+                    {formData.work_experience.map((work, index) => (
                         <div key={index} className={styles.dynamicEntry}>
                             <div className={styles.formRow}>
                                 <input 
                                     type="text" 
                                     placeholder="Company Name" 
-                                    value={work.companyName}
-                                    onChange={(e) => updateWorkExperience(index, 'companyName', e.target.value)}
+                                    value={work.company_name}
+                                    onChange={(e) => updateWorkExperience(index, 'company_name', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -418,8 +414,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Certificate Name" 
-                                    value={cert.certificateName}
-                                    onChange={(e) => updateCertificate(index, 'certificateName', e.target.value)}
+                                    value={cert.certificate_name}
+                                    onChange={(e) => updateCertificate(index, 'certificate_name', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -449,7 +445,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Skill Name" 
-                                    value={skill.skillName}
+                                    value={skill.skill_name}
                                     onChange={(e) => updateSkill(index, e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
@@ -472,8 +468,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Project Name" 
-                                    value={project.projectName}
-                                    onChange={(e) => updateProject(index, 'projectName', e.target.value)}
+                                    value={project.project_name}
+                                    onChange={(e) => updateProject(index, 'project_name', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />

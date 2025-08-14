@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from '../css/auth.module.css';
 
 interface SignInFormData {
@@ -20,6 +21,7 @@ interface SignInProps {
 }
 
 const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
@@ -97,19 +99,9 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
         setErrors({ general: result.message });
         return;
       }
-
-      // Success
-      alert('Signed in successfully!');
       
-      // TODO: Store user session/token and redirect to dashboard
-      console.log('User data:', result.user);
-      
-      // Reset form
-      setFormData({
-        email: '',
-        password: '',
-        rememberMe: false,
-      });
+      // Redirect to dashboard with email parameter
+      router.push(`/dashboard?email=${encodeURIComponent(formData.email)}`);
       
     } catch (error) {
       setErrors({ general: 'Failed to sign in. Please try again.' });

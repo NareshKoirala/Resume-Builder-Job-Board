@@ -36,8 +36,7 @@ const Stars: React.FC<StarsProps> = ({
   useEffect(() => {
     const generateStars = () => {
       const newStars: Star[] = [];
-      // Added more twinkling animations
-      const animationClasses = ['twinkle', 'pulse', 'fade-in', 'scale-in', 'pulse', 'twinkle'];
+      const animationClasses = ['twinkle', 'pulse', 'fade-in', 'scale-in'];
       const delayClasses = ['anim-delay-100', 'anim-delay-200', 'anim-delay-300'];
       
       for (let i = 0; i < count; i++) {
