@@ -130,7 +130,7 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
         confirmPassword: '',
       });
 
-
+      
       
     } catch (error) {
       setErrors({ general: 'Failed to create account. Please try again.' });
