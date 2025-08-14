@@ -97,8 +97,8 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('./api/auth', {
-        method: 'POST',
+      const response = await fetch('./api/signup', {
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
         },
@@ -129,6 +129,8 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
         password: '',
         confirmPassword: '',
       });
+
+
       
     } catch (error) {
       setErrors({ general: 'Failed to create account. Please try again.' });

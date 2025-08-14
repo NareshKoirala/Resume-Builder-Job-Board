@@ -80,18 +80,29 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
     setIsSubmitting(true);
     
     try {
-      // TODO: Implement actual API call for sign in
-      console.log('Sign in data:', { 
-        email: formData.email, 
-        password: formData.password,
-        rememberMe: formData.rememberMe
+      const response = await fetch('./api/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
       });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Success - you might want to redirect or show success message
+
+      const result = await response.json();
+
+      if (!result.success) {
+        setErrors({ general: result.message });
+        return;
+      }
+
+      // Success
       alert('Signed in successfully!');
+      
+      // TODO: Store user session/token and redirect to dashboard
+      console.log('User data:', result.user);
       
       // Reset form
       setFormData({
@@ -101,7 +112,7 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
       });
       
     } catch (error) {
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+      setErrors({ general: 'Failed to sign in. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
