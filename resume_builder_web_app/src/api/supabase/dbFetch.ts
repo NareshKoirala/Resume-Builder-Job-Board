@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 import supabase from "./connection";
 
-const emailFetch = async (email: string) => {
+export const emailFetch = async (email: string) => {
   const { data, error } = await supabase
     .from("credentials")
     .select("*")
@@ -15,7 +15,7 @@ const emailFetch = async (email: string) => {
   return data;
 };
 
-const userFetch = async (userId: string) => {
+export const userFetch = async (userId: string) => {
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -29,7 +29,7 @@ const userFetch = async (userId: string) => {
   return data;
 };
 
-const dbFetch = async (userId: UUID, table: string) => {
+export const dbFetch = async (userId: UUID, table: string) => {
   const { data, error } = await supabase
     .from(table)
     .select("*")

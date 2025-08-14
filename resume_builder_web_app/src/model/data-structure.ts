@@ -104,3 +104,9 @@ export interface ReturnJob {
   jobKeywords?: string;
   jobPercentage?: string;
 }
+
+export interface credentials {
+  email: string;
+  password_hash: string;
+  user_id: string;
+}

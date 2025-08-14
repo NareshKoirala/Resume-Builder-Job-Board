@@ -97,16 +97,30 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
     setIsSubmitting(true);
     
     try {
-      // TODO: Implement actual API call for sign up
-      console.log('Sign up data:', { 
-        email: formData.email, 
-        password: formData.password 
+      const response = await fetch('./api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
       });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Success - you might want to redirect or show success message
+
+      const result = await response.json();
+
+      if (!result.success) {
+        // Handle specific errors
+        if (result.message === 'Email already exists') {
+          setErrors({ email: result.message });
+        } else {
+          setErrors({ general: result.message });
+        }
+        return;
+      }
+
+      // Success
       alert('Account created successfully!');
       
       // Reset form
@@ -122,6 +136,7 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
       setIsSubmitting(false);
     }
   };
+
 
   const togglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
     if (field === 'password') {

@@ -15,6 +15,20 @@ export const usersUpdate = async (userId: UUID, updates: object) => {
   return data;
 };
 
+export const credentialsUserIdUpdate = async (email: string, updates: object) => {
+  const { data, error } = await supabase
+    .from("credentials")
+    .update(updates)
+    .ilike("email", `%${email}%`);
+
+  if (error) {
+    console.error("Error updating credentials:", error);
+    return null;
+  }
+
+  return data;
+};
+
 export const dbUpdate = async (userId: UUID, table: string, updates: object[]) => {
   // Handle empty arrays
   if (!updates || updates.length === 0) {

@@ -1,6 +1,11 @@
 import { UUID } from "crypto";
 import supabase from "./connection";
 
+interface UserCredentials {
+  email: string;
+  password_hash: string;
+}
+
 // Insert a single user record
 export const userInsert = async (userData: object) => {
   const { data, error } = await supabase
@@ -10,6 +15,27 @@ export const userInsert = async (userData: object) => {
 
   if (error) {
     console.error("Error inserting user data:", error);
+    return null;
+  }
+
+  return data;
+};
+
+// Insert user credentials with hashed password
+  export const dbCredentialsInsert = async (userId: UUID, credentials: UserCredentials) => {
+  const user_credentials = {
+    email: credentials.email,
+    password_hash: credentials.password_hash,
+    user_id: userId
+  };
+
+  const { data, error } = await supabase
+    .from("credentials")
+    .insert(user_credentials)
+    .select(); // Return the inserted data
+
+  if (error) {
+    console.error("Error inserting user credentials:", error);
     return null;
   }
 
