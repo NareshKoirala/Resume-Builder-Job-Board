@@ -13,6 +13,7 @@ import {userFetch, emailFetch, dbFetch} from '@/api/supabase/dbFetch';
 import { UserRegisterDto, UpdateUserDto } from '@/model/data-structure';
 import { userRegisterComplete } from '@/api/supabase/dbInsert';
 import { credentialsUserIdUpdate, usersUpdate, dbUpdate } from '@/api/supabase/dbUpdate';
+import { registerUserComplete } from '@/api/custom/externalApi';
 
 interface DashboardStatsData {
   totalApplications: number;
@@ -39,30 +40,6 @@ function DashboardContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(null);
-
-  const quickActions: QuickAction[] = [
-    {
-      title: 'Browse Jobs',
-      description: 'Find jobs and build tailored resumes',
-      icon: '🔍',
-      href: '/jobs',
-      color: 'purple'
-    },
-    {
-      title: 'Create Resume & Cover Letter',
-      description: 'Build resume and cover letter for specific job',
-      icon: '📄',
-      href: '/create-resume',
-      color: 'blue'
-    },
-    {
-      title: 'Edit Profile',
-      description: 'Update your personal information',
-      icon: '👤',
-      href: '/profile',
-      color: 'green'
-    }
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -153,21 +130,42 @@ function DashboardContent() {
     }
   };
 
+  const quickActions: QuickAction[] = [
+    {
+      title: 'Browse Jobs',
+      description: 'Find jobs and build tailored resumes',
+      icon: '🔍',
+      href: '/jobs',
+      color: 'purple'
+    },
+    {
+      title: 'Create Resume & Cover Letter',
+      description: 'Build resume and cover letter for specific job',
+      icon: '📄',
+      href: '/create-resume',
+      color: 'blue'
+    },
+    {
+      title: 'Edit Profile',
+      description: 'Update your personal information',
+      icon: '👤',
+      onClick: handleSettingsClick,
+      color: 'green'
+    }
+  ];
+
   const handleUserRegistration = async (userData: UserRegisterDto | UpdateUserDto) => {
     try {
-      // Use the comprehensive registration function for new registrations
-      const response = await userRegisterComplete(userData as UserRegisterDto);
+      // Use the integrated registration function that handles both external API and local database
+      const registrationResult = await registerUserComplete(userData as UserRegisterDto);
       
-      if (response === null || !response || response.length === 0) {
-        throw new Error('User registration failed');
+      if (!registrationResult.success || !registrationResult.publicId || !registrationResult.localUserId) {
+        throw new Error(registrationResult.error || 'Registration failed');
       }
 
-      // Extract the user ID from the response
-      const userId = response[0].id;
-      
-      // Update the credentials table with the new user_id
+      // Update the credentials table with the new local user_id
       const updatedCredentials = {
-        user_id: userId
+        user_id: registrationResult.localUserId
       };
       const credentialsResponse = await credentialsUserIdUpdate(userEmail, updatedCredentials);
 
@@ -181,10 +179,11 @@ function DashboardContent() {
         setUserName(userEmail.split('@')[0]);
       }
       
-      alert('User registered successfully!');
+      alert(`User registered successfully!\nExternal API Public ID: ${registrationResult.publicId}\nLocal Database ID: ${registrationResult.localUserId}`);
     } catch (error) {
       console.error('Error registering user:', error);
-      alert('Failed to register user. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Failed to register user: ${errorMessage}`);
     }
   };
 
