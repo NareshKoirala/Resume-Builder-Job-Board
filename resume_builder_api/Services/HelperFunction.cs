@@ -29,10 +29,6 @@ namespace Desktop.Resume_Builder_API.resume_builder_api.Services
         {
             return new UserModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Mobile = user.Mobile,
                 Location = user.Location,
                 Province = user.Province,
                 JobField = user.JobField,

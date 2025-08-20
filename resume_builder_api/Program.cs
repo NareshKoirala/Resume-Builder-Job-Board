@@ -16,16 +16,16 @@ builder.Configuration.AddEnvironmentVariables();  // This is fine
 // Register services
 builder.Services.AddSingleton<OpenAIService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["SQL_Connection_String"]));  // Use env var
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ... rest of your code unchanged ...
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Clear();
-app.Urls.Add($"http://*:{port}");
+//var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+//app.Urls.Clear();
+//app.Urls.Add($"http://*:{port}");
 
 if (app.Environment.IsDevelopment())
 {
@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Optional: skip HTTPS redirection in production on Cloud Run
-// app.UseHttpsRedirection();
+ app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
 {
