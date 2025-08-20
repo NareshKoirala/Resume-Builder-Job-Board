@@ -35,12 +35,15 @@ public class UserDto
     [StringLength(100, MinimumLength = 2, ErrorMessage = "Job field must be between 2 and 100 characters")]
     public string JobField { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "Portfolio is required if not add N/A")]
     [StringLength(500, ErrorMessage = "Portfolio URL cannot exceed 500 characters")]
     public string PortfolioUrl { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "LinkedIn URL is required if not add N/A")]
     [StringLength(500, ErrorMessage = "LinkedIn URL cannot exceed 500 characters")]
     public string LinkedInUrl { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "User summary is required")]
     [StringLength(1500, ErrorMessage = "User summary cannot exceed 1500 characters")]
     public string UserSummary { get; set; } = string.Empty;
 }

@@ -156,7 +156,7 @@ namespace resume_builder_api.Controllers
         }
 
         [HttpDelete("Delete/Education/{publicKey}")]
-        public IActionResult DeleteEducation(string publicKey, int educationId)
+        public IActionResult DeleteEducation(string publicKey, EducationEntryDto education)
         {
             // Find the user by public key
             var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
@@ -166,7 +166,14 @@ namespace resume_builder_api.Controllers
                 return NotFound(new { Message = "User not found" });
             }
             // Find the education entry by ID
-            var educationEntry = appDb.EducationEntries.FirstOrDefault(e => e.Id == educationId && e.UserModelId == user.Id);
+            var educationEntry = appDb.EducationEntries.FirstOrDefault(
+                e => 
+                    e.InstitutionName == education.InstitutionName &&
+                    e.Date == education.Date &&
+                    e.Location == education.Location &&
+                    e.Details == education.Details &&
+                    e.UserModelId == user.Id
+                );
             // If education entry is not found, return a 404 Not Found response
             if (educationEntry == null)
             {
@@ -177,6 +184,123 @@ namespace resume_builder_api.Controllers
             appDb.SaveChanges();
             // Return a success response
             return Ok(new { Message = "Education entry deleted successfully" });
+        }
+
+        [HttpDelete("Delete/Work/{publicKey}")]
+        public IActionResult DeleteWork(string publicKey, WorkEntryDto work)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Find the work entry by ID
+            var workEntry = appDb.WorkEntries.FirstOrDefault(
+                w => 
+                    w.Date == work.Date &&
+                    w.CompanyName == work.CompanyName &&
+                    w.Location == work.Location &&
+                    w.Details == work.Details &&
+                    w.UserModelId == user.Id
+                );
+            // If work entry is not found, return a 404 Not Found response
+            if (workEntry == null)
+            {
+                return NotFound(new { Message = "Work entry not found" });
+            }
+            // Remove the work entry from the database
+            appDb.WorkEntries.Remove(workEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Work entry deleted successfully" });
+        }
+
+        [HttpDelete("Delete/Certificate/{publicKey}")]
+        public IActionResult DeleteCertificate(string publicKey, CertificateEntryDto certificate)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Find the certificate entry by ID
+            var certificateEntry = appDb.CertificateEntries.FirstOrDefault(
+                c => 
+                    c.CertificateName == certificate.CertificateName &&
+                    c.Details == certificate.Details &&
+                    c.UserModelId == user.Id
+                );
+            // If certificate entry is not found, return a 404 Not Found response
+            if (certificateEntry == null)
+            {
+                return NotFound(new { Message = "Certificate entry not found" });
+            }
+            // Remove the certificate entry from the database
+            appDb.CertificateEntries.Remove(certificateEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Certificate entry deleted successfully" });
+        }
+
+        [HttpDelete("Delete/Skill/{publicKey}")]
+        public IActionResult DeleteSkill(string publicKey, SkillsEntryDto skill)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Find the skill entry by ID
+            var skillEntry = appDb.SkillEntries.FirstOrDefault(
+                s => 
+                    s.SkillName == skill.SkillName &&
+                    s.UserModelId == user.Id
+                );
+            // If skill entry is not found, return a 404 Not Found response
+            if (skillEntry == null)
+            {
+                return NotFound(new { Message = "Skill entry not found" });
+            }
+            // Remove the skill entry from the database
+            appDb.SkillEntries.Remove(skillEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Skill entry deleted successfully" });
+        }
+
+        [HttpDelete("Delete/Project/{publicKey}")]
+        public IActionResult DeleteProject(string publicKey, ProjectEntryDto project)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Find the project entry by ID
+            var projectEntry = appDb.ProjectEntries.FirstOrDefault(
+                p => 
+                    p.ProjectName == project.ProjectName &&
+                    p.Description == project.Description &&
+                    p.UserModelId == user.Id
+                );
+            // If project entry is not found, return a 404 Not Found response
+            if (projectEntry == null)
+            {
+                return NotFound(new { Message = "Project entry not found" });
+            }
+            // Remove the project entry from the database
+            appDb.ProjectEntries.Remove(projectEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Project entry deleted successfully" });
         }
 
         [HttpPut("Update/Education/{publicKey}")]
@@ -301,7 +425,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Project updated successfully", Response = projectEntry });
         }
 
-        [HttpPut("Update/UserInfo/{publicKey}")]
+        [HttpPut("Update/{publicKey}")]
         public IActionResult UpdateUserInfo(string publicKey, [FromBody] UserDto userInfoDto)
         {
             // Find the user by public key
@@ -329,7 +453,6 @@ namespace resume_builder_api.Controllers
             // Return a success response
             return Ok(new { Message = "User information updated successfully", Response = user });
         }
-
 
     }
 }
