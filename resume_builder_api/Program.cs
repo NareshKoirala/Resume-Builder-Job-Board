@@ -1,4 +1,4 @@
-using Desktop.Resume_Builder_API.resume_builder_api.Services;
+using resume_builder_api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 

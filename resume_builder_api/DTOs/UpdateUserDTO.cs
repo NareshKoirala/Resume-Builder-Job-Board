@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using ResumeBuilderApi.DTOs;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.DTOs
+namespace resume_builder_api.DTOs
 {
     public class UpdateUserDTO
     {

@@ -1,9 +1,9 @@
 ﻿using OpenAI.Chat;
-using Desktop.Resume_Builder_API.resume_builder_api.Models;
+using resume_builder_api.Models;
 using System.Data;
 using System.Text.RegularExpressions;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.Services;
+namespace resume_builder_api.Services;
 
 public class OpenAIService
 {

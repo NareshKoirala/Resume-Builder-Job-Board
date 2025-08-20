@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Desktop.Resume_Builder_API.resume_builder_api.DTOs;
-using Desktop.Resume_Builder_API.resume_builder_api.Services;
-using Desktop.Resume_Builder_API.resume_builder_api.Models;
+using resume_builder_api.Models;
+using resume_builder_api.DTOs;
+using resume_builder_api.Services;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.Controllers;
+namespace resume_builder_api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

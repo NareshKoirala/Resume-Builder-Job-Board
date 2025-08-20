@@ -1,11 +1,28 @@
-using Desktop.Resume_Builder_API.resume_builder_api.Models;
-using ResumeBuilderApi.DTOs;
 using System.ComponentModel.DataAnnotations;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.DTOs;
+namespace resume_builder_api.DTOs;
 
-public class UserRegisterDto : IValidatableObject
+public class UserRegisterDto
 {
+    [Required(ErrorMessage = "First name is required")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "First name can only contain letters and spaces")]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Last name is required")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Last name can only contain letters and spaces")]
+    public string LastName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+    [StringLength(254, ErrorMessage = "Email cannot exceed 254 characters")]
+    public string Email { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Mobile number is required")]
+    [Phone(ErrorMessage = "Please enter a valid phone number")]
+    public string Mobile { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "Location is required")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "Location must be between 2 and 100 characters")]
     public string Location { get; set; } = string.Empty;
@@ -26,53 +43,4 @@ public class UserRegisterDto : IValidatableObject
 
     [StringLength(1500, ErrorMessage = "User summary cannot exceed 1500 characters")]
     public string UserSummary { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "At least one education entry is required")]
-    [MinLength(1, ErrorMessage = "At least one education entry is required")]
-    public List<EducationEntryDto> Education { get; set; } = new();
-
-    public List<WorkEntryDto> WorkExperience { get; set; } = new();
-
-    public List<CertificateEntryDto> Certificates { get; set; } = new();
-
-    [Required(ErrorMessage = "At least one skill is required")]
-    [MinLength(1, ErrorMessage = "At least one skill is required")]
-    public List<SkillsEntryDto> Skills { get; set; } = new();
-
-    public List<ProjectEntryDto> Projects { get; set; } = new();
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        var results = new List<ValidationResult>();
-
-        // Validate education entries
-        if (Education != null)
-        {
-            for (int i = 0; i < Education.Count; i++)
-            {
-                if (Education[i] == null)
-                {
-                    results.Add(new ValidationResult(
-                        $"Education entry at index {i} cannot be null",
-                        new[] { $"Education[{i}]" }));
-                }
-            }
-        }
-
-        // Validate skills entries
-        if (Skills != null)
-        {
-            for (int i = 0; i < Skills.Count; i++)
-            {
-                if (Skills[i] == null)
-                {
-                    results.Add(new ValidationResult(
-                        $"Skill entry at index {i} cannot be null",
-                        new[] { $"Skills[{i}]" }));
-                }
-            }
-        }
-
-        return results;
-    }
 }

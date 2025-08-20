@@ -1,6 +1,6 @@
-using Desktop.Resume_Builder_API.resume_builder_api.Models;
+using resume_builder_api.Models;
 
-namespace Desktop.Resume_Builder_API.resume_builder_api.Services
+namespace resume_builder_api.Services
 {
     public static class Prompt
     {

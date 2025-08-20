@@ -1,16 +1,15 @@
-﻿using Desktop.Resume_Builder_API.resume_builder_api.Models;
-using Desktop.Resume_Builder_API.resume_builder_api.Services;
-using Microsoft.AspNetCore.Mvc;
-using Desktop.Resume_Builder_API.resume_builder_api.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using resume_builder_api.DTOs;
+using resume_builder_api.Models;
+using resume_builder_api.Services;
 
 namespace resume_builder_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController (IConfiguration configuration, AppDbContext appDb) : ControllerBase
+    public class UsersController(IConfiguration configuration, AppDbContext appDb) : ControllerBase
     {
-        [HttpPost("auth")]
+        [HttpPost("Auth")]
         public IActionResult Authenticate(AuthDto authDto)
         {
             // Replace with your actual API key validation logic
@@ -92,5 +91,185 @@ namespace resume_builder_api.Controllers
                 return Unauthorized(new { Message = "Invalid API key" });
             }
         }
+
+        [HttpGet("{publicKey}")]
+        public IActionResult GetUserAll(string publicKey)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            user.Education = appDb.EducationEntries
+                .Where(e => e.UserModelId == user.Id)
+                .ToList();
+
+            user.WorkExperience = appDb.WorkEntries
+                .Where(w => w.UserModelId == user.Id)
+                .ToList();
+
+            user.Certificates = appDb.CertificateEntries
+                .Where(c => c.UserModelId == user.Id)
+                .ToList();
+
+            user.Skills = appDb.SkillEntries
+                .Where(s => s.UserModelId == user.Id)
+                .ToList();
+
+            user.Projects = appDb.ProjectEntries
+                .Where(p => p.UserModelId == user.Id)
+                .ToList();
+
+            // Return the user details
+            return Ok(user);
+        }
+
+        [HttpDelete("Delete/{publicKey}")]
+        public IActionResult DeleteUser(string publicKey)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            // Remove the user from the database
+            appDb.Users.Remove(user);
+            appDb.SaveChanges();
+
+            // Return a success response
+            return Ok(new { Message = "User deleted successfully" });
+
+        }
+
+        [HttpPut("Update/Education/{publicKey}")]
+        public IActionResult UpdateEducation(string publicKey, [FromBody] EducationEntryDto entryDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            // Add the new education entry to the user's education list
+            var educationEntry = new EducationEntry()
+            {
+                UserModelId = user.Id,
+                InstitutionName = entryDto.InstitutionName,
+                Date = entryDto.Date,
+                Location = entryDto.Location,
+                Details = entryDto.Details
+            };
+
+            appDb.EducationEntries.Add(educationEntry);
+            appDb.SaveChanges();
+
+            // Return a success response
+            return Ok(new { Message = "Education updated successfully", Response = educationEntry });
+        }
+
+        [HttpPut("Update/Work/{publicKey}")]
+        public IActionResult UpdateWork(string publicKey, [FromBody] WorkEntryDto entryDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Add the new work entry to the user's work experience list
+            var workEntry = new WorkEntry()
+            {
+                UserModelId = user.Id,
+                CompanyName = entryDto.CompanyName,
+                Date = entryDto.Date,
+                Location = entryDto.Location,
+                Details = entryDto.Details
+            };
+            appDb.WorkEntries.Add(workEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Work updated successfully", Response = workEntry });
+        }
+
+        [HttpPut("Update/Certificate/{publicKey}")]
+        public IActionResult UpdateCertificate(string publicKey, [FromBody] CertificateEntryDto entryDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Add the new certificate entry to the user's certificates list
+            var certificateEntry = new CertificateEntry()
+            {
+                UserModelId = user.Id,
+                CertificateName = entryDto.CertificateName,
+                Details = entryDto.Details
+            };
+            appDb.CertificateEntries.Add(certificateEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Certificate updated successfully", Response = certificateEntry });
+        }
+
+        [HttpPut("Update/Skill/{publicKey}")]
+        public IActionResult UpdateSkill(string publicKey, [FromBody] SkillsEntryDto entryDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Add the new skill entry to the user's skills list
+            var skillEntry = new SkillEntry()
+            {
+                UserModelId = user.Id,
+                SkillName = entryDto.SkillName
+            };
+            appDb.SkillEntries.Add(skillEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Skill updated successfully", Response = skillEntry });
+        }
+
+        [HttpPut("Update/Project/{publicKey}")]
+        public IActionResult UpdateProject(string publicKey, [FromBody] ProjectEntryDto entryDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Add the new project entry to the user's projects list
+            var projectEntry = new ProjectEntry()
+            {
+                UserModelId = user.Id,
+                ProjectName = entryDto.ProjectName,
+                Description = entryDto.Description
+            };
+            appDb.ProjectEntries.Add(projectEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Project updated successfully", Response = projectEntry });
+        }
+
     }
 }

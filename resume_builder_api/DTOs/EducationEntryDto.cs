@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ResumeBuilderApi.DTOs
+namespace resume_builder_api.DTOs
 {
     public class EducationEntryDto
     {

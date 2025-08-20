@@ -1,4 +1,4 @@
-namespace Desktop.Resume_Builder_API.resume_builder_api.Models;
+namespace resume_builder_api.Models;
 
 public class CertificateEntry
 {
