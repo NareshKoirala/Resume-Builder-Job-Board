@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace resume_builder_api.DTOs;
 
-public class UserRegisterDto
+public class UserDto
 {
     [Required(ErrorMessage = "First name is required")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]

@@ -6,7 +6,7 @@ namespace resume_builder_api.Services
 {
     public static class HelperFunction
     {
-        public static async Task<UserModel> FetchUserModel(JobDTO jobDto, AppDbContext _dbContext)
+        public static async Task<UserModel> FetchUserModel(JobDto jobDto, AppDbContext _dbContext)
         {
             // Implementation for fetching UserModel from JobDTO
             // Get user from database using publicID

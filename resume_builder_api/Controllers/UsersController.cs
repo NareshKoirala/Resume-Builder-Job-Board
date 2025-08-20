@@ -81,10 +81,10 @@ namespace resume_builder_api.Controllers
 
                 // Return a success response
                 var userTemp = appDb.Users
-                    .Select(u => u.Email == authDto.Email)
+                    .Where(u => u.Email == authDto.Email)
                     .FirstOrDefault();
 
-                return Ok(new { Message = "Authentication successful", Response = userTemp });
+                return Ok(new { Message = "Authentication successful", userTemp });
             }
             else
             {
@@ -141,12 +141,42 @@ namespace resume_builder_api.Controllers
             }
 
             // Remove the user from the database
+            // Also remove related entries in other tables
+            appDb.EducationEntries.RemoveRange(appDb.EducationEntries.Where(e => e.UserModelId == user.Id));
+            appDb.WorkEntries.RemoveRange(appDb.WorkEntries.Where(w => w.UserModelId == user.Id));
+            appDb.CertificateEntries.RemoveRange(appDb.CertificateEntries.Where(c => c.UserModelId == user.Id));
+            appDb.SkillEntries.RemoveRange(appDb.SkillEntries.Where(s => s.UserModelId == user.Id));
+            appDb.ProjectEntries.RemoveRange(appDb.ProjectEntries.Where(p => p.UserModelId == user.Id));
             appDb.Users.Remove(user);
             appDb.SaveChanges();
 
             // Return a success response
             return Ok(new { Message = "User deleted successfully" });
 
+        }
+
+        [HttpDelete("Delete/Education/{publicKey}")]
+        public IActionResult DeleteEducation(string publicKey, int educationId)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            // Find the education entry by ID
+            var educationEntry = appDb.EducationEntries.FirstOrDefault(e => e.Id == educationId && e.UserModelId == user.Id);
+            // If education entry is not found, return a 404 Not Found response
+            if (educationEntry == null)
+            {
+                return NotFound(new { Message = "Education entry not found" });
+            }
+            // Remove the education entry from the database
+            appDb.EducationEntries.Remove(educationEntry);
+            appDb.SaveChanges();
+            // Return a success response
+            return Ok(new { Message = "Education entry deleted successfully" });
         }
 
         [HttpPut("Update/Education/{publicKey}")]
@@ -270,6 +300,36 @@ namespace resume_builder_api.Controllers
             // Return a success response
             return Ok(new { Message = "Project updated successfully", Response = projectEntry });
         }
+
+        [HttpPut("Update/UserInfo/{publicKey}")]
+        public IActionResult UpdateUserInfo(string publicKey, [FromBody] UserDto userInfoDto)
+        {
+            // Find the user by public key
+            var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
+
+            // If user is not found, return a 404 Not Found response
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            // Update the user's personal information
+            user.FirstName = userInfoDto.FirstName ?? user.FirstName;
+            user.LastName = userInfoDto.LastName ?? user.LastName;
+            user.Email = userInfoDto.Email ?? user.Email;
+            user.Mobile = userInfoDto.Mobile ?? user.Mobile;
+            user.Location = userInfoDto.Location ?? user.Location;
+            user.Province = userInfoDto.Province ?? user.Province;
+            user.JobField = userInfoDto.JobField ?? user.JobField;
+            user.PortfolioUrl = userInfoDto.PortfolioUrl ?? user.PortfolioUrl;
+            user.LinkedInUrl = userInfoDto.LinkedInUrl ?? user.LinkedInUrl;
+            user.UserSummary = userInfoDto.UserSummary ?? user.UserSummary;
+            appDb.SaveChanges();
+
+            // Return a success response
+            return Ok(new { Message = "User information updated successfully", Response = user });
+        }
+
 
     }
 }

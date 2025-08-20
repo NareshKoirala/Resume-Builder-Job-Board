@@ -3,7 +3,7 @@ using resume_builder_api.Services;
 
 namespace resume_builder_api.DTOs
 {
-    public class JobDTO : IValidatableObject
+    public class JobDto : IValidatableObject
     {
         [Required(ErrorMessage = "Public ID is required")]
         public string PublicId { get; set; } = string.Empty;

@@ -21,7 +21,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("fetch-rcl-json")]
-    public async Task<IActionResult> FetchResumeCoverLetterJsonAsync(JobDTO jobDto)
+    public async Task<IActionResult> FetchResumeCoverLetterJsonAsync(JobDto jobDto)
     {
         if (!ModelState.IsValid)
         {
@@ -52,7 +52,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("get-matchKeys")]
-    public async Task<IActionResult> GetMatchKeysAsync(JobDTO jobDto)
+    public async Task<IActionResult> GetMatchKeysAsync(JobDto jobDto)
     {
         if (!ModelState.IsValid)
         {
@@ -82,7 +82,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("get-all")]
-    public async Task<IActionResult> GetJobAsync(JobDTO jobDto)
+    public async Task<IActionResult> GetJobAsync(JobDto jobDto)
     {
         if (!ModelState.IsValid)
         {
