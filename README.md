@@ -1,7 +1,9 @@
-# 📄 Resume Builder & Job Board (Full-Stack)
+# 📄 Resume Builder & Job Board
 
-A **full-stack portfolio project** that combines a **Job Board** with a **Resume Builder powered by AI**.  
-Users can search for jobs, create tailored resumes & cover letters, and manage their applications — across **Web** and **Mobile/Desktop apps** — all backed by a robust **ASP.NET Core Web API**.
+A **production-style portfolio project** that combines a **Job Board** with a **Resume Builder powered by AI**.  
+It provides APIs for managing users, tailoring resumes to job descriptions, generating cover letters, and evaluating job fit.  
+
+Built with **ASP.NET Core Web API**, **PostgreSQL + EF Core**, **MAUI** for mobile, and **Next.Js** for web.
 
 ---
 
@@ -9,81 +11,88 @@ Users can search for jobs, create tailored resumes & cover letters, and manage t
 
 ![Architecture Diagram](./assets/resume_builder_schema.png)
 
-*Architecture: PostgreSQL + EF Core → ASP.NET Core Web API → Next.js Web App + MAUI App (Mobile & Desktop). Integrated with OpenAI API for resume tailoring.*
+*Diagram shows API controllers, endpoints, integrations (OpenAI API, Swagger, PostgreSQL), and clients (Web App + MAUI App).*
 
 ---
 
 ## 🚀 Features
 
-### 🔧 Backend (ASP.NET Core Web API)
-- RESTful endpoints for **Users** & **Jobs**
-- AI-powered **Resume & Cover Letter generation**
-- **Job fit scoring** (keywords + % match)
-- **Swagger docs** for testing
+- 🔑 **Authentication**
+  - Secure login system (JWT planned, currently simple auth).
+  - Role separation for users/admins.
 
-### 🌐 Frontend (Next.js Web App)
-- Responsive **dashboard** for:
-  - Job browsing & filtering
-  - Resume tailoring UI
-  - Job application tracking
-- SSR (Server-Side Rendering) for SEO & performance
-- API integration with backend
+- 👤 **User Management**
+  - Create, update, delete, and retrieve user profiles.
+  - Rich schema: skills, education, experience, projects, certificates, summary.
 
-### 📱 Mobile/Desktop (MAUI App)
-- Cross-platform app (iOS, Android, Windows, macOS)
-- **On-the-go job browsing & resume editing**
-- Syncs with the same backend as the web app
-- Native look & feel across devices
+- 📂 **Resume & Cover Letter Builder**
+  - Tailors documents to job descriptions.
+  - Generates structured **JSON** for resumes and cover letters.
+  - Planned: export to **PDF/DOCX/HTML**.
+
+- 🎯 **Job Matching**
+  - Analyzes job descriptions and calculates **fit percentage**.
+  - Extracts keywords & suggests improvements.
+
+- 📱 **Clients**
+  - **Web App** (for browsing, testing, tailoring).
+  - **MAUI Mobile App** (for resume editing and applying on the go).
 
 ---
 
-## 🌐 Live Services
+## 🌐 Live API
 
-- **Backend API**: [https://resume-builder-api-8m2c.onrender.com](https://resume-builder-api-8m2c.onrender.com)  
-- **API Docs (Swagger)**: [Swagger UI](https://resume-builder-api-8m2c.onrender.com/swagger)  
-- **Frontend Demo**: _Coming soon_ (Next.js deployment)  
-- **MAUI App**: _Available as local build_  
+The project is hosted and publicly accessible:  
+
+👉 **Base URL**: `https://resume-builder-api-8m2c.onrender.com`  
+
+Example endpoints:  
+- `GET /api/User/getUser/{publicId}` → Retrieve user profile  
+- `POST /api/User/register` → Register new user  
+- `GET /api/Job/fetch-rcl-json` → Generate Resume + Cover Letter JSON  
+- `GET /api/Job/get-matchKeys` → Job fit analysis  
+
+Full docs available via Swagger at:  
+👉 [API Docs](https://resume-builder-api-8m2c.onrender.com/swagger)
 
 ---
 
 ## 📂 API Overview
 
 ### **UserController**
-- `POST /api/User/register` → Register new user  
-- `PUT /api/User/update` → Update profile  
-- `DELETE /api/User/delete/{publicId}` → Soft delete user  
-- `GET /api/User/getUser/{publicId}` → Fetch user profile  
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/User/register` | POST | Register new user |
+| `/api/User/update` | PUT | Update user profile |
+| `/api/User/delete/{publicId}` | DELETE | Soft-delete user |
+| `/api/User/getUser/{publicId}` | GET | Get user profile |
 
 ### **JobController**
-- `GET /api/Job/fetch-rcl-json` → Resume + Cover Letter JSON  
-- `GET /api/Job/get-matchKeys` → Fit % + keywords  
-- `GET /api/Job/get-all` → Full job analysis  
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/Job/fetch-rcl-json` | GET | Generate resume + cover letter JSON |
+| `/api/Job/get-matchKeys` | GET | Get job fit % + keywords |
+| `/api/Job/get-all` | GET | Full job analysis (resume + cover + fit data) |
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-- ASP.NET Core Web API  
-- EF Core + PostgreSQL  
-- Swagger / OpenAPI  
-- OpenAI API  
-
-### Frontend (Web)
-- Next.js (React, SSR, TailwindCSS)  
-- Axios for API calls  
-- Deployed via Vercel/Render  
-
-### Mobile/Desktop
-- .NET MAUI  
-- Shared codebase for Android, iOS, Windows, macOS  
-- API integration with backend  
+- **Backend**: ASP.NET Core Web API  
+- **Database**: PostgreSQL + EF Core  
+- **AI Integration**: OpenAI API  
+- **Docs**: Swagger / OpenAPI  
+- **Clients**:  
+  - Web App (React planned)  
+  - MAUI Mobile App  
 
 ---
 
 ## ⚡ Quick Start
 
-### 1. Clone the repo
+### Clone & Run Locally
 ```bash
 git clone https://github.com/NareshKoirala/Resume-Builder-Job-Board.git
-cd Resume-Builder-Job-Board
+cd Resume-Builder-Job-Board/resume_builder_api
+dotnet restore
+dotnet run
