@@ -1,3 +1,4 @@
+using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 
 namespace resume_builder_api.Services
@@ -42,7 +43,7 @@ namespace resume_builder_api.Services
             public string? ResumePrompt { get; set; }
         }
 
-        public static string Percentage(UserModel user, JobModel job)
+        public static string Percentage(UserModel user, JobDto job)
         {
             var skills = string.Join(", ", user.Skills.Select(s => s.SkillName));
 
@@ -54,7 +55,7 @@ namespace resume_builder_api.Services
             return promptUpdate;
         }
 
-        public static string Resume(UserModel user, JobModel job)
+        public static string Resume(UserModel user, JobDto job)
         {
             var skills = string.Join(", ", user.Skills.Select(s => s.SkillName));
             var projects = string.Join(", ", user.Projects.Select(p => $"{p.ProjectName}: {p.Description}"));

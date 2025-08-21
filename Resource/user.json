@@ -1,0 +1,52 @@
+{
+  "pass": "342b357dca6e3e76a4afeb1feb143b66",
+  "firstName": "Naresh",
+  "lastName": "Koirala",
+  "email": "chelseanaresh10@gmail.com",
+  "mobile": "7809165002",
+  "location": "Edmonton",
+  "province": "AB",
+  "jobField": "Software",
+  "portfolioUrl": "https://nareshkoirala.dev",
+  "linkedInUrl": "https://www.linkedin.com/in/naresh-koirala-6205582b3",
+  "userSummary": "Experienced software developer with expertise in building scalable web applications.",
+  "education": [
+    {
+      "institutionName": "University of Alberta",
+      "date": "2018-2022",
+      "location": "Edmonton, AB",
+      "details": "Bachelor of Science in Computer Science"
+    }
+  ],
+  "workExperience": [
+    {
+      "companyName": "Tech Corp",
+      "date": "2022-Present",
+      "location": "Edmonton, AB",
+      "details": "Developed and maintained web applications using ASP.NET Core and React."
+    }
+  ],
+  "certificates": [
+    {
+      "certificateName": "AWS Certified Developer",
+      "details": "Obtained certification in cloud development with AWS services."
+    }
+  ],
+  "skills": [
+    {
+      "skillName": "ASP.NET Core"
+    },
+    {
+      "skillName": "React"
+    },
+    {
+      "skillName": "JavaScript"
+    }
+  ],
+  "projects": [
+    {
+      "projectName": "Resume Builder API",
+      "description": "Developed an API for generating tailored resumes and cover letters."
+    }
+  ]
+}

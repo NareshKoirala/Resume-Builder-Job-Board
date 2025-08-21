@@ -1,4 +1,5 @@
 ﻿using OpenAI.Chat;
+using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -20,7 +21,7 @@ public class OpenAIService
         );
     }
 
-    public async Task<ReturnJobModel> OpenAIServiceFunct(Func<UserModel, JobModel, string> func, UserModel user, JobModel job, ReturnJobModel returnJob)
+    public async Task<ReturnJobModel> OpenAIServiceFunct(Func<UserModel, JobDto, string> func, UserModel user, JobDto job, ReturnJobModel returnJob)
     {
         if (user == null || job == null)
             return new();
