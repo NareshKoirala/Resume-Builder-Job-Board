@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder API Documentation</title>
+
+    <script>
+      // Declare global variable
+      var CURRENT_URL = window.location.origin;
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      /* Prevent overflow and make code/tables scrollable on small screens */
+      pre { white-space: pre; overflow-x: auto; }
+      .table-scroll { overflow-x: auto; }
+      /* Make long table cells wrap when possible but allow horizontal scroll if needed */
+      td, th { word-break: break-word; }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 font-sans text-gray-800">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-500 to-purple-500 p-6 text-white">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold">Resume Builder API</h1>
+        <p class="mt-2 text-base md:text-lg">A robust ASP.NET Core API for Custom Resume/Cover Letter creation</p>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-gray-800 text-white py-3 sticky top-0 shadow-md z-40">
+      <div class="max-w-6xl mx-auto px-4 flex flex-wrap justify-center gap-3 text-sm">
+        <a href="#overview" class="hover:text-blue-300">Overview</a>
+        <a href="#authentication" class="hover:text-blue-300">Authentication</a>
+        <a href="#model-structure" class="hover:text-blue-300">Model Structure</a>
+        <a href="#endpoints" class="hover:text-blue-300">Endpoints</a>
+        <a href="#examples" class="hover:text-blue-300">Examples</a>
+        <a href="#support" class="hover:text-blue-300">Support</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-10">
+
+      <!-- Overview Section -->
+      <section id="overview" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">API Overview</h2>
+        <p class="text-gray-700 mb-4">
+          The Resume Builder API, developed using ASP.NET Core, allows
+          developers to programmatically create, manage, and export professional
+          resumes and cover letters. It enables customization of resumes and
+          cover letters based on job details provided by the user. The API uses
+          user data to generate tailored resumes and cover letters for specific
+          job applications. Additionally, it provides a job-matching percentage
+          to indicate how well the user’s profile aligns with the job
+          requirements and identifies key skills the user needs to develop to
+          improve their suitability for the role.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <h3 class="text-lg font-medium">Resume/Cover Letter Creation</h3>
+            <p class="text-gray-600">Build resumes and cover letters with customizable sections like personal info, experience, and skills.</p>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <h3 class="text-lg font-medium">Template Management (Unavailable)</h3>
+            <p class="text-gray-600">Choose from a variety of resume and cover letter templates tailored to different industries.</p>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <h3 class="text-lg font-medium">Export Options (Only JSON model Right now)</h3>
+            <p class="text-gray-600">Export resumes and cover letters as PDF, Word, or HTML with configurable styling.</p>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <h3 class="text-lg font-medium">User Management</h3>
+            <p class="text-gray-600">Manage user profiles and their associated resumes.</p>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <h3 class="text-lg font-medium text-blue-800">Base URL</h3>
+          <p class="text-gray-700 mt-1">
+            <code id="url" class="bg-white px-2 py-1 rounded shadow text-sm">https://api.resumebuilder.com/v1</code>
+            <script>document.getElementById("url").innerText = CURRENT_URL;</script>
+          </p>
+        </div>
+      </section>
+
+      <!-- Authentication Section -->
+      <section id="authentication" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">Authentication</h2>
+        <p class="text-gray-700 mb-4">
+            A admin pass code is needed to access the API. Please contact <a href="https://www.nareshkoirala.dev/contact" class="text-blue-600 hover:underline">Naresh Koirala</a> for assistance.
+        </p>
+        <h3 class="text-xl font-medium mt-6">Getting Started</h3>
+        <ol class="list-decimal list-inside text-gray-700 mt-2 space-y-1">
+          <li> Contact the administrator for the pass code.</li>
+          <li>General Inquiries, and send a request on what features you would like to see.</li>
+          <li>You will be send a PASS Code make sure to save it.</li>
+        </ol>
+        <a href="https://www.nareshkoirala.dev/contact" class="inline-block mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Get Pass Code</a>
+      </section>
+
+      <!-- Model Structure Section -->
+      <section id="model-structure" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">Model Structure</h2>
+        <p class="text-gray-700 mb-4">Use these kind of Structure Models to interact with the API.</p>
+
+        <div class="bg-gray-800 text-white p-6 rounded-lg shadow mb-4">
+          <h3 class="text-xl font-medium">Model structure needed for return Job Req. (returnJob)</h3>
+          <pre class="mt-4"><code>Main return Job data -> (returnJob)
+{    
+    string? JobName { get; set; } = string.Empty;
+    ResumeModel? Resume { get; set; } = new ResumeModel();
+    CoverLetterModel? CoverLetter { get; set; } = new CoverLetterModel();
+    string? JobKeywords { get; set; } = string.Empty;
+    string? JobPercentage { get; set; } = string.Empty;
+}
+
+ResumeModel @ returnJob -> (Resume)
+{
+    string TitleKeyword { get; set; } = string.Empty;
+    string Summary { get; set; } = string.Empty;
+    string ProgramingLanguage { get; set; } = string.Empty;
+    string Frameworks { get; set; } = string.Empty;
+    string RelevantKeywords { get; set; } = string.Empty;
+    List<ProjectsModel> Projects { get; set; } = new List<ProjectsModel>();
+    string WorkExperience { get; set; } = string.Empty;
+    string Education { get; set; } = string.Empty;
+    string Certificates { get; set; } = string.Empty;
+}
+
+ProjectsModel @ Resume -> (Projects)
+{
+    string ProjectName { get; set; } = string.Empty;
+    string Description { get; set; } = string.Empty;
+    string Bullet1 { get; set; } = string.Empty;
+    string Bullet2 { get; set; } = string.Empty;
+    string Bullet3 { get; set; } = string.Empty;
+}
+
+CoverLetterModel @ returnJob ->(Resume)
+{
+    string Title { get; set; } = string.Empty;
+    string Body1 { get; set; } = string.Empty;
+    string Body2 { get; set; } = string.Empty;
+    string Body3 { get; set; } = string.Empty;
+}</code></pre>
+        </div>
+
+        <div class="bg-gray-800 text-white p-6 rounded-lg shadow mb-4">
+          <h3 class="text-xl font-medium">Model structuring for User Registration/Update </h3>
+          <pre class="mt-4"><code>The data user need to send format for registration --> (UserRegisterDto)
+{
+    string pass { get; set; } = string.Empty;
+    string firstName { get; set; } = string.Empty;
+    string lastName { get; set; } = string.Empty;
+    string email { get; set; } = string.Empty;
+    string mobile { get; set; } = string.Empty;
+    string location { get; set; } = string.Empty;
+    string province { get; set; } = string.Empty;
+    string jobField { get; set; } = string.Empty;
+    string? portfolioUrl { get; set; } = null;
+    string? linkedInUrl { get; set; } = null;
+    string? userSummary { get; set; } = null;
+    List<EducationEntryDto> education { get; set; } = new List<EducationEntryDto>();
+    List<WorkEntryDto> workExperience { get; set; } = new List<WorkEntryDto>();
+    List<CertificateEntryDto> certificates { get; set; } = new List<CertificateEntryDto>();
+    List<SkillsEntryDto> skills { get; set; } = new List<SkillsEntryDto>();
+    List<ProjectEntryDto> projects { get; set; } = new List<ProjectEntryDto>();
+}
+
+For updating user info use the same format just instead of pass add publiId --> (UpdateUserDTO)
+{
+    string pass { get; set; } = string.Empty; --> REMOVE
+    string publicId { get; set; } = string.Empty; --> ADD
+    [....] -> OTHER ALL ARE SAME
+}
+
+CertificateEntryDto
+{
+    string certificateName { get; set; } = string.Empty;
+    string details { get; set; } = string.Empty;
+}
+
+EducationEntryDto
+{
+    string institutionName { get; set; } = string.Empty;
+    string date { get; set; } = string.Empty;
+    string? location { get; set; } = null;
+    string? details { get; set; } = null;
+}
+
+ProjectEntryDto
+{
+    string projectName { get; set; } = string.Empty;
+    string? description { get; set; } = null;
+}
+
+SkillsEntryDto
+{
+    string skillName { get; set; } = string.Empty;
+}
+
+WorkEntryDto
+{
+    string companyName { get; set; } = string.Empty;
+    string date { get; set; } = string.Empty;
+    string? location { get; set; } = null;
+    string? details { get; set; } = null;
+}</code></pre>
+        </div>
+
+      </section>
+
+      <!-- Endpoints Section -->
+      <section id="endpoints" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">API Endpoints</h2>
+        <p class="text-gray-700 mb-4">The API is organized into controllers for jobs and users. Below are the available endpoints.</p>
+
+        <!-- Job Controller -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <h3 class="text-xl font-medium">JobController</h3>
+        
+        <!-- Mobile View - Stack Cards -->
+        <div class="block md:hidden mt-4 space-y-4">
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/fetch-rcl-json</div>
+            <div class="text-sm text-gray-600 mb-3">Fetch Resume & Cover Letter JSON data</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{jobName, ResumeJson, CoverLetterJson}</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/get-matchKeys</div>
+            <div class="text-sm text-gray-600 mb-3">Get match skills percentage and key job skills to improve</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{jobName, MatchPercentage, KeySkills}</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /Job/get-all</div>
+            <div class="text-sm text-gray-600 mb-3">Get complete job analysis with resume, cover letter, and match data</div>
+            <div class="mb-3">
+              <div class="font-medium text-xs text-gray-500 mb-1">REQUEST:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{"publicId": "string", "jobName": "string", "jobDescription": "string"}</code>
+              </div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs overflow-x-auto">
+                <code>{complete ReturnJobModel object}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop View - Table -->
+        <div class="hidden md:block overflow-x-auto mt-4">
+        <table class="min-w-full w-full border-collapse text-sm">
+            <thead>
+                <tr class="bg-gray-200">
+                <th class="border p-2 text-left min-w-[180px]">Endpoint</th>
+                <th class="border p-2 text-left min-w-[60px]">Method</th>
+                <th class="border p-2 text-left min-w-[200px]">Description</th>
+                <th class="border p-2 text-left min-w-[250px]">Expected Format</th>
+                <th class="border p-2 text-left min-w-[250px]">Response Format</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td class="border p-2"><code class="text-xs">/Job/fetch-rcl-json</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+                <td class="border p-2">Fetch Resume & Cover Letter JSON data</td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
+}</code></pre></td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "resumeJson": {...},
+  "coverLetterJson": {...}
+}</code></pre></td>
+                </tr>
+                <tr>
+                <td class="border p-2"><code class="text-xs">/Job/get-matchKeys</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+                <td class="border p-2">Get match skills percentage and key job skills to improve</td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
+}</code></pre></td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "matchPercentage": "string",
+  "keySkills": "string"
+}</code></pre></td>
+                </tr>
+                <tr>
+                <td class="border p-2"><code class="text-xs">/Job/get-all</code></td>
+                <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+                <td class="border p-2">Get complete job analysis with resume, cover letter, and match data</td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "publicId": "string",
+  "jobName": "string",
+  "jobDescription": "string"
+}</code></pre></td>
+                <td class="border p-2">
+                <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>{
+  "jobName": "string",
+  "resume": {...},
+  "coverLetter": {...},
+  "jobKeywords": "string",
+  "jobPercentage": "string"
+}</code></pre></td>
+                </tr>
+            </tbody>
+            </table>
+            </div>
+        </div>
+
+      <!-- User Controller -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <h3 class="text-xl font-medium">UserController</h3>
+        
+        <!-- Mobile View - Stack Cards -->
+        <div class="block md:hidden mt-4 space-y-4">
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">POST /User/register</div>
+            <div class="text-sm text-gray-600 mb-3">Register a new user</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">BODY:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">UserRegisterDto JSON</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message + public ID</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-orange-600 mb-2">PUT /User/update</div>
+            <div class="text-sm text-gray-600 mb-3">Update an existing user</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">BODY:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">UpdateUserDto JSON</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-red-600 mb-2">DELETE /User/delete/{publicId}</div>
+            <div class="text-sm text-gray-600 mb-3">Delete a user by public ID</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">PARAMETER:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">publicId (path)</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">Success message</div>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="font-semibold text-blue-600 mb-2">GET /User/getUser/{publicId}</div>
+            <div class="text-sm text-gray-600 mb-3">Retrieve a user by public ID</div>
+            <div class="mb-2">
+              <div class="font-medium text-xs text-gray-500 mb-1">PARAMETER:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">publicId (path)</div>
+            </div>
+            <div>
+              <div class="font-medium text-xs text-gray-500 mb-1">RESPONSE:</div>
+              <div class="bg-gray-100 p-2 rounded text-xs">User details JSON</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop View - Table -->
+        <div class="hidden md:block overflow-x-auto mt-4">
+        <table class="min-w-full w-full border-collapse text-sm">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="border p-2 text-left min-w-[200px]">Endpoint</th>
+              <th class="border p-2 text-left min-w-[80px]">Method</th>
+              <th class="border p-2 text-left min-w-[200px]">Description</th>
+              <th class="border p-2 text-left min-w-[250px]">Parameters/Body</th>
+              <th class="border p-2 text-left min-w-[200px]">Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border p-2"><code class="text-xs">/User/register</code></td>
+              <td class="border p-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">POST</span></td>
+              <td class="border p-2">Register a new user</td>
+              <td class="border p-2">JSON body containing user details (UserRegisterDto)</td>
+              <td class="border p-2">JSON response with Success message and public ID</td>
+            </tr>
+            <tr>
+              <td class="border p-2"><code class="text-xs">/User/update</code></td>
+              <td class="border p-2"><span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">PUT</span></td>
+              <td class="border p-2">Update an existing user</td>
+              <td class="border p-2">JSON body containing updated user details (UpdateUserDto)</td>
+              <td class="border p-2">JSON response with Success message</td>
+            </tr>
+            <tr>
+              <td class="border p-2"><code class="text-xs">/User/delete/{publicId}</code></td>
+              <td class="border p-2"><span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">DELETE</span></td>
+              <td class="border p-2">Delete a user by public ID</td>
+              <td class="border p-2"><code>publicId</code> (path) - Unique public ID of the user</td>
+              <td class="border p-2">JSON response with Success message</td>
+            </tr>
+            <tr>
+              <td class="border p-2"><code class="text-xs">/User/getUser/{publicId}</code></td>
+              <td class="border p-2"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">GET</span></td>
+              <td class="border p-2">Retrieve a user by public ID</td>
+              <td class="border p-2"><code>publicId</code> (path) - Unique public ID of the user</td>
+              <td class="border p-2">JSON response with user details</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      </section>
+
+
+      <!-- Code Examples Section -->
+      <section id="examples" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">Code Examples</h2>
+        <p class="text-gray-700 mb-4">Use these examples to interact with the API using popular tools and languages.</p>
+
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+          <h3 class="text-xl font-medium"></h3>
+          <pre class="bg-gray-800 text-white p-4 rounded"><code>WILL HAVE EXAMPLE IN FUTURE!!!</code></pre>
+        </div>
+
+      </section>
+
+      <!-- Support Section -->
+      <section id="support" class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">Support & Resources</h2>
+        <p class="text-gray-700 mb-4">Please contact <a href="https://www.nareshkoirala.dev/contact" class="text-blue-600 hover:underline">Naresh Koirala</a> for any issues, feature requests, or support related to the Resume Builder API.</p>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+      <div class="max-w-6xl mx-auto px-4">
+        <p>© 2025 Resume Builder API. All rights reserved.</p>
+        <p class="mt-2">Version 1.0 | <a href="#" class="text-blue-300 hover:underline">Privacy Policy</a> | <a href="#" class="text-blue-300 hover:underline">Terms of Service</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
