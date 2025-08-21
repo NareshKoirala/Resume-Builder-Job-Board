@@ -1,63 +1,207 @@
-# Resume Builder App
+# Resume Builder API 📄
 
-An intelligent cross-platform application built using .NET MAUI (Desktop & Mobile) and a Web App (Next.js), designed to fetch real-time jobs from multiple APIs, analyze job matches with user profiles using OpenAI, and generate tailored resumes and cover letters — all downloadable in `.docx` format.
+Welcome to the **Resume Builder API**, a robust ASP.NET Core-based API designed to programmatically create, manage, and export professional resumes and cover letters. This API enables developers to build tailored resumes and cover letters based on user-provided job details, calculate job-matching percentages, and identify key skills for improvement.
 
-> **Tech Stack:** .NET MAUI • C# • SQLite • REST APIs • OpenAI API • Xceed DocX • Next.js • React • Tailwind CSS • Vercel
+[![GitHub license](https://img.shields.io/github/license/NareshKoirala/Resume-Builder-API)](https://github.com/NareshKoirala/Resume-Builder-API/blob/main/LICENSE)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-blue)](https://www.nareshkoirala.dev)
 
-![Main DashBoard Tab](Resume%20Builder%20Pictures/DashBoard.png)
+## Table of Contents
+- [Overview](#overview)
+- [Authentication](#authentication)
+- [Model Structure](#model-structure)
+- [API Endpoints](#api-endpoints)
+- [Code Examples](#code-examples)
+- [Support](#support)
 
-![Job Generating Tab](Resume%20Builder%20Pictures/JobGenTab.png)
+## Overview
+The Resume Builder API simplifies the creation of professional resumes and cover letters by allowing developers to:
+- **Generate Resumes and Cover Letters**: Build customized documents with sections like personal info, experience, and skills.
+- **Job Matching**: Calculate a job-matching percentage to show how well a user’s profile aligns with job requirements and highlight skills to improve.
+- **User Management**: Manage user profiles and their associated resumes.
+- **Export Options**: Currently supports JSON output, with plans for PDF, Word, and HTML exports.
+- **Template Management**: Planned feature for selecting industry-specific resume and cover letter templates (currently unavailable).
 
-![User Setting Tab](Resume%20Builder%20Pictures/UserTab.png)
+**Base URL**: `https://resume-builder-api-8m2c.onrender.com`
 
-## ✨ Features
+## Authentication
+Access to the API requires an admin passcode. To obtain one:
+1. Contact Naresh Koirala for the passcode.
+2. Submit general inquiries or feature requests.
+3. Save the provided passcode for API authentication.
 
-### Job Search
+📧 **Contact**: [chelseanaresh10@gmail.com](mailto:chelseanaresh10@gmail.com)
 
-- Fetches job listings from:
-  - [Remotive API](https://remotive.io)
-  - [JSearch API (RapidAPI)](https://rapidapi.com)
-- Filters jobs by title, location, and category.
-- Displays job details including company, description, and application link.
+## Model Structure
+The API uses specific data models for requests and responses. Below are the key structures:
 
-### Profile Builder
+### Job Data Model (`returnJob`)
+```csharp
+{
+    string? JobName { get; set; } = string.Empty;
+    ResumeModel? Resume { get; set; } = new ResumeModel();
+    CoverLetterModel? CoverLetter { get; set; } = new CoverLetterModel();
+    string? JobKeywords { get; set; } = string.Empty;
+    string? JobPercentage { get; set; } = string.Empty;
+}
+```
 
-- Allows users to create and manage personal profiles.
-- Collects information such as name, contact details, skills, experience, and education.
-- Saves profiles locally using SQLite (Desktop & Mobile) or a database in the Web App.
+#### Resume Model (`ResumeModel`)
+```csharp
+{
+    string TitleKeyword { get; set; } = string.Empty;
+    string Summary { get; set; } = string.Empty;
+    string ProgramingLanguage { get; set; } = string.Empty;
+    string Frameworks { get; set; } = string.Empty;
+    string RelevantKeywords { get; set; } = string.Empty;
+    List<ProjectsModel> Projects { get; set; } = new List<ProjectsModel>();
+    string WorkExperience { get; set; } = string.Empty;
+    string Education { get; set; } = string.Empty;
+    string Certificates { get; set; } = string.Empty;
+}
+```
 
-### Resume & Cover Letter Generation
+#### Projects Model (`ProjectsModel`)
+```csharp
+{
+    string ProjectName { get; set; } = string.Empty;
+    string Description { get; set; } = string.Empty;
+    string Bullet1 { get; set; } = string.Empty;
+    string Bullet2 { get; set; } = string.Empty;
+    string Bullet3 { get; set; } = string.Empty;
+}
+```
 
-- Analyzes job descriptions and user profiles using OpenAI API.
-- Generates tailored resumes and cover letters in `.docx` format.
-- Provides download options for both documents.
+#### Cover Letter Model (`CoverLetterModel`)
+```csharp
+{
+    string Title { get; set; } = string.Empty;
+    string Body1 { get; set; } = string.Empty;
+    string Body2 { get; set; } = string.Empty;
+    string Body3 { get; set; } = string.Empty;
+}
+```
 
-### Document Management
+### User Registration/Update Models
+#### User Registration (`UserRegisterDto`)
+```csharp
+{
+    string pass { get; set; } = string.Empty;
+    string firstName { get; set; } = string.Empty;
+    string lastName { get; set; } = string.Empty;
+    string email { get; set; } = string.Empty;
+    string mobile { get; set; } = string.Empty;
+    string location { get; set; } = string.Empty;
+    string province { get; set; } = string.Empty;
+    string jobField { get; set; } = string.Empty;
+    string? portfolioUrl { get; set; } = null;
+    string? linkedInUrl { get; set; } = null;
+    string? userSummary { get; set; } = null;
+    List<EducationEntryDto> education { get; set; } = new List<EducationEntryDto>();
+    List<WorkEntryDto> workExperience { get; set; } = new List<WorkEntryDto>();
+    List<CertificateEntryDto> certificates { get; set; } = new List<CertificateEntryDto>();
+    List<SkillsEntryDto> skills { get; set; } = new List<SkillsEntryDto>();
+    List<ProjectEntryDto> projects { get; set; } = new List<ProjectEntryDto>();
+}
+```
 
-- Saves generated documents locally (Desktop & Mobile).
-- Web App version allows document management and viewing online.
+#### User Update (`UpdateUserDto`)
+```csharp
+{
+    string publicId { get; set; } = string.Empty;
+    string firstName { get; set; } = string.Empty;
+    string lastName { get; set; } = string.Empty;
+    string email { get; set; } = string.Empty;
+    string mobile { get; set; } = string.Empty;
+    string location { get; set; } = string.Empty;
+    string province { get; set; } = string.Empty;
+    string jobField { get; set; } = string.Empty;
+    string? portfolioUrl { get; set; } = null;
+    string? linkedInUrl { get; set; } = null;
+    string? userSummary { get; set; } = null;
+    List<EducationEntryDto> education { get; set; } = new List<EducationEntryDto>();
+    List<WorkEntryDto> workExperience { get; set; } = new List<WorkEntryDto>();
+    List<CertificateEntryDto> certificates { get; set; } = new List<CertificateEntryDto>();
+    List<SkillsEntryDto> skills { get; set; } = new List<SkillsEntryDto>();
+    List<ProjectEntryDto> projects { get; set; } = new List<ProjectEntryDto>();
+}
+```
 
-## 🛠️ Technologies Used
+#### Supporting Models
+- **CertificateEntryDto**:
+```csharp
+{
+    string certificateName { get; set; } = string.Empty;
+    string details { get; set; } = string.Empty;
+}
+```
+- **EducationEntryDto**:
+```csharp
+{
+    string institutionName { get; set; } = string.Empty;
+    string date { get; set; } = string.Empty;
+    string? location { get; set; } = null;
+    string? details { get; set; } = null;
+}
+```
+- **ProjectEntryDto**:
+```csharp
+{
+    string projectName { get; set; } = string.Empty;
+    string? description { get; set; } = null;
+}
+```
+- **SkillsEntryDto**:
+```csharp
+{
+    string skillName { get; set; } = string.Empty;
+}
+```
+- **WorkEntryDto**:
+```csharp
+{
+    string companyName { get; set; } = string.Empty;
+    string date { get; set; } = string.Empty;
+    string? location { get; set; } = null;
+    string? details { get; set; } = null;
+}
+```
 
-### Desktop & Mobile App
+## API Endpoints
+The API is organized into `JobController` and `UserController`. Below are the available endpoints:
 
-- **Frontend:** .NET MAUI, C#
-- **Backend:** SQLite, REST APIs
-- **AI Integration:** OpenAI API
-- **Document Generation:** Xceed DocX
-- **Architecture:** MVVM
+### JobController
+| Endpoint                     | Method | Description                                      | Request Body                              | Response Body                              |
+|------------------------------|--------|--------------------------------------------------|-------------------------------------------|--------------------------------------------|
+| `/Job/fetch-rcl-json`        | GET    | Fetch resume and cover letter JSON data          | `{ publicId, jobName, jobDescription }`   | `{ jobName, resumeJson, coverLetterJson }` |
+| `/Job/get-matchKeys`         | GET    | Get job match percentage and key skills to improve | `{ publicId, jobName, jobDescription }`   | `{ jobName, matchPercentage, keySkills }`  |
+| `/Job/get-all`               | GET    | Get complete job analysis with resume, cover letter, and match data | `{ publicId, jobName, jobDescription }` | `{ jobName, resume, coverLetter, jobKeywords, jobPercentage }` |
 
-### Web App
+### UserController
+| Endpoint                     | Method | Description                                      | Parameters/Body                           | Response Body                              |
+|------------------------------|--------|--------------------------------------------------|-------------------------------------------|--------------------------------------------|
+| `/User/register`             | POST   | Register a new user                              | `UserRegisterDto` JSON                    | Success message and public ID             |
+| `/User/update`               | PUT    | Update an existing user                          | `UpdateUserDto` JSON                      | Success message                           |
+| `/User/delete/{publicId}`    | DELETE | Delete a user by public ID                       | `publicId` (path)                         | Success message                           |
+| `/User/getUser/{publicId}`   | GET    | Retrieve a user by public ID                     | `publicId` (path)                         | User details JSON                         |
 
-- **Frontend:** Next.js, React, Tailwind CSS
-- **Backend:** Node.js, API Routes
-- **AI Integration:** OpenAI API
-- **Deployment:** Vercel
+## Code Examples
+> **Note**: Code examples will be added in the future. For now, use tools like Postman or `curl` to test endpoints with the provided model structures.
 
-## 📦 Setup Instructions
+Example `curl` request for `/Job/fetch-rcl-json`:
+```bash
+curl -X GET "https://resume-builder-api-8m2c.onrender.com/Job/fetch-rcl-json" \
+-H "Authorization: Bearer <your-passcode>" \
+-H "Content-Type: application/json" \
+-d '{"publicId": "user123", "jobName": "Software Engineer", "jobDescription": "Requires C# and ASP.NET Core experience"}'
+```
 
-### Desktop & Mobile App
+## Support
+For issues, feature requests, or support, contact:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/NareshKoirala/Resume-Builder-App.git
+- **GitHub**: [@NareshKoirala](https://github.com/NareshKoirala)
+- **Email**: [chelseanaresh10@gmail.com](mailto:chelseanaresh10@gmail.com)
+- **Portfolio**: [nareshkoirala.dev](https://www.nareshkoirala.dev/contact)
+
+---
+
+Thank you for exploring the Resume Builder API! 🌟
