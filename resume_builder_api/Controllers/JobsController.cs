@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 using resume_builder_api.Services;
-using System.Threading.Tasks;
 
 namespace resume_builder_api.Controllers
 {
@@ -29,6 +28,8 @@ namespace resume_builder_api.Controllers
             var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
             if (user == null) return BadRequest("Invalid Public ID");
 
+            HelperFunction.FetchUser(user, _dbContext);
+
             var returnData = new ReturnJobModel();
             returnData.JobName = job.JobName;
 
@@ -45,6 +46,8 @@ namespace resume_builder_api.Controllers
             var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
             if (user == null) return BadRequest("Invalid Public ID");
 
+            HelperFunction.FetchUser(user, _dbContext);
+
             var returnData = new ReturnJobModel();
             returnData.JobName = job.JobName;
 
@@ -55,6 +58,40 @@ namespace resume_builder_api.Controllers
                 Percent = returnData.JobPercentage,
                 Keywords = returnData.JobKeywords
                 });
+        }
+
+        [HttpGet("/Resume/Json/{publicKey}")]
+        public async Task<IActionResult> ReturnResumeJsonData(string publicKey, JobDto job)
+        {
+            if (job == null || publicKey == null) return BadRequest("Empty Feilds");
+            var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
+            if (user == null) return BadRequest("Invalid Public ID");
+
+            HelperFunction.FetchUser(user, _dbContext);
+
+            var returnData = new ReturnJobModel();
+            returnData.JobName = job.JobName;
+
+            returnData = await _openAIService.OpenAIServiceFunct(GenerateResume, user, job, returnData);
+
+            return Ok(new { Message = "Succesful Json format return", returnData.Resume });
+        }
+
+        [HttpGet("/CoverLetter/Json/{publicKey}")]
+        public async Task<IActionResult> ReturnCoverLetterJsonData(string publicKey, JobDto job)
+        {
+            if (job == null || publicKey == null) return BadRequest("Empty Feilds");
+            var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
+            if (user == null) return BadRequest("Invalid Public ID");
+
+            HelperFunction.FetchUser(user, _dbContext);
+
+            var returnData = new ReturnJobModel();
+            returnData.JobName = job.JobName;
+
+            returnData = await _openAIService.OpenAIServiceFunct(GenerateResume, user, job, returnData);
+
+            return Ok(new { Message = "Succesful Json format return", returnData.CoverLetter });
         }
     }
 }

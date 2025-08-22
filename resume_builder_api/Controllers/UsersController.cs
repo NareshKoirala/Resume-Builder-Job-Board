@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 using resume_builder_api.Services;
@@ -104,25 +105,7 @@ namespace resume_builder_api.Controllers
                 return NotFound(new { Message = "User not found" });
             }
 
-            user.Education = appDb.EducationEntries
-                .Where(e => e.UserModelId == user.Id)
-                .ToList();
-
-            user.WorkExperience = appDb.WorkEntries
-                .Where(w => w.UserModelId == user.Id)
-                .ToList();
-
-            user.Certificates = appDb.CertificateEntries
-                .Where(c => c.UserModelId == user.Id)
-                .ToList();
-
-            user.Skills = appDb.SkillEntries
-                .Where(s => s.UserModelId == user.Id)
-                .ToList();
-
-            user.Projects = appDb.ProjectEntries
-                .Where(p => p.UserModelId == user.Id)
-                .ToList();
+            HelperFunction.FetchUser(user, appDb);
 
             // Return the user details
             return Ok(user);
