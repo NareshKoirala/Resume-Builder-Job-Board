@@ -15,5 +15,6 @@ namespace resume_builder_api.Services
             user.WorkExperience = db.WorkEntries.Where(x => x.UserModelId == user.Id).ToList();
         }
 
+
     }
 }

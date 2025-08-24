@@ -9,10 +9,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// **Remove Env.Load();**
-
-builder.Configuration.AddEnvironmentVariables();  // This is fine
-
 // Register services
 builder.Services.AddSingleton<OpenAIService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
