@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "resume_builder_api", "resum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_TestCase", "..\API_TestCase\API_TestCase.csproj", "{D4A9B9E3-5192-48A3-975B-E61D68451316}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPDFCreation", "..\TestPDFCreation\TestPDFCreation.csproj", "{E1BC352F-3B0B-47EA-BD31-73E8077D0C1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{D4A9B9E3-5192-48A3-975B-E61D68451316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4A9B9E3-5192-48A3-975B-E61D68451316}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4A9B9E3-5192-48A3-975B-E61D68451316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1BC352F-3B0B-47EA-BD31-73E8077D0C1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1BC352F-3B0B-47EA-BD31-73E8077D0C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1BC352F-3B0B-47EA-BD31-73E8077D0C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1BC352F-3B0B-47EA-BD31-73E8077D0C1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

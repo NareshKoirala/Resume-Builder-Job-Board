@@ -1,0 +1,47 @@
+{
+  "FullName": "Naresh Prasad Koirala",
+  "TitleKeyword": "Front-End Developer | Full Stack .NET Developer | Web Developer",
+  "Details": "Edmonton, Alberta | chelseanaresh10@gmail.com | 780-916-5002 | linkedin.com/in/naresh-koirala-6205582b3",
+  "Summary": "Software Developer with 3 years of experience building responsive, user-centric applications using C#, .NET MAUI, and SQL, delivering robust full-stack solutions. Leveraged HTML5, CSS3, and JavaScript to implement dynamic, API-driven interfaces and template-based document generation. Equipped to apply these skills to develop intuitive, secure Power Pages portals and enhance CRM ecosystems at Frequency Foundry.",
+
+  "Education": [
+    {
+      "InstitutionName": "NAIT",
+      "Location": "Edmonton, Alberta",
+      "Date": "2023–2025",
+      "Details": "Computer Engineering Technology Diploma. Developed software applications using C# and .NET by designing and implementing full-stack solutions and embedded system integrations, resulting in practical skills to deliver reliable, real-world software projects."
+    }
+  ],
+
+  "Projects": [
+    {
+      "ProjectName": "Resume Builder App",
+      "Description": "Developed a cross-platform .NET MAUI application integrating multiple job-site APIs for dynamic template rendering and AI-driven document customization.",
+      "Bullet1": "Integrated and validated job listings via external APIs.",
+      "Bullet2": "Implemented client-side input validation and dynamic document assembly logic.",
+      "Bullet3": "Delivered downloadable DOCX resumes and cover letters."
+    },
+    {
+      "ProjectName": "Automated Connect 4 Game",
+      "Description": "Created a robotic Connect 4 system combining embedded firmware on Raspberry Pi Pico and a real-time web interface on ESP32 using JavaScript, HTML5, and CSS3.",
+      "Bullet1": "Programmed game logic and AI in MicroPython, interfacing with a JavaScript front end.",
+      "Bullet2": "Designed responsive UI for gameplay controls and status updates.",
+      "Bullet3": "Integrated motor control hardware for precise token placement."
+    }
+  ],
+
+  "Skills": [
+    "C#", ".NET MAUI", "ASP.NET Core", "Blazor",
+    "SQL", "HTML5", "CSS3", "JavaScript",
+    "Liquid Templating", "FetchXML"
+  ],
+
+  "Certificates": [
+    {
+      "CertificateName": "None at this time",
+      "Details": ""
+    }
+  ],
+
+  "PortfolioURL": "www.nareshkoirala.dev"
+}
