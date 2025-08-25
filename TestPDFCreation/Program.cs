@@ -32,18 +32,6 @@ namespace TestPDFCreation
             ["details"] = "Generative AI (LinkedIn Learning)"
         };
 
-        public static Dictionary<string, string> workData = new Dictionary<string, string>
-        {
-            ["companyName"] = "Company Name",
-            ["jobTitle"] = "Job Title",
-            ["startDate"] = "Start Date",
-            ["endDate"] = "End Date",
-            ["description"] = "Description",
-            ["bullet1"] = "Bullet Point 1",
-            ["bullet2"] = "Bullet Point 2",
-            ["bullet3"] = "Bullet Point 3"
-        };
-
         public static Dictionary<string, string> keyValuePairs = new Dictionary<string, string>
         {
             ["Fullname"] = "",
@@ -159,11 +147,60 @@ namespace TestPDFCreation
             }
         }
 
+        public static void workDataFunc(Paragraph para, List<string> workData)
+        {
+            if (para == null) return;
+            var parent = para.Parent;
+
+            foreach (var data in workData)
+            {
+                var splitData = data.Split(':');
+
+                if (splitData.Length < 2) continue;
+
+                Paragraph bulletPara = new Paragraph();
+                Run run = new Run(new Text(splitData[0]));
+                RunProperties runProps = new RunProperties
+                {
+                    Bold = new Bold(),
+                    FontSize = new FontSize() { Val = "22" }, // 12pt (OpenXML uses half-points)
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                run.PrependChild(runProps);
+                bulletPara.Append(run);
+                parent.InsertAfter(bulletPara, para);
+                para = bulletPara;
+
+                Paragraph detailsPara = new Paragraph();
+                Run detailsRun = new Run(new Text(splitData[1].Trim()));
+                RunProperties detailsProps = new RunProperties
+                {
+                    FontSize = new FontSize() { Val = "20" }, // 11pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                detailsRun.PrependChild(detailsProps);
+                detailsPara.Append(detailsRun);
+                ParagraphProperties ppDetails = new ParagraphProperties();
+                ppDetails.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+                ppDetails.Indentation = new Indentation() { Left = "300" };
+                detailsPara.PrependChild(ppDetails);
+                parent.InsertAfter(detailsPara, para);
+                para = detailsPara;
+            }
+
+        }
+
         public static void skillsDataFunc(Paragraph para, List<CertificationModel> cert)
         {
             var parent = para.Parent;
 
-            string certTitle = string.Join(" | ", cert.Select(x => x.Details));
+            string certTitle = "";
+
+            foreach (var c in cert)
+            {
+                certTitle += c.Details.Split(':')[0] + " | ";
+            }
+
 
             Paragraph certPara = new Paragraph();
             Run certRun = new Run(new Text(certTitle));
@@ -182,6 +219,8 @@ namespace TestPDFCreation
 
 
             string skills = string.Join(" | ", skillsData);
+            skills = skills.Replace(",", " |");
+
             Paragraph bulletPara = new Paragraph();
 
             // Run with text
@@ -284,8 +323,13 @@ namespace TestPDFCreation
 
                         if (text.Text.Contains("Workdata"))
                         {
-                            //skillsDataFunc(para);
-                            //text.Text = "";
+                            List<string> workDataList = new List<string>()
+                            {
+                                "Self-Employed, Edmonton, AB (2021–2024): As a Software Developer, built and maintained full-stack applications using C#, .NET Core, MAUI, and SQL, led API integrations for AI-driven features, and conducted security-focused code reviews. Collaborated cross-functionally to gather requirements, optimized performance, and ensured maintainability. Delivered user-friendly solutions including a cross-platform resume builder and robotic gameplay system.",
+                                "Self-Employed, Edmonton, AB (2021–2024): As a Software Developer, built and maintained full-stack applications using C#, .NET Core, MAUI, and SQL, led API integrations for AI-driven features, and conducted security-focused code reviews. Collaborated cross-functionally to gather requirements, optimized performance, and ensured maintainability. Delivered user-friendly solutions including a cross-platform resume builder and robotic gameplay system."
+                            };  
+                            workDataFunc(para, workDataList);
+                            text.Text = "";
                             continue;
                         }
 
