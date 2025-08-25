@@ -1,14 +1,49 @@
-﻿using DocumentFormat;
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.IO;
 using System.Text.Json;
-using System.Threading.Channels;
 namespace TestPDFCreation
 {
     internal class Program
     {
+        public class ProjectsModel
+        {
+            public string ProjectName { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string Bullet1 { get; set; } = string.Empty;
+            public string Bullet2 { get; set; } = string.Empty;
+            public string Bullet3 { get; set; } = string.Empty;
+        }
+
+        public class EducationModel
+        {
+            public string Title { get; set; } = string.Empty;
+            public string Course { get; set; } = string.Empty;
+            public string Details { get; set; } = string.Empty;
+        }
+
+        public class CertificationModel
+        {
+            public string Details { get; set; } = string.Empty;
+        }
+
+        public static Dictionary<string, string> certificationData = new Dictionary<string, string>
+        {
+            ["details"] = "Generative AI (LinkedIn Learning)"
+        };
+
+        public static Dictionary<string, string> workData = new Dictionary<string, string>
+        {
+            ["companyName"] = "Company Name",
+            ["jobTitle"] = "Job Title",
+            ["startDate"] = "Start Date",
+            ["endDate"] = "End Date",
+            ["description"] = "Description",
+            ["bullet1"] = "Bullet Point 1",
+            ["bullet2"] = "Bullet Point 2",
+            ["bullet3"] = "Bullet Point 3"
+        };
+
         public static Dictionary<string, string> keyValuePairs = new Dictionary<string, string>
         {
             ["Fullname"] = "",
@@ -19,16 +54,24 @@ namespace TestPDFCreation
         };
 
         public static List<string> skillsData = new List<string> {
-            "C#",
-            ".NET MAUI",
-            "ASP.NET Core",
-            "Blazor",
-            "SQL",
-            "HTML5",
-            "CSS3",
-            "JavaScript",
-            "Liquid Templating",
-            "FetchXML"
+            "full-stack development | application security | CI/CD | DevOps | deployment | system architecture",
+            "React",
+            "C#, React, TypeScript, MAUI, .NET Core"
+        };
+
+        static Dictionary<string, string> project = new Dictionary<string, string>
+        {
+            ["projectName"] = "Resume Builder App",
+            ["description"] = "I led the development of a cross-platform Resume Builder App using .NET MAUI, integrating multiple job site APIs and AI-driven customization to generate tailored resumes and cover letters automatically. This project highlights my ability to architect scalable, user-focused solutions that align with CES Corporation’s need for dynamic web applications.",
+            ["bullet1"] = "Integrated multiple job site APIs to fetch and validate listings based on user preferences.",
+            ["bullet2"] = "Implemented AI-powered customization to generate tailored documents matching selected job descriptions.",
+            ["bullet3"] = "Enabled DOCX download functionality for personalized application materials."
+        };
+        static Dictionary<string, string> education = new Dictionary<string, string>
+        {
+            ["title"] = "NAIT, Edmonton, Alberta (2023–2025)",
+            ["course"] = "Course: Computer Engineering Technology",
+            ["details"] = "Where I developed software applications using C# and .NET by designing and implementing full-stack solutions and embedded system integrations, resulting in practical skills to deliver reliable, real-world software projects."
         };
 
         static void Main(string[] args)
@@ -63,10 +106,82 @@ namespace TestPDFCreation
             keyValuePairs["PortfolioURL"] = jsonData["PortfolioURL"].ToString();
         }
 
-        public static void skillsDataFunc(Paragraph para)
+        public static void educationDataFunc(Paragraph para, List<EducationModel> education)
         {
             var parent = para.Parent;
-            string skills = string.Join("                   ", skillsData);
+            foreach (var edu in education)
+            {
+                // --- Education Title (blue, larger font) ---
+                Paragraph titlePara = new Paragraph();
+                Run titleRun = new Run(new Text(edu.Title));
+                RunProperties titleProps = new RunProperties
+                {
+                    Bold = new Bold(),
+                    FontSize = new FontSize() { Val = "22" }, // 12pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                titleRun.PrependChild(titleProps);
+                titlePara.Append(titleRun);
+                parent.InsertAfter(titlePara, para);
+                para = titlePara;
+                // --- Course Name ---
+                Paragraph coursePara = new Paragraph();
+                Run courseRun = new Run(new Text(edu.Course));
+                RunProperties courseProps = new RunProperties
+                {
+                    FontSize = new FontSize() { Val = "20" }, // 11pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                courseRun.PrependChild(courseProps);
+                coursePara.Append(courseRun);
+                ParagraphProperties ppCourse = new ParagraphProperties();
+                ppCourse.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+                ppCourse.Indentation = new Indentation() { Left = "300" };
+                coursePara.PrependChild(ppCourse);
+                parent.InsertAfter(coursePara, para);
+                para = coursePara;
+                // --- Details ---
+                Paragraph detailsPara = new Paragraph();
+                Run detailsRun = new Run(new Text(edu.Details));
+                RunProperties detailsProps = new RunProperties
+                {
+                    FontSize = new FontSize() { Val = "20" }, // 11pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                detailsRun.PrependChild(detailsProps);
+                detailsPara.Append(detailsRun);
+                ParagraphProperties ppDetails = new ParagraphProperties();
+                ppDetails.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+                ppDetails.Indentation = new Indentation() { Left = "400" };
+                detailsPara.PrependChild(ppDetails);
+                parent.InsertAfter(detailsPara, para);
+                para = detailsPara;
+            }
+        }
+
+        public static void skillsDataFunc(Paragraph para, List<CertificationModel> cert)
+        {
+            var parent = para.Parent;
+
+            string certTitle = string.Join(" | ", cert.Select(x => x.Details));
+
+            Paragraph certPara = new Paragraph();
+            Run certRun = new Run(new Text(certTitle));
+            RunProperties certProps = new RunProperties
+            {
+                FontSize = new FontSize() { Val = "20" }, // 11pt
+                RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+            };
+            certRun.PrependChild(certProps);
+            certPara.Append(certRun);
+            ParagraphProperties ppCert = new ParagraphProperties();
+            ppCert.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+            certPara.PrependChild(ppCert);
+            parent.InsertAfter(certPara, para);
+            para = certPara;
+
+
+            string skills = string.Join(" | ", skillsData);
             Paragraph bulletPara = new Paragraph();
 
             // Run with text
@@ -75,26 +190,85 @@ namespace TestPDFCreation
 
             // Customize text formatting
             RunProperties runProps = new RunProperties();
-            //runProps.Bold = new Bold();                      // bold text
             runProps.Color = new Color() { Val = "0070C0" }; // blue color (hex)
-            runProps.FontSize = new FontSize() { Val = "22" }; // 12pt (OpenXML uses half-points)
+            runProps.FontSize = new FontSize() { Val = "20" }; // 12pt (OpenXML uses half-points)
+            runProps.RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" }; // set font
             run.PrependChild(runProps);
 
             bulletPara.Append(run);
 
-            // Customize paragraph properties
-            //ParagraphProperties pp = new ParagraphProperties();
-            //pp.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" }; // use bullet style from template
-
-            // Optional: indentation for bullet
-            //pp.Indentation = new Indentation() { Left = "720" }; // 720 = 0.5 inch
-
-            //bulletPara.PrependChild(pp);
-
             // Insert into document
             parent.InsertAfter(bulletPara, para);
             para = bulletPara;
+        }
 
+        public static void projectDataFunc(Paragraph para, List<ProjectsModel> projects)
+        {
+            var parent = para.Parent;
+
+            foreach (var project in projects)
+            {
+                // --- Project Name (blue, larger font) ---
+                Paragraph namePara = new Paragraph();
+                Run nameRun = new Run(new Text(project.ProjectName));
+                RunProperties nameProps = new RunProperties
+                {
+                    Bold = new Bold(),
+                    FontSize = new FontSize() { Val = "22" }, // 12pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                nameRun.PrependChild(nameProps);
+                namePara.Append(nameRun);
+                parent.InsertAfter(namePara, para);
+                para = namePara;
+
+                // --- Project Description ---
+                Paragraph descPara = new Paragraph();
+                Run descRun = new Run(new Text(project.Description));
+                RunProperties descProps = new RunProperties
+                {
+                    FontSize = new FontSize() { Val = "20" }, // 11pt
+                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+                };
+                descRun.PrependChild(descProps);
+                descPara.Append(descRun);
+
+                ParagraphProperties pp = new ParagraphProperties();
+                pp.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+                pp.Indentation = new Indentation() { Left = "300" };
+                descPara.PrependChild(pp);
+
+                parent.InsertAfter(descPara, para);
+                para = descPara;
+
+                // --- Bullet Points ---
+                bulletText(project.Bullet1, ref para, parent);
+                bulletText(project.Bullet2, ref para, parent);
+                bulletText(project.Bullet3, ref para, parent);
+            }
+        }
+
+        public static void bulletText(string bullet, ref Paragraph para, OpenXmlElement parent)
+        {
+            Paragraph bulletPara = new Paragraph();
+            Run run = new Run(new Text("⁍   " + bullet));
+
+            RunProperties runProps = new RunProperties
+            {
+                FontSize = new FontSize() { Val = "20" }, // 11pt
+                RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
+            };
+            run.PrependChild(runProps);
+
+            bulletPara.Append(run);
+
+            ParagraphProperties pp = new ParagraphProperties();
+            pp.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+            pp.Indentation = new Indentation() { Left = "600" };
+            bulletPara.PrependChild(pp);
+
+            parent.InsertAfter(bulletPara, para);
+            para = bulletPara;
         }
 
         public static void FixValueUpdate(Body body, Dictionary<string, string> map)
@@ -108,9 +282,74 @@ namespace TestPDFCreation
                         if (string.IsNullOrEmpty(text.Text) || text.Text.All(char.IsUpper))
                             continue;
 
+                        if (text.Text.Contains("Workdata"))
+                        {
+                            //skillsDataFunc(para);
+                            //text.Text = "";
+                            continue;
+                        }
+
+                        if (text.Text.Contains("Educationdata"))
+                        {
+                            text.Text = "";
+                            List<EducationModel> educationList = new List<EducationModel>()
+                            {
+                                new EducationModel
+                                {
+                                    Title = education["title"],
+                                    Course = education["course"],
+                                    Details = education["details"]
+                                },
+                                new EducationModel
+                                {
+                                    Title = education["title"],
+                                    Course = education["course"],
+                                    Details = education["details"]
+                                }
+                            };
+                            educationDataFunc(para, educationList);
+                            continue;
+                        }
+
+                        if (text.Text.Contains("Projectdata"))
+                        {
+                            text.Text = "";
+                            List<ProjectsModel> projects = new List<ProjectsModel>() {
+                                new ProjectsModel
+                                {
+                                    ProjectName = project["projectName"],
+                                    Description = project["description"],
+                                    Bullet1 = project["bullet1"],
+                                    Bullet2 = project["bullet2"],
+                                    Bullet3 = project["bullet3"]
+                                },
+                                new ProjectsModel
+                                {
+                                    ProjectName = project["projectName"],
+                                    Description = project["description"],
+                                    Bullet1 = project["bullet1"],
+                                    Bullet2 = project["bullet2"],
+                                    Bullet3 = project["bullet3"]
+                                }
+                            };
+                            projectDataFunc(para, projects);
+                            continue;
+                        }
+
                         if (text.Text.Contains("Skillsdata"))
                         {
-                            skillsDataFunc(para);
+                            List<CertificationModel> certList = new List<CertificationModel>()
+                            {
+                                new CertificationModel
+                                {
+                                    Details = certificationData["details"]
+                                },
+                                new CertificationModel
+                                {
+                                    Details = certificationData["details"]
+                                }
+                            };
+                            skillsDataFunc(para, certList);
                             text.Text = "";
                             continue;
                         }

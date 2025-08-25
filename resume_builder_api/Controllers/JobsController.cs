@@ -21,7 +21,7 @@ namespace resume_builder_api.Controllers
             _dbContext = appDb;
         }
 
-        [HttpGet("/JSON/{publicKey}")]
+        [HttpPost("/JSON/{publicKey}")]
         public async Task<IActionResult> ReturnJsonData(string publicKey, JobDto job)
         {
             if (job == null || publicKey == null) return BadRequest("Empty Feilds");
@@ -39,7 +39,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Succesful Json format return", returnData });
         }
 
-        [HttpGet("/PerKey/{publicKey}")]
+        [HttpPost("/PerKey/{publicKey}")]
         public async Task<IActionResult> ReturnPercentKeyword(string publicKey, JobDto job)
         {
             if (job == null || publicKey == null) return BadRequest("Empty Feilds");
@@ -60,7 +60,7 @@ namespace resume_builder_api.Controllers
                 });
         }
 
-        [HttpGet("/Resume/Json/{publicKey}")]
+        [HttpPost("/Resume/Json/{publicKey}")]
         public async Task<IActionResult> ReturnResumeJsonData(string publicKey, JobDto job)
         {
             if (job == null || publicKey == null) return BadRequest("Empty Feilds");
@@ -77,7 +77,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Succesful Json format return", returnData.Resume });
         }
 
-        [HttpGet("/CoverLetter/Json/{publicKey}")]
+        [HttpPost("/CoverLetter/Json/{publicKey}")]
         public async Task<IActionResult> ReturnCoverLetterJsonData(string publicKey, JobDto job)
         {
             if (job == null || publicKey == null) return BadRequest("Empty Feilds");
