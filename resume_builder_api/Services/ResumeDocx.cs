@@ -1,38 +1,13 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Text.Json;
-namespace TestPDFCreation
+using resume_builder_api.Models;
+
+namespace resume_builder_api.Services
 {
-    internal class Program
+    public static class ResumeDocx
     {
-        public class ProjectsModel
-        {
-            public string ProjectName { get; set; } = string.Empty;
-            public string Description { get; set; } = string.Empty;
-            public string Bullet1 { get; set; } = string.Empty;
-            public string Bullet2 { get; set; } = string.Empty;
-            public string Bullet3 { get; set; } = string.Empty;
-        }
-
-        public class EducationModel
-        {
-            public string Title { get; set; } = string.Empty;
-            public string Course { get; set; } = string.Empty;
-            public string Details { get; set; } = string.Empty;
-        }
-
-        public class CertificationModel
-        {
-            public string Details { get; set; } = string.Empty;
-        }
-
-        public static Dictionary<string, string> certificationData = new Dictionary<string, string>
-        {
-            ["details"] = "Generative AI (LinkedIn Learning)"
-        };
-
-        public static Dictionary<string, string> keyValuePairs = new Dictionary<string, string>
+        private static Dictionary<string, string> keyValuePairs = new Dictionary<string, string>
         {
             ["Fullname"] = "",
             ["Titlekeyword"] = "",
@@ -41,60 +16,16 @@ namespace TestPDFCreation
             ["PortfolioURL"] = ""
         };
 
-        public static List<string> skillsData = new List<string> {
-            "full-stack development | application security | CI/CD | DevOps | deployment | system architecture",
-            "React",
-            "C#, React, TypeScript, MAUI, .NET Core"
-        };
-
-        static Dictionary<string, string> project = new Dictionary<string, string>
+        private static void UpdateMap(UserModel user, ResumeModel resume)
         {
-            ["projectName"] = "Resume Builder App",
-            ["description"] = "I led the development of a cross-platform Resume Builder App using .NET MAUI, integrating multiple job site APIs and AI-driven customization to generate tailored resumes and cover letters automatically. This project highlights my ability to architect scalable, user-focused solutions that align with CES Corporation’s need for dynamic web applications.",
-            ["bullet1"] = "Integrated multiple job site APIs to fetch and validate listings based on user preferences.",
-            ["bullet2"] = "Implemented AI-powered customization to generate tailored documents matching selected job descriptions.",
-            ["bullet3"] = "Enabled DOCX download functionality for personalized application materials."
-        };
-        static Dictionary<string, string> education = new Dictionary<string, string>
-        {
-            ["title"] = "NAIT, Edmonton, Alberta (2023–2025)",
-            ["course"] = "Course: Computer Engineering Technology",
-            ["details"] = "Where I developed software applications using C# and .NET by designing and implementing full-stack solutions and embedded system integrations, resulting in practical skills to deliver reliable, real-world software projects."
-        };
-
-        static void Main(string[] args)
-        {
-            string json = File.ReadAllText(@"C:\\Users\\chels\\Desktop\\Resume-Builder-App\\TestPDFCreation\\data.json");
-            var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
-
-            string tempdocx = @"C:\Users\chels\Desktop\Resume-Builder-App\resume_builder_api\Templates\Resume\Template_1.docx";
-            string output = @"C:\Users\chels\Desktop\Resume-Builder-App\TestPDFCreation\out.docx";
-
-            File.Copy(tempdocx, output, true);
-
-            using (var doc = WordprocessingDocument.Open(output, true))
-            {
-                var body = doc.MainDocumentPart.Document.Body;
-
-                UpdateMap(data);
-
-                FixValueUpdate(body, keyValuePairs);
-
-                doc.MainDocumentPart.Document.Save();
-            }
-
+            keyValuePairs["Fullname"] = user.FirstName + " " + user.LastName;
+            keyValuePairs["Titlekeyword"] = resume.TitleKeyword;
+            keyValuePairs["Details"] = $"{user.Province}, {user.Location} | {user.Email} | {user.Mobile} | {user.LinkedInUrl}";
+            keyValuePairs["Summarydata"] = resume.Summary;
+            keyValuePairs["PortfolioURL"] = user.PortfolioUrl;
         }
 
-        public static void UpdateMap(Dictionary<string, object> jsonData) 
-        {
-            keyValuePairs["Fullname"] = jsonData["FullName"].ToString();
-            keyValuePairs["Titlekeyword"] = jsonData["TitleKeyword"].ToString();
-            keyValuePairs["Details"] = jsonData["Details"].ToString();
-            keyValuePairs["Summarydata"] = jsonData["Summary"].ToString();
-            keyValuePairs["PortfolioURL"] = jsonData["PortfolioURL"].ToString();
-        }
-
-        public static void educationDataFunc(Paragraph para, List<EducationModel> education)
+        private static void educationDataFunc(Paragraph para, List<EducationModel> education)
         {
             var parent = para.Parent;
             foreach (var edu in education)
@@ -112,22 +43,6 @@ namespace TestPDFCreation
                 titlePara.Append(titleRun);
                 parent.InsertAfter(titlePara, para);
                 para = titlePara;
-                // --- Course Name ---
-                Paragraph coursePara = new Paragraph();
-                Run courseRun = new Run(new Text(edu.Course));
-                RunProperties courseProps = new RunProperties
-                {
-                    FontSize = new FontSize() { Val = "20" }, // 11pt
-                    RunFonts = new RunFonts() { Ascii = "Calibri", HighAnsi = "Calibri" } // set font
-                };
-                courseRun.PrependChild(courseProps);
-                coursePara.Append(courseRun);
-                ParagraphProperties ppCourse = new ParagraphProperties();
-                ppCourse.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
-                ppCourse.Indentation = new Indentation() { Left = "300" };
-                coursePara.PrependChild(ppCourse);
-                parent.InsertAfter(coursePara, para);
-                para = coursePara;
                 // --- Details ---
                 Paragraph detailsPara = new Paragraph();
                 Run detailsRun = new Run(new Text(edu.Details));
@@ -147,7 +62,7 @@ namespace TestPDFCreation
             }
         }
 
-        public static void workDataFunc(Paragraph para, List<string> workData)
+        private static void workDataFunc(Paragraph para, List<string> workData)
         {
             if (para == null) return;
             var parent = para.Parent;
@@ -190,7 +105,7 @@ namespace TestPDFCreation
 
         }
 
-        public static void skillsDataFunc(Paragraph para, List<CertificationModel> cert)
+        private static void skillsDataFunc(Paragraph para, List<CertificationModel> cert, List<string> skillsData)
         {
             var parent = para.Parent;
 
@@ -241,7 +156,7 @@ namespace TestPDFCreation
             para = bulletPara;
         }
 
-        public static void projectDataFunc(Paragraph para, List<ProjectsModel> projects)
+        private static void projectDataFunc(Paragraph para, List<ProjectsModel> projects)
         {
             var parent = para.Parent;
 
@@ -287,7 +202,7 @@ namespace TestPDFCreation
             }
         }
 
-        public static void bulletText(string bullet, ref Paragraph para, OpenXmlElement parent)
+        private static void bulletText(string bullet, ref Paragraph para, OpenXmlElement parent)
         {
             Paragraph bulletPara = new Paragraph();
             Run run = new Run(new Text("⁍   " + bullet));
@@ -310,8 +225,10 @@ namespace TestPDFCreation
             para = bulletPara;
         }
 
-        public static void FixValueUpdate(Body body, Dictionary<string, string> map)
+        public static void FixValueUpdate(Body body, UserModel user,ResumeModel jobModel)
         {
+            UpdateMap(user, jobModel);
+
             foreach (var para in body.ChildElements.OfType<Paragraph>())
             {
                 foreach (var run in para.ChildElements.OfType<Run>())
@@ -323,87 +240,45 @@ namespace TestPDFCreation
 
                         if (text.Text.Contains("Workdata"))
                         {
-                            List<string> workDataList = new List<string>()
-                            {
-                                "Self-Employed, Edmonton, AB (2021–2024): As a Software Developer, built and maintained full-stack applications using C#, .NET Core, MAUI, and SQL, led API integrations for AI-driven features, and conducted security-focused code reviews. Collaborated cross-functionally to gather requirements, optimized performance, and ensured maintainability. Delivered user-friendly solutions including a cross-platform resume builder and robotic gameplay system.",
-                                "Self-Employed, Edmonton, AB (2021–2024): As a Software Developer, built and maintained full-stack applications using C#, .NET Core, MAUI, and SQL, led API integrations for AI-driven features, and conducted security-focused code reviews. Collaborated cross-functionally to gather requirements, optimized performance, and ensured maintainability. Delivered user-friendly solutions including a cross-platform resume builder and robotic gameplay system."
-                            };
-                            workDataFunc(para, workDataList);
+                            workDataFunc(para, workData:jobModel.WorkExperience);
                             text.Text = "";
                             continue;
                         }
 
                         if (text.Text.Contains("Educationdata"))
                         {
+                            educationDataFunc(para, education:jobModel.Education);
                             text.Text = "";
-                            List<EducationModel> educationList = new List<EducationModel>()
-                            {
-                                new EducationModel
-                                {
-                                    Title = education["title"],
-                                    Course = education["course"],
-                                    Details = education["details"]
-                                },
-                                new EducationModel
-                                {
-                                    Title = education["title"],
-                                    Course = education["course"],
-                                    Details = education["details"]
-                                }
-                            };
-                            educationDataFunc(para, educationList);
                             continue;
                         }
 
                         if (text.Text.Contains("Projectdata"))
                         {
+                            projectDataFunc(para, projects:jobModel.Projects);
                             text.Text = "";
-                            List<ProjectsModel> projects = new List<ProjectsModel>() {
-                                new ProjectsModel
-                                {
-                                    ProjectName = project["projectName"],
-                                    Description = project["description"],
-                                    Bullet1 = project["bullet1"],
-                                    Bullet2 = project["bullet2"],
-                                    Bullet3 = project["bullet3"]
-                                },
-                                new ProjectsModel
-                                {
-                                    ProjectName = project["projectName"],
-                                    Description = project["description"],
-                                    Bullet1 = project["bullet1"],
-                                    Bullet2 = project["bullet2"],
-                                    Bullet3 = project["bullet3"]
-                                }
-                            };
-                            projectDataFunc(para, projects);
                             continue;
                         }
 
                         if (text.Text.Contains("Skillsdata"))
                         {
-                            List<CertificationModel> certList = new List<CertificationModel>()
+                            List<string> skillsData = new List<string>()
                             {
-                                new CertificationModel
-                                {
-                                    Details = certificationData["details"]
-                                },
-                                new CertificationModel
-                                {
-                                    Details = certificationData["details"]
-                                }
+                                jobModel.ProgramingLanguage,
+                                jobModel.Frameworks,
+                                jobModel.RelevantKeywords
                             };
-                            skillsDataFunc(para, certList);
+                            skillsDataFunc(para, cert: jobModel.Certificates, skillsData:skillsData);
                             text.Text = "";
                             continue;
                         }
 
-                        if (map.ContainsKey(text.Text))
-                            text.Text = map[text.Text];
+                        if (keyValuePairs.ContainsKey(text.Text))
+                            text.Text = keyValuePairs[text.Text];
                     }
                 }
             }
 
         }
+
     }
 }

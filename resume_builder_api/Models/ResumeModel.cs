@@ -8,7 +8,7 @@ public class ResumeModel
     public string Frameworks { get; set; } = string.Empty;
     public string RelevantKeywords { get; set; } = string.Empty;
     public List<ProjectsModel> Projects { get; set; } = new List<ProjectsModel>();
-    public string WorkExperience { get; set; } = string.Empty;
-    public string Education { get; set; } = string.Empty;
-    public string Certificates { get; set; } = string.Empty;
+    public List<string> WorkExperience { get; set; } = new();
+    public List<EducationModel> Education { get; set; } = new();
+    public List<CertificationModel> Certificates { get; set; } = new();
 }

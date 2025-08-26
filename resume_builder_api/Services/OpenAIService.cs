@@ -141,9 +141,22 @@ public class OpenAIService
         }
         resume.Projects = projects;
 
-        resume.WorkExperience = GetSectionContent("WORK EXPERIENCE");
-        resume.Education = GetSectionContent("EDUCATION");
-        resume.Certificates = GetSectionContent("CERTIFICATES");
+        var workExpText = GetSectionContent("WORK EXPERIENCE");
+        resume.WorkExperience.Add(workExpText);
+
+        var educationText = GetSectionContent("EDUCATION");
+        var eduSplit = educationText.Trim().Split('\n');
+        EducationModel educationModel = new EducationModel()
+        {
+            Title = eduSplit[0],
+            Details = eduSplit.Length == 2 ? eduSplit[1] : eduSplit[1] + "\n" + eduSplit[2]
+        };
+        resume.Education.Add(educationModel);
+
+        var certificationText = GetSectionContent("CERTIFICATES");
+        var certSplit = certificationText.Split('\n');
+        foreach(var i in certSplit)
+            resume.Certificates.Add(new CertificationModel() { Details = i });
 
         // Alternative simple extraction if regex fails
         coverLetter.Title = GetSectionContent("COVER LETTER");
