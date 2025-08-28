@@ -10,7 +10,7 @@ using resume_builder_api.Services;
 
 namespace resume_builder_api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class JobsController : ControllerBase
     {

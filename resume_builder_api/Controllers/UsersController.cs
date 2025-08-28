@@ -3,22 +3,23 @@ using Microsoft.EntityFrameworkCore;
 using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 using resume_builder_api.Services;
+using Supabase.Gotrue;
 
 namespace resume_builder_api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController(IConfiguration configuration, AppDbContext appDb) : ControllerBase
     {
-        [HttpPost("Auth")]
-        public IActionResult Authenticate(AuthDto authDto)
+        [HttpPost("Auth/{apiKey}/{Email}")]
+        public IActionResult Authenticate(string apiKey, string Email)
         {
             // Replace with your actual API key validation logic
-            if (authDto.apiKey == configuration.GetConnectionString("ADMIN_PASS"))
+            if (apiKey == configuration.GetConnectionString("ADMIN_PASS"))
             {
                 // Check if the user already exists
                 var existingUser = appDb.Users
-                    .FirstOrDefault(u => u.Email == authDto.Email || u.Mobile == authDto.Mobile);
+                    .FirstOrDefault(u => u.Email == Email);
 
                 if (existingUser != null)
                 {
@@ -28,10 +29,10 @@ namespace resume_builder_api.Controllers
 
                 appDb.Users.Add(new UserModel
                 {
-                    FirstName = authDto.FirstName,
-                    LastName = authDto.LastName,
-                    Email = authDto.Email,
-                    Mobile = authDto.Mobile,
+                    FirstName = "First Name (Naresh)",
+                    LastName = "Last Name (Koirala)",
+                    Email = Email,
+                    Mobile = "Mobile Number (7809165002)",
                     Location = "User_Location (City)",
                     Province = "User_Province (State)",
                     JobField = "User_Job_Field (Software Developer)",
@@ -82,8 +83,10 @@ namespace resume_builder_api.Controllers
 
                 // Return a success response
                 var userTemp = appDb.Users
-                    .Where(u => u.Email == authDto.Email)
+                    .Where(u => u.Email == Email)
                     .FirstOrDefault();
+
+                HelperFunction.FetchUser(userTemp, appDb);
 
                 return Ok(new { Message = "Authentication successful", userTemp });
             }
@@ -286,7 +289,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Project entry deleted successfully" });
         }
 
-        [HttpPut("Update/Education/{publicKey}")]
+        [HttpPost("Add/Education/{publicKey}")]
         public IActionResult UpdateEducation(string publicKey, [FromBody] EducationEntryDto entryDto)
         {
             // Find the user by public key
@@ -315,7 +318,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Education updated successfully", Response = educationEntry });
         }
 
-        [HttpPut("Update/Work/{publicKey}")]
+        [HttpPost("Add/Work/{publicKey}")]
         public IActionResult UpdateWork(string publicKey, [FromBody] WorkEntryDto entryDto)
         {
             // Find the user by public key
@@ -340,7 +343,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Work updated successfully", Response = workEntry });
         }
 
-        [HttpPut("Update/Certificate/{publicKey}")]
+        [HttpPost("Add/Certificate/{publicKey}")]
         public IActionResult UpdateCertificate(string publicKey, [FromBody] CertificateEntryDto entryDto)
         {
             // Find the user by public key
@@ -363,7 +366,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Certificate updated successfully", Response = certificateEntry });
         }
 
-        [HttpPut("Update/Skill/{publicKey}")]
+        [HttpPost("Add/Skill/{publicKey}")]
         public IActionResult UpdateSkill(string publicKey, [FromBody] SkillsEntryDto entryDto)
         {
             // Find the user by public key
@@ -385,7 +388,7 @@ namespace resume_builder_api.Controllers
             return Ok(new { Message = "Skill updated successfully", Response = skillEntry });
         }
 
-        [HttpPut("Update/Project/{publicKey}")]
+        [HttpPost("Add/Project/{publicKey}")]
         public IActionResult UpdateProject(string publicKey, [FromBody] ProjectEntryDto entryDto)
         {
             // Find the user by public key
