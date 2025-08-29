@@ -38,45 +38,7 @@ namespace resume_builder_api.Controllers
                     JobField = "User_Job_Field (Software Developer)",
                     PortfolioUrl = "https://user-portfolio.com",
                     LinkedInUrl = "https://linkedin.com/in/user-profile",
-                    UserSummary = "User Summary (A brief description of the user)",
-                    Education = new List<EducationEntry>() {
-                        new EducationEntry
-                        {
-                            InstitutionName = "Institution_Name",
-                            Date = "start and end year (2023-2025)",
-                            Location = "Location of institution",
-                            Details = "Description of the degree or achievements with course name and what you learned."
-                        }
-                    },
-                    WorkExperience = new List<WorkEntry>() {
-                        new WorkEntry
-                        {
-                            CompanyName = "Company_Name",
-                            Date = "start and end year (2023-2025)",
-                            Location = "Location of company",
-                            Details = "Description of the job role, responsibilities, and achievements."
-                        }
-                    },
-                    Certificates = new List<CertificateEntry>() {
-                        new CertificateEntry
-                        {
-                            CertificateName = "Certificate_Name",
-                            Details = "Description of the certificate and what it entails."
-                        }
-                    },
-                    Skills = new List<SkillEntry>() {
-                        new SkillEntry
-                        {
-                            SkillName = "Skill_Name"
-                        }
-                    },
-                    Projects = new List<ProjectEntry>() {
-                        new ProjectEntry
-                        {
-                            ProjectName = "Project_Name",
-                            Description = "Description of the project, technologies used, and your role in it."
-                        }
-                    }
+                    UserSummary = "User Summary (A brief description of the user)"
                 });
 
                 appDb.SaveChanges();
@@ -85,8 +47,6 @@ namespace resume_builder_api.Controllers
                 var userTemp = appDb.Users
                     .Where(u => u.Email == Email)
                     .FirstOrDefault();
-
-                HelperFunction.FetchUser(userTemp, appDb);
 
                 return Ok(new { Message = "Authentication successful", userTemp });
             }

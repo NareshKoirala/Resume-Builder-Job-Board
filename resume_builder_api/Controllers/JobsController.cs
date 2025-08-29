@@ -101,19 +101,15 @@ namespace resume_builder_api.Controllers
         }
 
         [HttpPost("/Resume/Docx/{publicKey}")]
-        public async Task<IActionResult> ReturnResumeDocx(string publicKey, JobDto job)
+        public IActionResult ReturnResumeDocx(string publicKey, ResumeModel resume)
         {
-            if (job == null || publicKey == null) return BadRequest("Empty Feilds");
+            if (publicKey == null) return BadRequest("Empty Feilds");
+
             var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
+
             if (user == null) return BadRequest("Invalid Public ID");
 
             HelperFunction.FetchUser(user, _dbContext);
-
-            var returnData = new ReturnJobModel();
-            returnData.JobName = job.JobName;
-
-            returnData = await _openAIService.OpenAIServiceFunct(GenerateResume, user, job, returnData);
-
 
             // Create a memory stream (so we don't mess with the original template file)
             using (MemoryStream memStream = new MemoryStream())
@@ -135,7 +131,7 @@ namespace resume_builder_api.Controllers
                     Body body = wordDoc.MainDocumentPart.Document.Body;
 
                     // Call your function that formats the document
-                    ResumeDocx.FixValueUpdate(body, user, returnData.Resume);
+                    ResumeDocx.FixValueUpdate(body, user, resume);
 
                     // Save changes
                     wordDoc.MainDocumentPart.Document.Save();
@@ -144,7 +140,52 @@ namespace resume_builder_api.Controllers
                 return File(
                         memStream.ToArray(),
                         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        $"{job.JobName}.docx"
+                        $"Resume.docx"
+                    );
+            }
+        }
+
+        [HttpPost("/CoverLetter/Docx/{publicKey}")]
+        public IActionResult ReturnCoverLetterDocx(string publicKey, CoverLetterModel coverLetter)
+        {
+            if (publicKey == null) return BadRequest("Empty Feilds");
+
+            var user = _dbContext.Users.FirstOrDefault(x => x.PublicId == publicKey);
+
+            if (user == null) return BadRequest("Invalid Public ID");
+
+            HelperFunction.FetchUser(user, _dbContext);
+
+            // Create a memory stream (so we don't mess with the original template file)
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "Resume", "Template_1.docx");
+
+                // Copy template into memory
+                using (FileStream fileStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read))
+                {
+                    fileStream.CopyTo(memStream);
+                }
+
+                // Reset position to beginning
+                memStream.Position = 0;
+
+                // Open WordprocessingDocument in editable mode
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memStream, true))
+                {
+                    Body body = wordDoc.MainDocumentPart.Document.Body;
+
+                    // Call your function that formats the document
+                    CoverLetterDocx.FixValueUpdate(body, user, coverLetter);
+
+                    // Save changes
+                    wordDoc.MainDocumentPart.Document.Save();
+                }
+
+                return File(
+                        memStream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        $"Resume.docx"
                     );
             }
         }
