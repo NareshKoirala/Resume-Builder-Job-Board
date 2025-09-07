@@ -176,7 +176,7 @@ namespace resume_builder_api.Controllers
                     Body body = wordDoc.MainDocumentPart.Document.Body;
 
                     // Call your function that formats the document
-                    CoverLetterDocx.FixValueUpdate(body, user, coverLetter);
+                    //CoverLetterDocx.FixValueUpdate(body, user, coverLetter);
 
                     // Save changes
                     wordDoc.MainDocumentPart.Document.Save();

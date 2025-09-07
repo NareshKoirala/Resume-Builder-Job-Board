@@ -9,11 +9,9 @@ import JobListings, { Job } from '@/components/job-listings';
 import RecentActivity, { Activity } from '@/components/recent-activity';
 import Stars from '@/components/stars';
 import UserInfo from '@/components/user-info';
-import {userFetch, emailFetch, dbFetch} from '@/api/supabase/dbFetch';
+import { emailFetch } from '@/api/supabase/dbFetch';
 import { UserRegisterDto, UpdateUserDto } from '@/model/data-structure';
-import { userRegisterComplete } from '@/api/supabase/dbInsert';
 import { credentialsUserIdUpdate, usersUpdate, dbUpdate } from '@/api/supabase/dbUpdate';
-import { registerUserComplete } from '@/api/custom/externalApi';
 
 interface DashboardStatsData {
   totalApplications: number;
@@ -48,64 +46,7 @@ function DashboardContent() {
           setIsLoading(true);
           
           const fetchUserId = await emailFetch(userEmail);
-          if (fetchUserId && fetchUserId.length > 0) {
-            const fetchUser = await userFetch(fetchUserId[0].user_id);
-
-            if (fetchUser == null || fetchUser.length === 0) {
-              setUserExists(false); // User needs to register
-            } else {
-              setUserExists(true); // User exists, show dashboard
-              
-              // Set user name from the fetched user data
-              const userData = fetchUser[0];
-              setUserName(userData.first_name || userEmail.split('@')[0]);
-              
-              // Fetch all related data from separate tables
-              const userId = userData.id;
-              console.log('Fetching data for user ID:', userId);
-              
-              const [educationData, workData, certificatesData, skillsData, projectsData] = await Promise.all([
-                dbFetch(userId, 'education'),
-                dbFetch(userId, 'work_experience'),
-                dbFetch(userId, 'certificates'),
-                dbFetch(userId, 'skills'),
-                dbFetch(userId, 'projects')
-              ]);
-              
-              console.log('Fetched data:', {
-                education: educationData,
-                work: workData,
-                certificates: certificatesData,
-                skills: skillsData,
-                projects: projectsData
-              });
-              
-              // Ensure the user data has all required array properties for UserInfo component
-              const formattedUserData: UpdateUserDto = {
-                publicId: userData.id || '',
-                first_name: userData.first_name || '',
-                last_name: userData.last_name || '',
-                email: userData.email || userEmail,
-                mobile: userData.mobile || '',
-                location: userData.location || '',
-                province: userData.province || '',
-                job_field: userData.job_field || '',
-                portfolio_url: userData.portfolio_url || '',
-                linkedin_url: userData.linkedin_url || '',
-                user_summary: userData.user_summary || '',
-                education: educationData || [],
-                work_experience: workData || [],
-                certificates: certificatesData || [],
-                skills: skillsData || [],
-                projects: projectsData || []
-              };
-              
-              console.log('Formatted user data:', formattedUserData);
-              setCurrentUserData(formattedUserData);
-            }
-          } else {
-            setUserExists(false); // No credentials found, user needs to register
-          }
+          
         } catch (error) {
           console.error('Error fetching user data:', error);
           setUserExists(false); // On error, assume user needs registration
@@ -157,17 +98,8 @@ function DashboardContent() {
   const handleUserRegistration = async (userData: UserRegisterDto | UpdateUserDto) => {
     try {
       // Use the integrated registration function that handles both external API and local database
-      const registrationResult = await registerUserComplete(userData as UserRegisterDto);
-      
-      if (!registrationResult.success || !registrationResult.publicId || !registrationResult.localUserId) {
-        throw new Error(registrationResult.error || 'Registration failed');
-      }
 
       // Update the credentials table with the new local user_id
-      const updatedCredentials = {
-        user_id: registrationResult.localUserId
-      };
-      const credentialsResponse = await credentialsUserIdUpdate(userEmail, updatedCredentials);
 
       // After successful registration, update the state to show dashboard
       setUserExists(true);
@@ -179,7 +111,6 @@ function DashboardContent() {
         setUserName(userEmail.split('@')[0]);
       }
       
-      alert(`User registered successfully!\nExternal API Public ID: ${registrationResult.publicId}\nLocal Database ID: ${registrationResult.localUserId}`);
     } catch (error) {
       console.error('Error registering user:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
