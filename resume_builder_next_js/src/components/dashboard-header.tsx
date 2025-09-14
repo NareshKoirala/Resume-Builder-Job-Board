@@ -5,8 +5,7 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ 
-  userName, 
-  onSettingsClick, 
+  userName,
   onSignOutClick 
 }: DashboardHeaderProps) {
   return (
@@ -19,12 +18,6 @@ export default function DashboardHeader({
           <p className="text-gray-300">Find jobs and build tailored resumes & cover letters</p>
         </div>
         <div className="flex gap-4">
-          <button 
-            onClick={onSettingsClick}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Settings
-          </button>
           <button 
             onClick={onSignOutClick}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"

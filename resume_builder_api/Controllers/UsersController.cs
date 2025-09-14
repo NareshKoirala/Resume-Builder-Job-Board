@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using resume_builder_api.DTOs;
 using resume_builder_api.Models;
 using resume_builder_api.Services;
-using Supabase.Gotrue;
 
 namespace resume_builder_api.Controllers
 {
@@ -27,28 +26,14 @@ namespace resume_builder_api.Controllers
                     return Ok(new { Message = "User already exists", Response = existingUser });
                 }
 
-                appDb.Users.Add(new UserModel
+                var changes = appDb.Users.Add(new UserModel
                 {
-                    FirstName = "First Name (Naresh)",
-                    LastName = "Last Name (Koirala)",
-                    Email = Email,
-                    Mobile = "Mobile Number (7809165002)",
-                    Location = "User_Location (City)",
-                    Province = "User_Province (State)",
-                    JobField = "User_Job_Field (Software Developer)",
-                    PortfolioUrl = "https://user-portfolio.com",
-                    LinkedInUrl = "https://linkedin.com/in/user-profile",
-                    UserSummary = "User Summary (A brief description of the user)"
+                    Email = Email
                 });
 
                 appDb.SaveChanges();
 
-                // Return a success response
-                var userTemp = appDb.Users
-                    .Where(u => u.Email == Email)
-                    .FirstOrDefault();
-
-                return Ok(new { Message = "Authentication successful", userTemp });
+                return Ok(new { Message = "Authentication successful", changes });
             }
             else
             {

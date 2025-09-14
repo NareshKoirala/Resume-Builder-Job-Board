@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link"; // Make sure you have this for navigation
 
 interface Job {
   id: string;
@@ -18,57 +18,87 @@ interface JobListingsProps {
 }
 
 export default function JobListings({ jobs }: JobListingsProps) {
-  if (jobs.length === 0) {
-    return (
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-white">Featured Jobs</h2>
-          <Link href="/jobs" className="text-purple-300 hover:text-purple-200 transition-colors">
-            View All Jobs →
-          </Link>
-        </div>
-        <div className="purple-card p-12 text-center">
-          <div className="text-6xl mb-4">💼</div>
-          <h3 className="text-xl font-semibold text-white mb-2">No Jobs Available</h3>
-          <p className="text-gray-400">Check back later for new job opportunities</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold text-white">Featured Jobs</h2>
-        <Link href="/jobs" className="text-purple-300 hover:text-purple-200 transition-colors">
-          View All Jobs →
-        </Link>
+    <div className="max-w-5xl mx-auto px-6 pt-12">
+      {/* Header / Title Block */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-10 bg-purple-900/20 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-purple-800">
+        {/* Title */}
+        <h1 className="text-5xl font-extrabold text-white mb-6 md:mb-0 flex items-center gap-3">
+          <span className="text-5xl">💼</span>
+          Job Board
+        </h1>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href="/dashboard"
+            className="text-purple-200 border border-purple-400 hover:bg-purple-800/30 px-5 py-3 rounded-lg font-medium transition-all shadow-sm hover:shadow-md text-center"
+          >
+            Go Back
+          </Link>
+          <button className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-medium shadow-md transition-transform transform hover:-translate-y-0.5">
+            Add Manual Job
+          </button>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
-          <div key={job.id} className="purple-card p-6 hover:scale-105 transition-transform cursor-pointer">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-2">{job.title}</h3>
-                <p className="text-purple-300 font-medium">{job.company}</p>
-                <p className="text-gray-400 text-sm">{job.location}</p>
-              </div>
-              {job.badge && (
-                <span className={`${job.badge.color} text-white text-xs px-2 py-1 rounded-full`}>
-                  {job.badge.text}
-                </span>
-              )}
-            </div>
-            <p className="text-gray-300 text-sm mb-4">{job.description}</p>
-            <div className="flex items-center justify-between">
-              <span className="text-purple-200 font-bold">{job.salaryRange}</span>
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm transition-colors">
-                Apply Now
-              </button>
-            </div>
+
+      {/* No Jobs Available */}
+      {jobs.length === 0 && (
+        <div className="flex justify-center px-4">
+          <div className="bg-gradient-to-r from-purple-700 to-purple-900 rounded-xl p-12 text-center shadow-lg max-w-2xl w-full">
+            <div className="text-6xl mb-4">💼</div>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No Jobs Available 😞
+            </h3>
+            <p className="text-gray-300">
+              Check back later for new job opportunities
+            </p>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* Job List */}
+      {jobs.length > 0 && (
+        <div className="space-y-6">
+          {jobs.map((job) => (
+            <div
+              key={job.id}
+              className="flex flex-col md:flex-row items-start justify-between bg-gradient-to-r from-purple-800 to-purple-900 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+            >
+              {/* Job Details */}
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-lg font-semibold text-white">
+                    {job.title}
+                  </h3>
+                  {job.badge && (
+                    <span
+                      className={`bg-${job.badge.color}-600 text-white text-xs px-3 py-1 rounded-full`}
+                    >
+                      {job.badge.text}
+                    </span>
+                  )}
+                </div>
+                <p className="text-purple-300 font-medium">{job.company}</p>
+                <p className="text-gray-400 text-sm mb-3">{job.location}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                  {job.description}
+                </p>
+                <span className="text-purple-200 font-semibold">
+                  {job.salaryRange}
+                </span>
+              </div>
+
+              {/* Apply Button */}
+              <div className="mt-4 md:mt-0 md:ml-6">
+                <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium shadow transition-colors">
+                  Apply Now
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
