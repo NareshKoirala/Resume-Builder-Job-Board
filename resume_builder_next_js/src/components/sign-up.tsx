@@ -8,6 +8,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  passKey?: string;
 }
 
 interface SignUpErrors {
@@ -162,6 +163,22 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
         )}
 
         <form onSubmit={handleSubmit}>
+          {/* Pass Key */}
+          <div className={styles.fieldGroup}>
+            <label htmlFor="passKey" className={styles.label}>
+              Pass Key (Optional)
+            </label>
+            <input
+              type="text"
+              id="passKey"
+              name="passKey"
+              value={formData.passKey}
+              onChange={handleInputChange}
+              className={`purple-input ${styles.input}`}
+              placeholder="Enter your pass key"
+            />
+          </div>
+
           {/* Email Field */}
           <div className={styles.fieldGroup}>
             <label htmlFor="email" className={styles.label}>

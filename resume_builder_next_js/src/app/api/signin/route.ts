@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { emailFetch } from '@/api/supabase/dbFetch';
+import { emailFetch } from '@/app/api/supabase/dbFetch';
+import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Success - In a real app, you might want to create a JWT token here
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       success: true, 
       message: 'Signed in successfully',
       user: {
@@ -43,6 +44,17 @@ export async function POST(request: NextRequest) {
         email: user.email
       }
     });
+
+    // Set a cookie for session management (example, adjust as needed)
+    response.cookies.set('userEmail', user.email,
+       { 
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 60
+       }
+    ); // 1 hour
+
+    return response;
     
   } catch (error) {
     console.error('Sign-in error:', error);

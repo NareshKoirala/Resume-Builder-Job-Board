@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 import DashboardHeader from "@/components/dashboard-header";
 import DashboardStats from "@/components/dashboard-stats";
 import QuickActions, { QuickAction } from "@/components/quick-actions";
 import RecentActivity, { Activity } from "@/components/recent-activity";
 import Stars from "@/components/stars";
 import UserInfo from "@/components/user-info";
-import { emailFetch } from "@/api/supabase/dbFetch";
 import { UserRegisterDto, UpdateUserDto } from "@/model/data-structure";
-import { usersUpdate, dbUpdate } from "@/api/supabase/dbUpdate";
+import { usersUpdate, dbUpdate } from "@/app/api/supabase/dbUpdate";
+import Loading from "@/components/loading";
 
 interface DashboardStatsData {
   totalApplications: number;
@@ -20,9 +19,17 @@ interface DashboardStatsData {
 }
 
 function DashboardContent() {
+  const [userEmail, setUserEmail] = useState<string>("");
 
-  const searchParams = useSearchParams();
-  const userEmail = searchParams.get("email") || "";
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const response = await fetch("./api/cookies?key=userEmail");
+      const data = await response.json();
+      setUserEmail(data.data);
+    };
+
+    fetchUserEmail();
+  }, []);
 
   const [stats, setStats] = useState<DashboardStatsData>({
     totalApplications: 0,
@@ -40,26 +47,7 @@ function DashboardContent() {
     null
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (userEmail) {
-        try {
-          setIsLoading(true);
-
-          const fetchUserId = await emailFetch(userEmail);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          setUserExists(false); // On error, assume user needs registration
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [userEmail]);
+  console.log("Current userEmail:", userEmail);
 
   const handleSettingsClick = () => {
     setShowSettings(true);
@@ -78,7 +66,7 @@ function DashboardContent() {
       icon: "🔍",
       href: "/jobs",
       color: "purple",
-    },  
+    },
     {
       title: "Your Jobs",
       description: "View and manage your job applications",
@@ -104,7 +92,7 @@ function DashboardContent() {
       // Update the credentials table with the new local user_id
 
       // After successful registration, update the state to show dashboard
-      setUserExists(true);
+      setUserExists(false);
 
       // Set the user name from the registration data
       if (
@@ -291,8 +279,7 @@ function DashboardContent() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex items-center justify-center">
-        <Stars />
-        <div className="text-white text-xl">Loading...</div>
+        <Loading />
       </div>
     );
   }

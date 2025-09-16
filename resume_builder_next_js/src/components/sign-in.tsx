@@ -99,9 +99,9 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
         setErrors({ general: result.message });
         return;
       }
-      
-      // Redirect to dashboard with email parameter
-      router.push(`/dashboard?email=${encodeURIComponent(formData.email)}`);
+
+      // Redirect to dashboard on successful sign-in
+      router.push(`/dashboard`);
       
     } catch (error) {
       setErrors({ general: 'Failed to sign in. Please try again.' });
