@@ -1,487 +1,274 @@
-'use client';
+"use client";
 
-import {
-    CertificateEntryDto, 
-    EducationEntryDto,
-    ProjectEntryDto,
-    SkillsEntryDto,
-    WorkEntryDto,
-    UpdateUserDto
-} from '../model/data-structure'
-
-import React, { useState, useEffect } from 'react';
-import styles from '../css/user-info.module.css';
+import React, { useState, useEffect } from "react";
+import { UpdateUserDto } from "@/model/data-structure";
 
 interface UserInfoProps {
-    userInfo?: UpdateUserDto | null;
-    onSubmit?: (data: UpdateUserDto) => void;
+  userInfo?: UpdateUserDto | null;
+  onSubmit?: (data: UpdateUserDto) => void;
 }
 
 const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
-    const [formData, setFormData] = useState<UpdateUserDto>(() => {
-        if (userInfo) {
-            return { ...userInfo };
-        }
-        return {
-            firstName: '',
-            lastName: '',
-            email: '',
-            mobile: '',
-            location: '',
-            province: '',
-            jobField: '',
-            portfolioUrl: '',
-            linkedInUrl: '',
-            userSummary: '',
-            education: [],
-            workExperience: [],
-            certificates: [],
-            skills: [],
-            projects: []
-        };
-    });
+  const [formData, setFormData] = useState<UpdateUserDto>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobile: "",
+    location: "",
+    province: "",
+    jobField: "",
+    portfolioUrl: "",
+    linkedInUrl: "",
+    userSummary: "",
+    education: [],
+    workExperience: [],
+    certificates: [],
+    skills: [],
+    projects: [],
+  });
 
-    // Update form data when userInfo prop changes
-    useEffect(() => {
-        if (userInfo) {
-            setFormData({ ...userInfo });
-        }
-    }, [userInfo]);
+  useEffect(() => {
+    if (userInfo) setFormData({ ...userInfo });
+  }, [userInfo]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        if (onSubmit) {
-            onSubmit(formData);
-        } else {
-            alert('User updated! Check console for data.');
-        }
-    };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (onSubmit) onSubmit(formData);
+    else alert("User updated! Check console for data.");
+  };
 
-    // Education handlers
-    const addEducation = () => {
-        setFormData(prev => ({
-            ...prev,
-            education: [...prev.education, { institutionName: '', date: '', location: '', details: '' }]
-        }));
-    };
-    const updateEducation = (index: number, field: keyof EducationEntryDto, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            education: prev.education.map((edu, i) =>
-                i === index ? { ...edu, [field]: value } : edu
+  const addEntry = <T extends object>(field: keyof UpdateUserDto, entry: T) =>
+    setFormData((prev) => ({
+      ...prev,
+      [field]: [...(prev[field] as T[]), entry],
+    }));
+
+  const updateEntry = <T extends object>(
+    field: keyof UpdateUserDto,
+    index: number,
+    key: keyof T,
+    value: string
+  ) =>
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as T[]).map((item, i) =>
+        i === index ? { ...item, [key]: value } : item
+      ),
+    }));
+
+  const removeEntry = <T extends object>(field: keyof UpdateUserDto, index: number) =>
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as T[]).filter((_, i) => i !== index),
+    }));
+
+  return (
+    <div className="min-h-screen bg-[var(--background)] flex flex-col items-center py-6 px-4 md:px-0">
+      {/* Form with frosted glass effect */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-5xl bg-[rgba(255,255,255,0.05)] backdrop-blur-md border border-[var(--border-color)] rounded-2xl shadow-lg p-6 md:p-10 flex flex-col gap-6"
+      >
+        {/* Personal Info */}
+        <section className="flex flex-col gap-4">
+          <h3 className="text-[var(--primary-purple)] font-semibold text-xl md:text-2xl">
+            Personal Info
+          </h3>
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+              disabled={!!formData.firstName}
+              required
+            />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+              disabled={!!formData.lastName}
+              required
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              className="purple-input flex-1 px-4 py-2"
+              disabled
+              required
+            />
+            <input
+              type="tel"
+              name="mobile"
+              placeholder="Mobile Number"
+              value={formData.mobile}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              type="text"
+              name="location"
+              placeholder="Location/City"
+              value={formData.location}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+              required
+            />
+            <input
+              type="text"
+              name="province"
+              placeholder="Province/State"
+              value={formData.province}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+              required
+            />
+          </div>
+
+          <input
+            type="text"
+            name="jobField"
+            placeholder="Job Field / Industry"
+            value={formData.jobField}
+            onChange={handleInputChange}
+            className="purple-input px-4 py-2"
+            required
+          />
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              type="url"
+              name="portfolioUrl"
+              placeholder="Portfolio URL (optional)"
+              value={formData.portfolioUrl || ""}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+            />
+            <input
+              type="url"
+              name="linkedInUrl"
+              placeholder="LinkedIn URL (optional)"
+              value={formData.linkedInUrl || ""}
+              onChange={handleInputChange}
+              className="purple-input flex-1 px-4 py-2"
+            />
+          </div>
+
+          <textarea
+            name="userSummary"
+            placeholder="Professional Summary (optional)"
+            value={formData.userSummary || ""}
+            onChange={handleInputChange}
+            className="purple-input resize-none h-24 px-4 py-2"
+          />
+        </section>
+
+        {/* Dynamic sections */}
+        {[
+          { field: "education", title: "Education", template: { institutionName: "", date: "", location: "", details: "" }, keys: ["institutionName","date","location","details"] },
+          { field: "workExperience", title: "Work Experience", template: { companyName: "", date: "", location: "", details: "" }, keys: ["companyName","date","location","details"] },
+          { field: "certificates", title: "Certificates", template: { certificateName: "", details: "" }, keys: ["certificateName","details"] },
+          { field: "skills", title: "Skills", template: { skillName: "" }, keys: ["skillName"] },
+          { field: "projects", title: "Projects", template: { projectName: "", description: "" }, keys: ["projectName","description"] },
+        ].map((section) => (
+          <section key={section.field as string} className="flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-[var(--primary-purple)] font-semibold text-xl md:text-2xl">{section.title}</h3>
+              <button
+                type="button"
+                onClick={() => addEntry(section.field as keyof UpdateUserDto, section.template)}
+                className="px-3 py-1 rounded-lg bg-[var(--accent-purple)] text-white text-sm"
+              >
+                + Add {section.title}
+              </button>
+            </div>{(formData[section.field as keyof UpdateUserDto] as any[]).map((entry, index) => (
+  <div
+    key={index}
+    className="flex flex-col gap-2 p-2 border border-[var(--border-color)] rounded-lg"
+  >
+    {/* Non-description fields in row */}
+    <div className="flex flex-col md:flex-row gap-4">
+      {section.keys
+        .filter((key) => key !== "details" && key !== "description")
+        .map((key) => (
+          <input
+            key={key}
+            type="text"
+            placeholder={key}
+            value={entry[key] || ""}
+            onChange={(e) =>
+              updateEntry(
+                section.field as keyof UpdateUserDto,
+                index,
+                key as any,
+                e.target.value
+              )
+            }
+            className="purple-input flex-1 px-4 py-2"
+          />
+        ))}
+    </div>
+
+    {/* Details / Description textarea full width */}
+    {["details", "description"].map((key) =>
+      entry[key] !== undefined ? (
+        <textarea
+          key={key}
+          placeholder={key}
+          value={entry[key] || ""}
+          onChange={(e) =>
+            updateEntry(
+              section.field as keyof UpdateUserDto,
+              index,
+              key as any,
+              e.target.value
             )
-        }));
-    };
-    const removeEducation = (index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            education: prev.education.filter((_, i) => i !== index)
-        }));
-    };
+          }
+          className="purple-input w-full px-4 py-2 resize-none min-h-[80px]"
+        />
+      ) : null
+    )}
 
-    // Work Experience handlers
-    const addWorkExperience = () => {
-        setFormData(prev => ({
-            ...prev,
-            workExperience: [...prev.workExperience, { companyName: '', date: '', location: '', details: '' }]
-        }));
-    };
+    <button
+      type="button"
+      onClick={() => removeEntry(section.field as keyof UpdateUserDto, index)}
+      className="px-3 py-1 rounded-lg bg-red-600 text-white text-sm self-start"
+    >
+      Remove
+    </button>
+  </div>
+))}
 
-    const updateWorkExperience = (index: number, field: keyof WorkEntryDto, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            workExperience: prev.workExperience.map((work, i) =>
-                i === index ? { ...work, [field]: value } : work
-            )
-        }));
-    };
+          </section>
+        ))}
 
-    const removeWorkExperience = (index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            workExperience: prev.workExperience.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Certificate handlers
-    const addCertificate = () => {
-        setFormData(prev => ({
-            ...prev,
-            certificates: [...prev.certificates, { certificateName: '', details: '' }]
-        }));
-    };
-
-    const updateCertificate = (index: number, field: keyof CertificateEntryDto, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            certificates: prev.certificates.map((cert, i) => 
-                i === index ? { ...cert, [field]: value } : cert
-            )
-        }));
-    };
-
-    const removeCertificate = (index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            certificates: prev.certificates.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Skills handlers
-    const addSkill = () => {
-        setFormData(prev => ({
-            ...prev,
-            skills: [...prev.skills, { skillName: '' }]
-        }));
-    };
-
-    const updateSkill = (index: number, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            skills: prev.skills.map((skill, i) => 
-                i === index ? { ...skill, skill_name: value } : skill
-            )
-        }));
-    };
-
-    const removeSkill = (index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            skills: prev.skills.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Project handlers
-    const addProject = () => {
-        setFormData(prev => ({
-            ...prev,
-            projects: [...prev.projects, { projectName: '', description: '' }]
-        }));
-    };
-
-    const updateProject = (index: number, field: keyof ProjectEntryDto, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            projects: prev.projects.map((project, i) => 
-                i === index ? { ...project, [field]: value } : project
-            )
-        }));
-    };
-
-    const removeProject = (index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            projects: prev.projects.filter((_, i) => i !== index)
-        }));
-    };
-
-    return (
-        <div className={styles.userInfoContainer}>
-            <form onSubmit={handleSubmit} className={styles.userInfoForm}>
-                <h2 className={styles.userInfoTitle}>
-                    Update User Information
-                </h2>
-                
-                {/* Personal Information */}
-                <section className={styles.formSection}>
-                    <h3>Personal Information</h3>
-                    <div className={styles.formRow}>
-                        <input 
-                            type="text" 
-                            name="firstName" 
-                            placeholder={formData.firstName ? formData.firstName : "First Name"} 
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            disabled={formData.firstName !== ''}
-                            required
-                        />
-                        <input 
-                            type="text" 
-                            name="lastName" 
-                            placeholder={formData.lastName ? formData.lastName : "Last Name"} 
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            disabled={formData.lastName !== ''}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formRow}>
-                        <input 
-                            type="email" 
-                            name="email" 
-                            placeholder={formData.email ? formData.email : "Email"} 
-                            value={formData.email}
-                            disabled
-                            className={styles.userInfoInput} 
-                        />
-                        <input 
-                            type="tel" 
-                            name="mobile" 
-                            placeholder={formData.mobile ? formData.mobile : "Mobile Number"} 
-                            value={formData.mobile}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            disabled={formData.mobile !== ''}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formRow}>
-                        <input 
-                            type="text" 
-                            name="location" 
-                            placeholder={formData.location ? formData.location : "Location/City"} 
-                            value={formData.location}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            required
-                        />
-                        <input 
-                            type="text" 
-                            name="province" 
-                            placeholder={formData.province ? formData.province : "Province/State"} 
-                            value={formData.province}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            required
-                        />
-                    </div>
-                    <div className={styles.formRow}>
-                        <input 
-                            type="text" 
-                            name="jobField" 
-                            placeholder={formData.jobField ? formData.jobField : "Job Field/Industry"} 
-                            value={formData.jobField}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                            required
-                        />
-                    </div>
-                    <div className={styles.formRow}>
-                        <input 
-                            type="url" 
-                            name="portfolioUrl" 
-                            placeholder={formData.portfolioUrl ? formData.portfolioUrl : "Portfolio URL (optional)"} 
-                            value={formData.portfolioUrl || ''}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                        />
-                        <input 
-                            type="url" 
-                            name="linkedinUrl" 
-                            placeholder={formData.linkedInUrl ? formData.linkedInUrl : "LinkedIn URL (optional)"} 
-                            value={formData.linkedInUrl || ''}
-                            onChange={handleInputChange}
-                            className={styles.userInfoInput} 
-                        />
-                    </div>
-                    <div className={styles.formRow}>
-                        <textarea 
-                            name="userSummary" 
-                            placeholder={formData.userSummary ? formData.userSummary : "Professional Summary (optional)"} 
-                            value={formData.userSummary || ''}
-                            onChange={handleInputChange}
-                            className={styles.userInfoTextarea} 
-                            rows={4}
-                        />
-                    </div>
-                </section>
-
-                {/* Education */}
-                <section className={styles.formSection}>
-                    <div className={styles.sectionHeader}>
-                        <h3>Education</h3>
-                        <button type="button" onClick={addEducation} className={styles.addButton}>+ Add Education</button>
-                    </div>
-                    {formData.education.map((edu, index) => (
-                        <div key={index} className={styles.dynamicEntry}>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Institution Name" 
-                                    value={edu.institutionName}
-                                    onChange={(e) => updateEducation(index, 'institutionName', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Date (e.g., 2020-2024)" 
-                                    value={edu.date}
-                                    onChange={(e) => updateEducation(index, 'date', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                            </div>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Location (optional)" 
-                                    value={edu.location || ''}
-                                    onChange={(e) => updateEducation(index, 'location', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Details (optional)" 
-                                    value={edu.details || ''}
-                                    onChange={(e) => updateEducation(index, 'details', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                />
-                            </div>
-                            <button type="button" onClick={() => removeEducation(index)} className={styles.removeButton}>Remove</button>
-                        </div>
-                    ))}
-                </section>
-
-                {/* Work Experience */}
-                <section className={styles.formSection}>
-                    <div className={styles.sectionHeader}>
-                        <h3>Work Experience</h3>
-                        <button type="button" onClick={addWorkExperience} className={styles.addButton}>+ Add Work Experience</button>
-                    </div>
-                    {formData.workExperience.map((work, index) => (
-                        <div key={index} className={styles.dynamicEntry}>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Company Name" 
-                                    value={work.companyName}
-                                    onChange={(e) => updateWorkExperience(index, 'companyName', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Date (e.g., Jan 2020 - Dec 2022)" 
-                                    value={work.date}
-                                    onChange={(e) => updateWorkExperience(index, 'date', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                            </div>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Location (optional)" 
-                                    value={work.location || ''}
-                                    onChange={(e) => updateWorkExperience(index, 'location', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Job Details (optional)" 
-                                    value={work.details || ''}
-                                    onChange={(e) => updateWorkExperience(index, 'details', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                />
-                            </div>
-                            <button type="button" onClick={() => removeWorkExperience(index)} className={styles.removeButton}>Remove</button>
-                        </div>
-                    ))}
-                </section>
-
-                {/* Certificates */}
-                <section className={styles.formSection}>
-                    <div className={styles.sectionHeader}>
-                        <h3>Certificates</h3>
-                        <button type="button" onClick={addCertificate} className={styles.addButton}>+ Add Certificate</button>
-                    </div>
-                    {formData.certificates.map((cert, index) => (
-                        <div key={index} className={styles.dynamicEntry}>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Certificate Name" 
-                                    value={cert.certificateName}
-                                    onChange={(e) => updateCertificate(index, 'certificateName', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Details" 
-                                    value={cert.details}
-                                    onChange={(e) => updateCertificate(index, 'details', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                            </div>
-                            <button type="button" onClick={() => removeCertificate(index)} className={styles.removeButton}>Remove</button>
-                        </div>
-                    ))}
-                </section>
-
-                {/* Skills */}
-                <section className={styles.formSection}>
-                    <div className={styles.sectionHeader}>
-                        <h3>Skills</h3>
-                        <button type="button" onClick={addSkill} className={styles.addButton}>+ Add Skill</button>
-                    </div>
-                    {formData.skills.map((skill, index) => (
-                        <div key={index} className={styles.dynamicEntry}>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Skill Name" 
-                                    value={skill.skillName}
-                                    onChange={(e) => updateSkill(index, e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                                <button type="button" onClick={() => removeSkill(index)} className={styles.removeButton}>Remove</button>
-                            </div>
-                        </div>
-                    ))}
-                </section>
-
-                {/* Projects */}
-                <section className={styles.formSection}>
-                    <div className={styles.sectionHeader}>
-                        <h3>Projects</h3>
-                        <button type="button" onClick={addProject} className={styles.addButton}>+ Add Project</button>
-                    </div>
-                    {formData.projects.map((project, index) => (
-                        <div key={index} className={styles.dynamicEntry}>
-                            <div className={styles.formRow}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Project Name" 
-                                    value={project.projectName}
-                                    onChange={(e) => updateProject(index, 'projectName', e.target.value)}
-                                    className={styles.userInfoInput} 
-                                    required
-                                />
-                            </div>
-                            <div className={styles.formRow}>
-                                <textarea 
-                                    placeholder="Project Description (optional)" 
-                                    value={project.description || ''}
-                                    onChange={(e) => updateProject(index, 'description', e.target.value)}
-                                    className={styles.userInfoTextarea} 
-                                    rows={3}
-                                />
-                            </div>
-                            <button type="button" onClick={() => removeProject(index)} className={styles.removeButton}>Remove</button>
-                        </div>
-                    ))}
-                </section>
-
-                <button type="submit" className={styles.userInfoSubmit}>
-                    Update User Information
-                </button>
-            </form>
-        </div>
-    );
+        <button type="submit" className="purple-button-primary mt-4 w-full py-3">
+          Update User Information
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default UserInfo;

@@ -1,13 +1,24 @@
 "use client";
 
-import JobListings, { Job } from "@/components/job-listings";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  description: string;
+  salaryRange: string;
+  badge?: { text: string; color: string };
+}
+
 function JobBoard() {
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    // Mock data (replace later with API)
     const mockJobs: Job[] = [
       {
         id: "1",
@@ -17,7 +28,7 @@ function JobBoard() {
         description:
           "Work with React, Node.js, and MongoDB to build scalable web applications.",
         salaryRange: "$80,000 - $100,000",
-        badge: { text: "Hot", color: "red" },
+        badge: { text: "Hot", color: "var(--accent-purple)" },
       },
       {
         id: "2",
@@ -27,7 +38,7 @@ function JobBoard() {
         description:
           "Develop RESTful APIs with C# and .NET Core. Optimize database queries.",
         salaryRange: "$90,000 - $110,000",
-        badge: { text: "New", color: "green" },
+        badge: { text: "New", color: "var(--primary-purple)" },
       },
       {
         id: "3",
@@ -38,40 +49,110 @@ function JobBoard() {
           "Build modern UIs with React and TypeScript. Experience with Next.js is a plus.",
         salaryRange: "$75,000 - $95,000",
       },
-      {
-        id: "4",
-        title: "Data Analyst",
-        company: "Insight Analytics",
-        location: "Remote",
-        description:
-          "Analyze business data using SQL, Python, and Power BI. Provide reports and dashboards for stakeholders.",
-        salaryRange: "$60,000 - $85,000",
-      },
-      {
-        id: "5",
-        title: "Software Engineering Intern",
-        company: "NextGen Labs",
-        location: "San Francisco, USA",
-        description:
-          "Assist in developing and testing software features. Great opportunity to learn cloud computing and CI/CD pipelines.",
-        salaryRange: "$20/hr - $25/hr",
-        badge: { text: "Internship", color: "blue" },
-      },
     ];
-
     setJobs(mockJobs);
   }, []);
 
+  const handleSaveJob = (job: Job) => {
+    if (!savedJobs.find((j) => j.id === job.id)) {
+      setSavedJobs([...savedJobs, job]);
+      alert(`Saved "${job.title}" to your saved jobs!`);
+    }
+  };
+
+  const handleGenerateResume = (jobId: string) => {
+    setJobs(jobs.filter((job) => job.id !== jobId));
+    alert(`Resume generated for this job!`);
+  };
+
+  const handleAddJob = () => {
+    alert("Add Job functionality will go here!");
+  };
+
   return (
-    <div>
-      <JobListings jobs={jobs} />
+    <div className="flex flex-col gap-6">
+
+      {/* Job Board Header */}
+      <div className="flex flex-col items-center text-center gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)]">
+          Job Board
+        </h1>
+        <p className="text-[var(--secondary-purple)] text-sm md:text-base">
+          Browse, track, and manage job listings
+        </p>
+        <button
+          onClick={handleAddJob}
+          className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
+        >
+          + Add Job
+        </button>
+      {/* Back to Dashboard Button */}
+      <button
+        onClick={() => router.push("/dashboard")}
+        className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
+      >
+        ← Back to Dashboard
+      </button>
+      </div>
+
+      {/* Job Listings */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {jobs.map((job) => (
+          <div
+            key={job.id}
+            className="purple-card p-6 flex flex-col justify-between hover:scale-[1.02] transition-transform"
+          >
+            <div>
+              <h2 className="text-xl font-bold text-[var(--foreground)] mb-1">
+                {job.title}
+              </h2>
+              <p className="text-[var(--secondary-purple)] text-sm mb-2">
+                {job.company} • {job.location}
+              </p>
+              <p className="text-[var(--foreground)] text-sm mb-3">
+                {job.description}
+              </p>
+            </div>
+
+            <div className="flex justify-between items-center mt-4">
+              <span className="text-[var(--primary-purple)] font-semibold">
+                {job.salaryRange}
+              </span>
+              {job.badge && (
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={{ backgroundColor: job.badge.color, color: "#fff" }}
+                >
+                  {job.badge.text}
+                </span>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => handleSaveJob(job)}
+                className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-[var(--input-bg)] text-[var(--foreground)] border border-[var(--border-color)] hover:bg-[var(--accent-purple)] hover:text-white transition-colors"
+              >
+                Save Job
+              </button>
+              <button
+                onClick={() => handleGenerateResume(job.id)}
+                className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all"
+              >
+                Generate Resume
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 export default function JobPage() {
   return (
-    <main>
+    <main className="px-4 md:px-8 py-6">
       <JobBoard />
     </main>
   );

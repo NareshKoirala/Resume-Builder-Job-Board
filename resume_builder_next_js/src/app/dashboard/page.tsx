@@ -14,7 +14,7 @@ interface DashboardStatsData {
   totalApplications: number;
   activeResumes: number;
   lastUpdated: string;
-  profileCompletion: number;
+  savedJobs: number;
 }
 
 function DashboardContent() {
@@ -22,7 +22,7 @@ function DashboardContent() {
     totalApplications: 0,
     activeResumes: 0,
     lastUpdated: "Never",
-    profileCompletion: 0,
+    savedJobs: 0,
   });
 
   const [userName, setUserName] = useState("User");
@@ -33,17 +33,7 @@ function DashboardContent() {
   const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(
     null
   );
-  const [userEmail, setUserEmail] = useState<string>("");
   const [publicId, setPublicId] = useState<string>("");
-
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      const response = await fetch("./api/cookies/get?key=userEmail");
-      const data = await response.json();
-      setUserEmail(data.data);
-    };
-    fetchUserEmail();
-  }, []);
 
   useEffect(() => {
     const fetchPublicId = async () => {
@@ -90,15 +80,9 @@ function DashboardContent() {
     setShowSettings(true);
   };
 
-  const data = {
-    age: 0,
-    data: "",
-    id: "publicId",
-  };
-
   const handleSignOutClick = async () => {
     if (confirm("Are you sure you want to sign out?")) {
-      const resp = await fetch("/api/cookies/set", {
+      await fetch("/api/cookies/set", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +94,6 @@ function DashboardContent() {
         }),
       });
     }
-
     window.location.href = "/";
   };
 
@@ -140,14 +123,11 @@ function DashboardContent() {
 
   const handleUserUpdate = async (userData: UpdateUserDto) => {
     try {
-      console.log("Updating user data:", userData);
-      console.log("Current user publicId:", publicId);
-
       const updateUserData = userData as UpdateUserDto;
 
       setCurrentUserData(updateUserData);
 
-      console.log("Profile updates:", updateUserData);
+      alert("Profile updates: " + JSON.stringify(updateUserData.firstName));
 
       const reqData = {
         path: "Users/Update",
@@ -178,7 +158,6 @@ function DashboardContent() {
       console.log("Update response data:", responseData);
 
       alert("Profile updated successfully!");
-
     } catch (error) {
       console.error("Error updating user data:", error);
       alert("An error occurred while updating your profile. Please try again.");
@@ -201,17 +180,13 @@ function DashboardContent() {
         <Stars />
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <div className="text-center flex-1">
-              <h1 className="text-3xl font-bold text-white mb-4">
-                Update Your Profile
-              </h1>
-              <p className="text-gray-300">
-                Update your personal information and resume details
-              </p>
-            </div>
+            {/* Header */}
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)] mb-6 text-center">
+              Update User Information
+            </h1>
             <button
               onClick={() => setShowSettings(false)}
-              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors ml-4"
+              className="self-start mb-4 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 shadow-lg"
             >
               ← Back to Dashboard
             </button>
@@ -235,6 +210,7 @@ function DashboardContent() {
         <DashboardStats
           totalApplications={stats.totalApplications}
           activeResumes={stats.activeResumes}
+          savedJobs={stats.savedJobs}
         />
 
         <QuickActions actions={quickActions} />

@@ -105,7 +105,7 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
       const userData = await emailFetch(formData.email);
       console.log('Fetched user data:', userData[0]);
 
-      fetch('/api/cookies/set', {
+      await fetch('/api/cookies/set', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

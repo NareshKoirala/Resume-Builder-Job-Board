@@ -55,7 +55,6 @@ export async function PUT(request: NextRequest) {
 
     const { path, publicId, process, data } = await request.json();
     const apiUrl = `${RESUME_API_URL}/${path}/${publicId}`;
-    console.log(`Making ${process} request to:`, apiUrl);
     
     try {
         const response = await fetch(apiUrl, {
@@ -78,8 +77,6 @@ export async function PUT(request: NextRequest) {
         }
 
         const responseData = await response.json();
-
-        console.log("Response from Resume API:", responseData);
 
         return NextResponse.json({ response: responseData });
 

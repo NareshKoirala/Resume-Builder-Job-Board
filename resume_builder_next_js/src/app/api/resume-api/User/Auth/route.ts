@@ -37,8 +37,6 @@ export async function POST(request: NextRequest) {
     }
     const response = await apiResponse.json();
 
-    console.log("Response from Resume API:", response.response.publicId);
-
     // Create a new NextResponse to attach cookies
     const res = NextResponse.json({ response: response });
 
