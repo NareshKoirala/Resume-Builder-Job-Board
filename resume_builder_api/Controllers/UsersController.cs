@@ -26,14 +26,16 @@ namespace resume_builder_api.Controllers
                     return Ok(new { Message = "User already exists", Response = existingUser });
                 }
 
-                var changes = appDb.Users.Add(new UserModel
+                appDb.Users.Add(new UserModel
                 {
                     Email = Email
                 });
 
                 appDb.SaveChanges();
 
-                return Ok(new { Message = "Authentication successful", changes });
+                var response = appDb.Users.FirstOrDefault(u => u.Email == Email);
+
+                return Ok(new { Message = "Authentication successful", response });
             }
             else
             {

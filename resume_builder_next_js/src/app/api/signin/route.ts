@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { emailFetch } from '@/app/api/supabase/dbFetch';
-import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,15 +43,6 @@ export async function POST(request: NextRequest) {
         email: user.email
       }
     });
-
-    // Set a cookie for session management (example, adjust as needed)
-    response.cookies.set('userEmail', user.email,
-       { 
-        path: '/',
-        httpOnly: true,
-        maxAge: 60 * 60
-       }
-    ); // 1 hour
 
     return response;
     

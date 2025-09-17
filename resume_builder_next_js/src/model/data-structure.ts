@@ -1,28 +1,28 @@
 // DTO interfaces for API communication
 
 export interface CertificateEntryDto {
-  certificate_name: string;
+  certificateName: string;
   details: string;
 }
 
 export interface EducationEntryDto {
-  institution_name: string;
+  institutionName: string;
   date: string;
   location?: string;
   details?: string;
 }
 
 export interface ProjectEntryDto {
-  project_name: string;
+  projectName: string;
   description?: string;
 }
 
 export interface SkillsEntryDto {
-  skill_name: string;
+  skillName: string;
 }
 
 export interface WorkEntryDto {
-  company_name: string;
+  companyName: string;
   date: string;
   location?: string;
   details?: string;
@@ -31,18 +31,18 @@ export interface WorkEntryDto {
 // User Registration DTO
 export interface UserRegisterDto {
   pass: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   mobile: string;
   location: string;
   province: string;
-  job_field: string;
-  portfolio_url?: string;
-  linkedin_url?: string;
-  user_summary?: string;
+  jobField: string;
+  portfolioUrl?: string;
+  linkedInUrl?: string;
+  userSummary?: string;
   education: EducationEntryDto[];
-  work_experience: WorkEntryDto[];
+  workExperience: WorkEntryDto[];
   certificates: CertificateEntryDto[];
   skills: SkillsEntryDto[];
   projects: ProjectEntryDto[];
@@ -51,18 +51,18 @@ export interface UserRegisterDto {
 // User Update DTO
 export interface UpdateUserDto {
   publicId?: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   mobile: string;
   location: string;
   province: string;
-  job_field: string;
-  portfolio_url?: string;
-  linkedin_url?: string;
-  user_summary?: string;
+  jobField: string;
+  portfolioUrl?: string;
+  linkedInUrl?: string;
+  userSummary?: string;
   education: EducationEntryDto[];
-  work_experience: WorkEntryDto[];
+  workExperience: WorkEntryDto[];
   certificates: CertificateEntryDto[];
   skills: SkillsEntryDto[];
   projects: ProjectEntryDto[];

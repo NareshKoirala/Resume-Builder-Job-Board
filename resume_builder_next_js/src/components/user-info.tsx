@@ -6,7 +6,6 @@ import {
     ProjectEntryDto,
     SkillsEntryDto,
     WorkEntryDto,
-    UserRegisterDto,
     UpdateUserDto
 } from '../model/data-structure'
 
@@ -14,30 +13,28 @@ import React, { useState, useEffect } from 'react';
 import styles from '../css/user-info.module.css';
 
 interface UserInfoProps {
-    mode: 'register' | 'update';
     userInfo?: UpdateUserDto | null;
-    onSubmit?: (data: UserRegisterDto | UpdateUserDto) => void;
+    onSubmit?: (data: UpdateUserDto) => void;
 }
 
-const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null, onSubmit }) => {
-    const [formData, setFormData] = useState<UserRegisterDto | UpdateUserDto>(() => {
-        if (mode === 'update' && userInfo) {
+const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
+    const [formData, setFormData] = useState<UpdateUserDto>(() => {
+        if (userInfo) {
             return { ...userInfo };
         }
         return {
-            pass: '',
-            first_name: '',
-            last_name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             mobile: '',
             location: '',
             province: '',
-            job_field: '',
-            portfolio_url: '',
-            linkedin_url: '',
-            user_summary: '',
+            jobField: '',
+            portfolioUrl: '',
+            linkedInUrl: '',
+            userSummary: '',
             education: [],
-            work_experience: [],
+            workExperience: [],
             certificates: [],
             skills: [],
             projects: []
@@ -46,10 +43,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
 
     // Update form data when userInfo prop changes
     useEffect(() => {
-        if (mode === 'update' && userInfo) {
+        if (userInfo) {
             setFormData({ ...userInfo });
         }
-    }, [mode, userInfo]);
+    }, [userInfo]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -61,11 +58,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        
         if (onSubmit) {
             onSubmit(formData);
         } else {
-            alert(`${mode === 'update' ? 'User updated' : 'User registered'}! Check console for data.`);
+            alert('User updated! Check console for data.');
         }
     };
 
@@ -73,10 +69,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addEducation = () => {
         setFormData(prev => ({
             ...prev,
-            education: [...prev.education, { institution_name: '', date: '', location: '', details: '' }]
+            education: [...prev.education, { institutionName: '', date: '', location: '', details: '' }]
         }));
     };
-
     const updateEducation = (index: number, field: keyof EducationEntryDto, value: string) => {
         setFormData(prev => ({
             ...prev,
@@ -84,7 +79,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                 i === index ? { ...edu, [field]: value } : edu
             )
         }));
-    };    const removeEducation = (index: number) => {
+    };
+    const removeEducation = (index: number) => {
         setFormData(prev => ({
             ...prev,
             education: prev.education.filter((_, i) => i !== index)
@@ -95,14 +91,14 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addWorkExperience = () => {
         setFormData(prev => ({
             ...prev,
-            work_experience: [...prev.work_experience, { company_name: '', date: '', location: '', details: '' }]
+            workExperience: [...prev.workExperience, { companyName: '', date: '', location: '', details: '' }]
         }));
     };
 
     const updateWorkExperience = (index: number, field: keyof WorkEntryDto, value: string) => {
         setFormData(prev => ({
             ...prev,
-            work_experience: prev.work_experience.map((work, i) =>
+            workExperience: prev.workExperience.map((work, i) =>
                 i === index ? { ...work, [field]: value } : work
             )
         }));
@@ -111,13 +107,15 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const removeWorkExperience = (index: number) => {
         setFormData(prev => ({
             ...prev,
-            work_experience: prev.work_experience.filter((_, i) => i !== index)
+            workExperience: prev.workExperience.filter((_, i) => i !== index)
         }));
-    };    // Certificate handlers
+    };
+
+    // Certificate handlers
     const addCertificate = () => {
         setFormData(prev => ({
             ...prev,
-            certificates: [...prev.certificates, { certificate_name: '', details: '' }]
+            certificates: [...prev.certificates, { certificateName: '', details: '' }]
         }));
     };
 
@@ -141,7 +139,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addSkill = () => {
         setFormData(prev => ({
             ...prev,
-            skills: [...prev.skills, { skill_name: '' }]
+            skills: [...prev.skills, { skillName: '' }]
         }));
     };
 
@@ -165,7 +163,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
     const addProject = () => {
         setFormData(prev => ({
             ...prev,
-            projects: [...prev.projects, { project_name: '', description: '' }]
+            projects: [...prev.projects, { projectName: '', description: '' }]
         }));
     };
 
@@ -189,42 +187,31 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
         <div className={styles.userInfoContainer}>
             <form onSubmit={handleSubmit} className={styles.userInfoForm}>
                 <h2 className={styles.userInfoTitle}>
-                    {mode === 'update' ? 'Update User Information' : 'Register - User Information'}
+                    Update User Information
                 </h2>
                 
                 {/* Personal Information */}
                 <section className={styles.formSection}>
                     <h3>Personal Information</h3>
-                    {mode === 'register' && (
-                        <div className={styles.formRow}>
-                            <input 
-                                type="password" 
-                                name="pass" 
-                                placeholder="Pass Key" 
-                                value={(formData as UserRegisterDto).pass || ''}
-                                onChange={handleInputChange}
-                                className={styles.userInfoInput} 
-                                required
-                            />
-                        </div>
-                    )}
                     <div className={styles.formRow}>
                         <input 
                             type="text" 
-                            name="first_name" 
-                            placeholder={mode === 'update' && formData.first_name ? formData.first_name : "First Name"} 
-                            value={formData.first_name}
+                            name="firstName" 
+                            placeholder={formData.firstName ? formData.firstName : "First Name"} 
+                            value={formData.firstName}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
+                            disabled={formData.firstName !== ''}
                             required
                         />
                         <input 
                             type="text" 
-                            name="last_name" 
-                            placeholder={mode === 'update' && formData.last_name ? formData.last_name : "Last Name"} 
-                            value={formData.last_name}
+                            name="lastName" 
+                            placeholder={formData.lastName ? formData.lastName : "Last Name"} 
+                            value={formData.lastName}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
+                            disabled={formData.lastName !== ''}
                             required
                         />
                     </div>
@@ -232,19 +219,19 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                         <input 
                             type="email" 
                             name="email" 
-                            placeholder={mode === 'update' && formData.email ? formData.email : "Email"} 
+                            placeholder={formData.email ? formData.email : "Email"} 
                             value={formData.email}
-                            onChange={handleInputChange}
+                            disabled
                             className={styles.userInfoInput} 
-                            required
                         />
                         <input 
                             type="tel" 
                             name="mobile" 
-                            placeholder={mode === 'update' && formData.mobile ? formData.mobile : "Mobile Number"} 
+                            placeholder={formData.mobile ? formData.mobile : "Mobile Number"} 
                             value={formData.mobile}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
+                            disabled={formData.mobile !== ''}
                             required
                         />
                     </div>
@@ -252,7 +239,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                         <input 
                             type="text" 
                             name="location" 
-                            placeholder={mode === 'update' && formData.location ? formData.location : "Location/City"} 
+                            placeholder={formData.location ? formData.location : "Location/City"} 
                             value={formData.location}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
@@ -261,7 +248,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                         <input 
                             type="text" 
                             name="province" 
-                            placeholder={mode === 'update' && formData.province ? formData.province : "Province/State"} 
+                            placeholder={formData.province ? formData.province : "Province/State"} 
                             value={formData.province}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
@@ -271,9 +258,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                     <div className={styles.formRow}>
                         <input 
                             type="text" 
-                            name="job_field" 
-                            placeholder={mode === 'update' && formData.job_field ? formData.job_field : "Job Field/Industry"} 
-                            value={formData.job_field}
+                            name="jobField" 
+                            placeholder={formData.jobField ? formData.jobField : "Job Field/Industry"} 
+                            value={formData.jobField}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                             required
@@ -282,26 +269,26 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                     <div className={styles.formRow}>
                         <input 
                             type="url" 
-                            name="portfolio_url" 
-                            placeholder={mode === 'update' && formData.portfolio_url ? formData.portfolio_url : "Portfolio URL (optional)"} 
-                            value={formData.portfolio_url || ''}
+                            name="portfolioUrl" 
+                            placeholder={formData.portfolioUrl ? formData.portfolioUrl : "Portfolio URL (optional)"} 
+                            value={formData.portfolioUrl || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                         />
                         <input 
                             type="url" 
-                            name="linkedin_url" 
-                            placeholder={mode === 'update' && formData.linkedin_url ? formData.linkedin_url : "LinkedIn URL (optional)"} 
-                            value={formData.linkedin_url || ''}
+                            name="linkedinUrl" 
+                            placeholder={formData.linkedInUrl ? formData.linkedInUrl : "LinkedIn URL (optional)"} 
+                            value={formData.linkedInUrl || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoInput} 
                         />
                     </div>
                     <div className={styles.formRow}>
                         <textarea 
-                            name="user_summary" 
-                            placeholder={mode === 'update' && formData.user_summary ? formData.user_summary : "Professional Summary (optional)"} 
-                            value={formData.user_summary || ''}
+                            name="userSummary" 
+                            placeholder={formData.userSummary ? formData.userSummary : "Professional Summary (optional)"} 
+                            value={formData.userSummary || ''}
                             onChange={handleInputChange}
                             className={styles.userInfoTextarea} 
                             rows={4}
@@ -321,8 +308,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Institution Name" 
-                                    value={edu.institution_name}
-                                    onChange={(e) => updateEducation(index, 'institution_name', e.target.value)}
+                                    value={edu.institutionName}
+                                    onChange={(e) => updateEducation(index, 'institutionName', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -362,14 +349,14 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                         <h3>Work Experience</h3>
                         <button type="button" onClick={addWorkExperience} className={styles.addButton}>+ Add Work Experience</button>
                     </div>
-                    {formData.work_experience.map((work, index) => (
+                    {formData.workExperience.map((work, index) => (
                         <div key={index} className={styles.dynamicEntry}>
                             <div className={styles.formRow}>
                                 <input 
                                     type="text" 
                                     placeholder="Company Name" 
-                                    value={work.company_name}
-                                    onChange={(e) => updateWorkExperience(index, 'company_name', e.target.value)}
+                                    value={work.companyName}
+                                    onChange={(e) => updateWorkExperience(index, 'companyName', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -415,8 +402,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Certificate Name" 
-                                    value={cert.certificate_name}
-                                    onChange={(e) => updateCertificate(index, 'certificate_name', e.target.value)}
+                                    value={cert.certificateName}
+                                    onChange={(e) => updateCertificate(index, 'certificateName', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -446,7 +433,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Skill Name" 
-                                    value={skill.skill_name}
+                                    value={skill.skillName}
                                     onChange={(e) => updateSkill(index, e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
@@ -469,8 +456,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                                 <input 
                                     type="text" 
                                     placeholder="Project Name" 
-                                    value={project.project_name}
-                                    onChange={(e) => updateProject(index, 'project_name', e.target.value)}
+                                    value={project.projectName}
+                                    onChange={(e) => updateProject(index, 'projectName', e.target.value)}
                                     className={styles.userInfoInput} 
                                     required
                                 />
@@ -490,7 +477,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ mode = 'register', userInfo = null,
                 </section>
 
                 <button type="submit" className={styles.userInfoSubmit}>
-                    {mode === 'update' ? 'Update User Information' : 'Register User'}
+                    Update User Information
                 </button>
             </form>
         </div>

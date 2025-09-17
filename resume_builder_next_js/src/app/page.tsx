@@ -6,8 +6,20 @@ import { useState } from "react";
 export default function Home() {
   const [showApiFeatures, setShowApiFeatures] = useState(false);
   const router = useRouter();
+
   const handleSignIn = () => {
-    router.push("/auth");
+    // Perform sign-in logic here
+    const publicId = async () => {
+      const response = await fetch("./api/cookies/get?key=publicId");
+      const data = await response.json();
+      if (data.data && data.data !== "undefined") {
+        router.push("/dashboard");
+      } else {
+        router.push("/auth");
+      }
+    };
+
+    publicId();
   };
 
   return (

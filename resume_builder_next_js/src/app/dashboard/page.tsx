@@ -7,8 +7,7 @@ import QuickActions, { QuickAction } from "@/components/quick-actions";
 import RecentActivity, { Activity } from "@/components/recent-activity";
 import Stars from "@/components/stars";
 import UserInfo from "@/components/user-info";
-import { UserRegisterDto, UpdateUserDto } from "@/model/data-structure";
-import { usersUpdate, dbUpdate } from "@/app/api/supabase/dbUpdate";
+import { UpdateUserDto } from "@/model/data-structure";
 import Loading from "@/components/loading";
 
 interface DashboardStatsData {
@@ -19,18 +18,6 @@ interface DashboardStatsData {
 }
 
 function DashboardContent() {
-  const [userEmail, setUserEmail] = useState<string>("");
-
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      const response = await fetch("./api/cookies?key=userEmail");
-      const data = await response.json();
-      setUserEmail(data.data);
-    };
-
-    fetchUserEmail();
-  }, []);
-
   const [stats, setStats] = useState<DashboardStatsData>({
     totalApplications: 0,
     activeResumes: 0,
@@ -46,17 +33,85 @@ function DashboardContent() {
   const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(
     null
   );
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [publicId, setPublicId] = useState<string>("");
 
-  console.log("Current userEmail:", userEmail);
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const response = await fetch("./api/cookies/get?key=userEmail");
+      const data = await response.json();
+      setUserEmail(data.data);
+    };
+    fetchUserEmail();
+  }, []);
+
+  useEffect(() => {
+    const fetchPublicId = async () => {
+      const response = await fetch("./api/cookies/get?key=publicId");
+      const data = await response.json();
+      setPublicId(data.data);
+      setUserExists(data.data ? true : false);
+      setIsLoading(false);
+
+      const reqData = {
+        path: "Users",
+        publicId: data.data,
+        process: "GET",
+      };
+
+      const resp = await fetch("./api/resume-api/User/Public", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqData),
+      });
+
+      if (!resp.ok) {
+        const errorData = await resp.json();
+        throw new Error(
+          errorData.error || "Failed to fetch user data from Resume API"
+        );
+      }
+
+      const responseData = await resp.json();
+
+      setCurrentUserData(responseData.response);
+
+      if (responseData.response.firstName) {
+        setUserName(responseData.response.firstName);
+      }
+    };
+
+    fetchPublicId();
+  }, []);
 
   const handleSettingsClick = () => {
     setShowSettings(true);
   };
 
-  const handleSignOutClick = () => {
+  const data = {
+    age: 0,
+    data: "",
+    id: "publicId",
+  };
+
+  const handleSignOutClick = async () => {
     if (confirm("Are you sure you want to sign out?")) {
-      window.location.href = "/";
+      const resp = await fetch("/api/cookies/set", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          age: 0,
+          data: "",
+          id: "publicId",
+        }),
+      });
     }
+
+    window.location.href = "/";
   };
 
   const quickActions: QuickAction[] = [
@@ -83,195 +138,50 @@ function DashboardContent() {
     },
   ];
 
-  const handleUserRegistration = async (
-    userData: UserRegisterDto | UpdateUserDto
-  ) => {
-    try {
-      // Use the integrated registration function that handles both external API and local database
-
-      // Update the credentials table with the new local user_id
-
-      // After successful registration, update the state to show dashboard
-      setUserExists(false);
-
-      // Set the user name from the registration data
-      if (
-        "first_name" in userData &&
-        typeof userData.first_name === "string" &&
-        userData.first_name
-      ) {
-        setUserName(userData.first_name);
-      } else {
-        setUserName(userEmail.split("@")[0]);
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
-      alert(`Failed to register user: ${errorMessage}`);
-    }
-  };
-
-  const handleUserUpdate = async (
-    userData: UserRegisterDto | UpdateUserDto
-  ) => {
+  const handleUserUpdate = async (userData: UpdateUserDto) => {
     try {
       console.log("Updating user data:", userData);
+      console.log("Current user publicId:", publicId);
 
       const updateUserData = userData as UpdateUserDto;
 
-      // Validate that we have a valid user ID
-      if (!updateUserData.publicId) {
-        throw new Error("User ID is required for updates");
-      }
+      setCurrentUserData(updateUserData);
 
-      // Update the main user profile data
-      const userProfileUpdates = {
-        first_name: updateUserData.first_name,
-        last_name: updateUserData.last_name,
-        email: updateUserData.email,
-        mobile: updateUserData.mobile,
-        location: updateUserData.location,
-        province: updateUserData.province,
-        job_field: updateUserData.job_field,
-        portfolio_url: updateUserData.portfolio_url || null,
-        linkedin_url: updateUserData.linkedin_url || null,
-        user_summary: updateUserData.user_summary || null,
+      console.log("Profile updates:", updateUserData);
+
+      const reqData = {
+        path: "Users/Update",
+        publicId: publicId,
+        process: "PUT",
+        data: updateUserData,
       };
 
-      console.log("Updating user profile with ID:", updateUserData.publicId);
-      console.log("Profile updates:", userProfileUpdates);
+      const resp = await fetch("./api/resume-api/User/Public", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqData),
+      });
 
-      // Try to update user profile
-      try {
-        const userUpdateResult = await usersUpdate(
-          updateUserData.publicId as any,
-          userProfileUpdates
+      console.log("Response status (page.tsx):", resp.status);
+
+      if (!resp.ok) {
+        const errorData = await resp.json();
+        throw new Error(
+          errorData.error || "Failed to fetch user data from Resume API"
         );
-        console.log("User update result:", userUpdateResult);
-
-        if (userUpdateResult === null) {
-          throw new Error(
-            "usersUpdate returned null - check database connection and user ID"
-          );
-        }
-      } catch (updateError) {
-        console.error("Error in usersUpdate:", updateError);
-        const errorMessage =
-          updateError instanceof Error ? updateError.message : "Unknown error";
-        throw new Error(`Failed to update user profile: ${errorMessage}`);
       }
 
-      // Update related data in separate tables
-      const updatePromises: Promise<any>[] = [];
-      const updateLabels: string[] = [];
+      const responseData = await resp.json();
 
-      if (updateUserData.education && updateUserData.education.length >= 0) {
-        console.log("Updating education data:", updateUserData.education);
-        updatePromises.push(
-          dbUpdate(
-            updateUserData.publicId as any,
-            "education",
-            updateUserData.education
-          )
-        );
-        updateLabels.push("education");
-      }
+      console.log("Update response data:", responseData);
 
-      if (
-        updateUserData.work_experience &&
-        updateUserData.work_experience.length >= 0
-      ) {
-        console.log(
-          "Updating work experience data:",
-          updateUserData.work_experience
-        );
-        updatePromises.push(
-          dbUpdate(
-            updateUserData.publicId as any,
-            "work_experience",
-            updateUserData.work_experience
-          )
-        );
-        updateLabels.push("work_experience");
-      }
-
-      if (
-        updateUserData.certificates &&
-        updateUserData.certificates.length >= 0
-      ) {
-        console.log("Updating certificates data:", updateUserData.certificates);
-        updatePromises.push(
-          dbUpdate(
-            updateUserData.publicId as any,
-            "certificates",
-            updateUserData.certificates
-          )
-        );
-        updateLabels.push("certificates");
-      }
-
-      if (updateUserData.skills && updateUserData.skills.length >= 0) {
-        console.log("Updating skills data:", updateUserData.skills);
-        updatePromises.push(
-          dbUpdate(
-            updateUserData.publicId as any,
-            "skills",
-            updateUserData.skills
-          )
-        );
-        updateLabels.push("skills");
-      }
-
-      if (updateUserData.projects && updateUserData.projects.length >= 0) {
-        console.log("Updating projects data:", updateUserData.projects);
-        updatePromises.push(
-          dbUpdate(
-            updateUserData.publicId as any,
-            "projects",
-            updateUserData.projects
-          )
-        );
-        updateLabels.push("projects");
-      }
-
-      // Wait for all related data updates to complete
-      if (updatePromises.length > 0) {
-        const updateResults = await Promise.all(updatePromises);
-        console.log("All update results:", updateResults);
-
-        // Check if any updates failed and provide specific error information
-        const failedUpdates: string[] = [];
-        updateResults.forEach((result, index) => {
-          if (result === null) {
-            failedUpdates.push(updateLabels[index]);
-          }
-        });
-
-        if (failedUpdates.length > 0) {
-          throw new Error(
-            `Failed to update: ${failedUpdates.join(
-              ", "
-            )}. Check console for detailed error messages.`
-          );
-        }
-
-        console.log("All related data updates completed successfully");
-      }
-
-      // Update local state only after successful database updates
-      setCurrentUserData(updateUserData);
-      if (updateUserData.first_name) {
-        setUserName(updateUserData.first_name);
-      }
-
-      setShowSettings(false);
       alert("Profile updated successfully!");
+
     } catch (error) {
-      console.error("Error updating user:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Please try again.";
-      alert(`Failed to update profile: ${errorMessage}`);
+      console.error("Error updating user data:", error);
+      alert("An error occurred while updating your profile. Please try again.");
     }
   };
 
@@ -284,29 +194,8 @@ function DashboardContent() {
     );
   }
 
-  // User needs to register
-  if (userExists === false) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
-        <Stars />
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-4">
-              Complete Your Profile
-            </h1>
-            <p className="text-gray-300">
-              Please provide your information to get started with Resume Builder
-            </p>
-          </div>
-          <UserInfo mode="register" onSubmit={handleUserRegistration} />
-        </div>
-      </div>
-    );
-  }
-
   // Show settings/profile update
-  if (showSettings && currentUserData) {
-    console.log("Rendering settings with data:", currentUserData);
+  if ((showSettings && currentUserData) || userExists === false) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
         <Stars />
@@ -328,11 +217,7 @@ function DashboardContent() {
             </button>
           </div>
           {currentUserData && (
-            <UserInfo
-              mode="update"
-              userInfo={currentUserData}
-              onSubmit={handleUserUpdate}
-            />
+            <UserInfo userInfo={currentUserData} onSubmit={handleUserUpdate} />
           )}
         </div>
       </div>
@@ -372,7 +257,7 @@ export default function Dashboard() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex items-center justify-center">
-          <div className="text-white text-xl">Loading...</div>
+          <Loading />
         </div>
       }
     >
