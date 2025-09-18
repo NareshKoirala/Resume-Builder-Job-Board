@@ -2,15 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Job } from "@/components/job-listings";
 
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  description: string;
-  salaryRange: string;
-  badge?: { text: string; color: string };
+interface JobReq {
+  country: string;
+  page: string;
+  what: string[];
+  max_days_old: number;
+  what_exclude: string[];
+  what_or: string[];
 }
 
 function JobBoard() {
@@ -19,38 +19,30 @@ function JobBoard() {
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    const mockJobs: Job[] = [
-      {
-        id: "1",
-        title: "Full Stack Developer",
-        company: "TechNova Solutions",
-        location: "Remote",
-        description:
-          "Work with React, Node.js, and MongoDB to build scalable web applications.",
-        salaryRange: "$80,000 - $100,000",
-        badge: { text: "Hot", color: "var(--accent-purple)" },
-      },
-      {
-        id: "2",
-        title: "Backend Engineer",
-        company: "CloudEdge Inc.",
-        location: "Toronto, Canada",
-        description:
-          "Develop RESTful APIs with C# and .NET Core. Optimize database queries.",
-        salaryRange: "$90,000 - $110,000",
-        badge: { text: "New", color: "var(--primary-purple)" },
-      },
-      {
-        id: "3",
-        title: "Frontend Developer",
-        company: "PixelWorks",
-        location: "New York, USA",
-        description:
-          "Build modern UIs with React and TypeScript. Experience with Next.js is a plus.",
-        salaryRange: "$75,000 - $95,000",
-      },
-    ];
-    setJobs(mockJobs);
+    const jobReq: JobReq = {
+      country: "ca",
+      page: "2",
+      what: ["software"],
+      max_days_old: 30,
+      what_exclude: ["senior"],
+      what_or: ["edmonton", "toronto"],
+    };
+
+    const fetchJob = async () => {
+      const response = await fetch("./api/resume-api/JobBoard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobReq),
+      });
+
+      const respData = await response.json();
+
+      setJobs(respData);
+    };
+
+    fetchJob();
   }, []);
 
   const handleSaveJob = (job: Job) => {
@@ -71,7 +63,6 @@ function JobBoard() {
 
   return (
     <div className="flex flex-col gap-6">
-
       {/* Job Board Header */}
       <div className="flex flex-col items-center text-center gap-4 mb-6">
         <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)]">
@@ -86,13 +77,13 @@ function JobBoard() {
         >
           + Add Job
         </button>
-      {/* Back to Dashboard Button */}
-      <button
-        onClick={() => router.push("/dashboard")}
-        className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
-      >
-        ← Back to Dashboard
-      </button>
+        {/* Back to Dashboard Button */}
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
+        >
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Job Listings */}

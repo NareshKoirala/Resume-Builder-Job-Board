@@ -248,8 +248,28 @@ namespace resume_builder_api.Controllers
                 return NotFound(new { Message = "User not found" });
             }
 
-            // Add the new education entry to the user's education list
-            var educationEntry = new EducationEntry()
+            var contains = appDb.EducationEntries
+                .FirstOrDefault(
+                    x => x.UserModelId == user.Id &&
+                    x.InstitutionName == entryDto.InstitutionName &&
+                    x.Date == entryDto.Date
+                );
+
+            if (contains != null)
+            {
+                if (contains.Details != entryDto.Details || contains.Location != entryDto.Location)
+                {
+                    // Update only the details and location
+                    contains.Details = entryDto.Details;
+                    contains.Location = entryDto.Location;
+                    appDb.SaveChanges(); // 🔹 persist changes
+                    return Ok(new { Message = "Education Details/Location Updated", Response = entryDto });
+                }
+                return Ok(new { Message = "Education Already Exists", Response = entryDto });
+            }
+
+                // Add the new education entry to the user's education list
+                var educationEntry = new EducationEntry()
             {
                 UserModelId = user.Id,
                 InstitutionName = entryDto.InstitutionName,
@@ -275,8 +295,29 @@ namespace resume_builder_api.Controllers
             {
                 return NotFound(new { Message = "User not found" });
             }
-            // Add the new work entry to the user's work experience list
-            var workEntry = new WorkEntry()
+
+            var contains = appDb.WorkEntries
+                .FirstOrDefault(
+                    x => x.UserModelId == user.Id &&
+                    x.CompanyName == entryDto.CompanyName &&
+                    x.Date == entryDto.Date
+                );
+
+            if (contains != null)
+            {
+                if (contains.Details != entryDto.Details || contains.Location != entryDto.Location)
+                {
+                    // Update only the details and location
+                    contains.Details = entryDto.Details;
+                    contains.Location = entryDto.Location;
+                    appDb.SaveChanges(); // 🔹 persist changes
+                    return Ok(new { Message = "Work Details/Location Updated", Response = entryDto });
+                }
+                return Ok(new { Message = "Work Already Exists", Response = entryDto });
+            }
+
+                // Add the new work entry to the user's work experience list
+                var workEntry = new WorkEntry()
             {
                 UserModelId = user.Id,
                 CompanyName = entryDto.CompanyName,
@@ -300,6 +341,25 @@ namespace resume_builder_api.Controllers
             {
                 return NotFound(new { Message = "User not found" });
             }
+
+            var contains = appDb.CertificateEntries
+                .FirstOrDefault(
+                    x => x.UserModelId == user.Id &&
+                    x.CertificateName == entryDto.CertificateName
+                );
+
+            if (contains != null)
+            {
+                if (contains.Details != entryDto.Details)
+                {
+                    // Update only the details
+                    contains.Details = entryDto.Details;
+                    appDb.SaveChanges(); // 🔹 persist changes
+                    return Ok(new { Message = "Certificate Details Updated", Response = entryDto });
+                }
+                return Ok(new { Message = "Certificate Already Exists", Response = entryDto });
+            }
+
             // Add the new certificate entry to the user's certificates list
             var certificateEntry = new CertificateEntry()
             {
@@ -323,6 +383,16 @@ namespace resume_builder_api.Controllers
             {
                 return NotFound(new { Message = "User not found" });
             }
+
+            var contains = appDb.SkillEntries
+                .FirstOrDefault(
+                    x => x.UserModelId == user.Id &&
+                    x.SkillName == entryDto.SkillName
+                );
+
+            if (contains != null)
+                return Ok(new { Message = "Skill Already Exists", Response = entryDto });
+
             // Add the new skill entry to the user's skills list
             var skillEntry = new SkillEntry()
             {
@@ -340,23 +410,42 @@ namespace resume_builder_api.Controllers
         {
             // Find the user by public key
             var user = appDb.Users.FirstOrDefault(u => u.PublicId == publicKey);
-            // If user is not found, return a 404 Not Found response
+
             if (user == null)
-            {
                 return NotFound(new { Message = "User not found" });
+
+            // Check if project already exists for this user
+            var project = appDb.ProjectEntries
+                .FirstOrDefault(x => x.UserModelId == user.Id && x.ProjectName == entryDto.ProjectName);
+
+            if (project != null)
+            {
+                if (project.Description != entryDto.Description)
+                {
+                    // Update only the description
+                    project.Description = entryDto.Description;
+                    appDb.SaveChanges(); // 🔹 persist changes
+
+                    return Ok(new { Message = "Project Description Updated", Response = entryDto });
+                }
+
+                return Ok(new { Message = "Project Already Exists", Response = entryDto });
             }
-            // Add the new project entry to the user's projects list
-            var projectEntry = new ProjectEntry()
+
+            // Otherwise, create a new project
+            var projectEntry = new ProjectEntry
             {
                 UserModelId = user.Id,
                 ProjectName = entryDto.ProjectName,
                 Description = entryDto.Description
             };
+
             appDb.ProjectEntries.Add(projectEntry);
             appDb.SaveChanges();
-            // Return a success response
-            return Ok(new { Message = "Project updated successfully", Response = projectEntry });
+
+            return Ok(new { Message = "Project Added Successfully", Response = projectEntry });
         }
+
 
         [HttpPut("Update/{publicKey}")]
         public IActionResult UpdateUserInfo(string publicKey, [FromBody] UserDto userInfoDto)

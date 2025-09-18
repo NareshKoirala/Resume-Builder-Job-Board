@@ -9,7 +9,9 @@ import Stars from "@/components/stars";
 import UserInfo from "@/components/user-info";
 import { UpdateUserDto } from "@/model/data-structure";
 import Loading from "@/components/loading";
+import { handleUserUpdateFunc } from "./handleUserUpdate";
 
+// Dashboard Stats Data Interface
 interface DashboardStatsData {
   totalApplications: number;
   activeResumes: number;
@@ -122,46 +124,8 @@ function DashboardContent() {
   ];
 
   const handleUserUpdate = async (userData: UpdateUserDto) => {
-    try {
-      const updateUserData = userData as UpdateUserDto;
-
-      setCurrentUserData(updateUserData);
-
-      alert("Profile updates: " + JSON.stringify(updateUserData.firstName));
-
-      const reqData = {
-        path: "Users/Update",
-        publicId: publicId,
-        process: "PUT",
-        data: updateUserData,
-      };
-
-      const resp = await fetch("./api/resume-api/User/Public", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reqData),
-      });
-
-      console.log("Response status (page.tsx):", resp.status);
-
-      if (!resp.ok) {
-        const errorData = await resp.json();
-        throw new Error(
-          errorData.error || "Failed to fetch user data from Resume API"
-        );
-      }
-
-      const responseData = await resp.json();
-
-      console.log("Update response data:", responseData);
-
-      alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating user data:", error);
-      alert("An error occurred while updating your profile. Please try again.");
-    }
+    await handleUserUpdateFunc(currentUserData, userData, publicId);
+    setCurrentUserData(userData);
   };
 
   // Loading state

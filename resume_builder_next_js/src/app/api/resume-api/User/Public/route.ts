@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const apiUrl = `${RESUME_API_URL}/${path}/${publicId}`;
 
-    console.log(`Making ${process} request to:`, apiUrl);
+    // console.log(`Making ${process} request to:`, apiUrl);
 
     try {
         const response = await fetch(apiUrl, {
@@ -54,6 +54,9 @@ export async function PUT(request: NextRequest) {
     }
 
     const { path, publicId, process, data } = await request.json();
+
+    // console.log("PUT Request Data:", { path, publicId, process, data });
+
     const apiUrl = `${RESUME_API_URL}/${path}/${publicId}`;
     
     try {
@@ -65,7 +68,7 @@ export async function PUT(request: NextRequest) {
             body: JSON.stringify(data),
         });
 
-        console.log("Response Raw:", response);
+        // console.log("Response Raw:", response);
 
         if (!response.ok) {
             const errorData = await response.json();
