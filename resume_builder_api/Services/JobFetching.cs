@@ -37,17 +37,28 @@ namespace resume_builder_api.Services
                     continue;
 
                 var value = prop.GetValue(jobBoard);
-                if (value is null) continue;
 
-                if (value is List<string> list && list.Count > 0)
+                if (value is null)
+                    continue;
+
+                if (value is List<string> list)
                 {
-                    finalUrl.Append($"&{prop.Name}={Uri.EscapeDataString(string.Join(" ", list))}");
+                    if (list.Count > 0)
+                    {
+                        finalUrl.Append($"&{prop.Name}={Uri.EscapeDataString(string.Join(" ", list))}");
+                    }
+                    else
+                    {
+                        // Append empty query param instead of skipping or ToString()
+                        finalUrl.Append($"&{prop.Name}=");
+                    }
                 }
                 else
                 {
                     finalUrl.Append($"&{prop.Name}={value}");
                 }
             }
+
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");

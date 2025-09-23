@@ -32,9 +32,7 @@ function DashboardContent() {
   const [userExists, setUserExists] = useState<boolean | null>(null); // null = loading, true = exists, false = needs registration
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
-  const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(
-    null
-  );
+  const [currentUserData, setCurrentUserData] = useState<UpdateUserDto | null>(null);
   const [publicId, setPublicId] = useState<string>("");
 
   useEffect(() => {
@@ -43,7 +41,18 @@ function DashboardContent() {
       const data = await response.json();
       setPublicId(data.data);
       setUserExists(data.data ? true : false);
-      setIsLoading(false);
+
+      const userData = localStorage.getItem("savedUser");
+
+      if (userData) {
+        const userJSON = JSON.parse(userData);
+        setCurrentUserData(userJSON.response);
+        if (userJSON.response.firstName) {
+          setUserName(userJSON.response.firstName);
+        }
+        setIsLoading(false);
+        return;
+      }
 
       const reqData = {
         path: "Users",
@@ -61,18 +70,23 @@ function DashboardContent() {
 
       if (!resp.ok) {
         const errorData = await resp.json();
-        throw new Error(
+        window.location.href = "/";
+        console.log(
           errorData.error || "Failed to fetch user data from Resume API"
         );
       }
 
       const responseData = await resp.json();
 
+      localStorage.setItem("savedUser", JSON.stringify(responseData));
+
       setCurrentUserData(responseData.response);
 
       if (responseData.response.firstName) {
         setUserName(responseData.response.firstName);
       }
+
+      setIsLoading(false);
     };
 
     fetchPublicId();
@@ -95,8 +109,9 @@ function DashboardContent() {
           id: "publicId",
         }),
       });
+      localStorage.clear();
+      window.location.href = "/";
     }
-    window.location.href = "/";
   };
 
   const quickActions: QuickAction[] = [
@@ -132,7 +147,7 @@ function DashboardContent() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black flex items-center justify-center">
-        <Loading />
+        <Loading message="Loading User Information" />
       </div>
     );
   }

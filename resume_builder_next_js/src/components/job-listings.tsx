@@ -7,10 +7,6 @@ interface Job {
   location: string;
   description: string;
   salaryRange: string;
-  badge?: {
-    text: string;
-    color: string;
-  };
 }
 
 interface JobListingsProps {
@@ -71,13 +67,6 @@ export default function JobListings({ jobs }: JobListingsProps) {
                   <h3 className="text-lg font-semibold text-white">
                     {job.title}
                   </h3>
-                  {job.badge && (
-                    <span
-                      className={`bg-${job.badge.color}-600 text-white text-xs px-3 py-1 rounded-full`}
-                    >
-                      {job.badge.text}
-                    </span>
-                  )}
                 </div>
                 <p className="text-purple-300 font-medium">{job.company}</p>
                 <p className="text-gray-400 text-sm mb-3">{job.location}</p>

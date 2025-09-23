@@ -41,7 +41,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) onSubmit(formData);
-    else alert("User updated! Check console for data.");
+    // window.location.reload();
   };
 
   const addEntry = <T extends object>(field: keyof UpdateUserDto, entry: T) =>
@@ -63,11 +63,65 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
       ),
     }));
 
-  const removeEntry = <T extends object>(field: keyof UpdateUserDto, index: number) =>
+  const dictsData = {
+  education: "Education",
+  workExperience: "Work",
+  certificates: "Certificate",
+  skills: "Skill",
+  projects: "Project",
+};
+
+const removeEntry = async <T extends object>(
+  field: keyof UpdateUserDto,
+  index: number
+) => {
+  const data = (formData[field] as T[])[index];
+  console.log("Data you want to remove ->", data);
+
+  const strField = dictsData[field as keyof typeof dictsData];
+  console.log("Mapped field ->", strField);
+
+    // ✅ Ensure the entry has an id before calling backend
+  if (!data?.id) {
+    // Still remove locally if you want:
     setFormData((prev) => ({
       ...prev,
       [field]: (prev[field] as T[]).filter((_, i) => i !== index),
     }));
+    return;
+  }
+
+  try {
+    // Call your Next.js API route (the one you made earlier)
+    const res = await fetch("./api/resume-api/User/Delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        field: strField, // "Education", "Work", etc.
+        data,            // the actual entry being removed
+      }),
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      console.error("Failed to delete:", result);
+      return;
+    }
+
+    console.log("Successfully deleted:", result);
+
+    // ✅ Update frontend state only if backend delete succeeds
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as T[]).filter((_, i) => i !== index),
+    }));
+  } catch (err) {
+    console.error("Error deleting entry:", err);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col items-center py-6 px-4 md:px-0">
@@ -186,84 +240,133 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
 
         {/* Dynamic sections */}
         {[
-          { field: "education", title: "Education", template: { institutionName: "", date: "", location: "", details: "" }, keys: ["institutionName","date","location","details"] },
-          { field: "workExperience", title: "Work Experience", template: { companyName: "", date: "", location: "", details: "" }, keys: ["companyName","date","location","details"] },
-          { field: "certificates", title: "Certificates", template: { certificateName: "", details: "" }, keys: ["certificateName","details"] },
-          { field: "skills", title: "Skills", template: { skillName: "" }, keys: ["skillName"] },
-          { field: "projects", title: "Projects", template: { projectName: "", description: "" }, keys: ["projectName","description"] },
+          {
+            field: "education",
+            title: "Education",
+            template: {
+              institutionName: "",
+              date: "",
+              location: "",
+              details: "",
+            },
+            keys: ["institutionName", "date", "location", "details"],
+          },
+          {
+            field: "workExperience",
+            title: "Work Experience",
+            template: { companyName: "", date: "", location: "", details: "" },
+            keys: ["companyName", "date", "location", "details"],
+          },
+          {
+            field: "certificates",
+            title: "Certificates",
+            template: { certificateName: "", details: "" },
+            keys: ["certificateName", "details"],
+          },
+          {
+            field: "skills",
+            title: "Skills",
+            template: { skillName: "" },
+            keys: ["skillName"],
+          },
+          {
+            field: "projects",
+            title: "Projects",
+            template: { projectName: "", description: "" },
+            keys: ["projectName", "description"],
+          },
         ].map((section) => (
-          <section key={section.field as string} className="flex flex-col gap-4">
+          <section
+            key={section.field as string}
+            className="flex flex-col gap-4"
+          >
             <div className="flex justify-between items-center">
-              <h3 className="text-[var(--primary-purple)] font-semibold text-xl md:text-2xl">{section.title}</h3>
+              <h3 className="text-[var(--primary-purple)] font-semibold text-xl md:text-2xl">
+                {section.title}
+              </h3>
               <button
                 type="button"
-                onClick={() => addEntry(section.field as keyof UpdateUserDto, section.template)}
+                onClick={() =>
+                  addEntry(
+                    section.field as keyof UpdateUserDto,
+                    section.template
+                  )
+                }
                 className="px-3 py-1 rounded-lg bg-[var(--accent-purple)] text-white text-sm"
               >
                 + Add {section.title}
               </button>
-            </div>{(formData[section.field as keyof UpdateUserDto] as any[]).map((entry, index) => (
-  <div
-    key={index}
-    className="flex flex-col gap-2 p-2 border border-[var(--border-color)] rounded-lg"
-  >
-    {/* Non-description fields in row */}
-    <div className="flex flex-col md:flex-row gap-4">
-      {section.keys
-        .filter((key) => key !== "details" && key !== "description")
-        .map((key) => (
-          <input
-            key={key}
-            type="text"
-            placeholder={key}
-            value={entry[key] || ""}
-            onChange={(e) =>
-              updateEntry(
-                section.field as keyof UpdateUserDto,
-                index,
-                key as any,
-                e.target.value
+            </div>
+            {(formData[section.field as keyof UpdateUserDto] as any[]).map(
+              (entry, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-2 p-2 border border-[var(--border-color)] rounded-lg"
+                >
+                  {/* Non-description fields in row */}
+                  <div className="flex flex-col md:flex-row gap-4">
+                    {section.keys
+                      .filter(
+                        (key) => key !== "details" && key !== "description"
+                      )
+                      .map((key) => (
+                        <input
+                          key={key}
+                          type="text"
+                          placeholder={key}
+                          value={entry[key] || ""}
+                          onChange={(e) =>
+                            updateEntry(
+                              section.field as keyof UpdateUserDto,
+                              index,
+                              key as any,
+                              e.target.value
+                            )
+                          }
+                          className="purple-input flex-1 px-4 py-2"
+                        />
+                      ))}
+                  </div>
+
+                  {/* Details / Description textarea full width */}
+                  {["details", "description"].map((key) =>
+                    entry[key] !== undefined ? (
+                      <textarea
+                        key={key}
+                        placeholder={key}
+                        value={entry[key] || ""}
+                        onChange={(e) =>
+                          updateEntry(
+                            section.field as keyof UpdateUserDto,
+                            index,
+                            key as any,
+                            e.target.value
+                          )
+                        }
+                        className="purple-input w-full px-4 py-2 resize-none min-h-[80px]"
+                      />
+                    ) : null
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeEntry(section.field as keyof UpdateUserDto, index)
+                    }
+                    className="px-3 py-1 rounded-lg bg-red-600 text-white text-sm self-start"
+                  >
+                    Remove
+                  </button>
+                </div>
               )
-            }
-            className="purple-input flex-1 px-4 py-2"
-          />
-        ))}
-    </div>
-
-    {/* Details / Description textarea full width */}
-    {["details", "description"].map((key) =>
-      entry[key] !== undefined ? (
-        <textarea
-          key={key}
-          placeholder={key}
-          value={entry[key] || ""}
-          onChange={(e) =>
-            updateEntry(
-              section.field as keyof UpdateUserDto,
-              index,
-              key as any,
-              e.target.value
-            )
-          }
-          className="purple-input w-full px-4 py-2 resize-none min-h-[80px]"
-        />
-      ) : null
-    )}
-
-    <button
-      type="button"
-      onClick={() => removeEntry(section.field as keyof UpdateUserDto, index)}
-      className="px-3 py-1 rounded-lg bg-red-600 text-white text-sm self-start"
-    >
-      Remove
-    </button>
-  </div>
-))}
-
+            )}
           </section>
         ))}
 
-        <button type="submit" className="purple-button-primary mt-4 w-full py-3">
+        <button
+          type="submit"
+          className="purple-button-primary mt-4 w-full py-3"
+        >
           Update User Information
         </button>
       </form>

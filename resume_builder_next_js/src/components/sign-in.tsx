@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../css/auth.module.css';
-import { emailFetch } from '@/app/api/supabase/dbFetch';
+import { emailFetch } from '../app/api/supabase/dbFetch';
+import Loading from './loading';
 
 interface SignInFormData {
   email: string;
@@ -103,7 +104,6 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
 
       // Set user data in context or state management
       const userData = await emailFetch(formData.email);
-      console.log('Fetched user data:', userData[0]);
 
       await fetch('/api/cookies/set', {
         method: 'POST',
@@ -126,6 +126,15 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
       setIsSubmitting(false);
     }
   };
+
+  if (isSubmitting)
+  {
+    return(
+      <>
+        <Loading message='Validating User Information' />
+      </>
+    )    
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

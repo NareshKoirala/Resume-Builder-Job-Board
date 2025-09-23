@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Job } from "@/components/job-listings";
+import JobSearch from "@/components/seach_bar";
 
 interface JobReq {
   country: string;
@@ -17,33 +18,7 @@ function JobBoard() {
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
-
-  useEffect(() => {
-    const jobReq: JobReq = {
-      country: "ca",
-      page: "2",
-      what: ["software"],
-      max_days_old: 30,
-      what_exclude: ["senior"],
-      what_or: ["edmonton", "toronto"],
-    };
-
-    const fetchJob = async () => {
-      const response = await fetch("./api/resume-api/JobBoard", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jobReq),
-      });
-
-      const respData = await response.json();
-
-      setJobs(respData);
-    };
-
-    fetchJob();
-  }, []);
+  const [jobReq, setJobReq] = useState<JobReq>();
 
   const handleSaveJob = (job: Job) => {
     if (!savedJobs.find((j) => j.id === job.id)) {
@@ -57,37 +32,49 @@ function JobBoard() {
     alert(`Resume generated for this job!`);
   };
 
-  const handleAddJob = () => {
-    alert("Add Job functionality will go here!");
-  };
-
   return (
     <div className="flex flex-col gap-6">
+      {/* Back to Dashboard Button */}
+      <button
+        onClick={() => router.push("/dashboard")}
+        className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-50 transition-all shadow-lg"
+      >
+        Back to Dashboard
+      </button>
       {/* Job Board Header */}
-      <div className="flex flex-col items-center text-center gap-4 mb-6">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)]">
+
+      <div className="flex flex-col items-center text-center gap-2 mb-6">
+        <h1 className="text-7xl font-extrabold text-[var(--foreground)]">
           Job Board
         </h1>
         <p className="text-[var(--secondary-purple)] text-sm md:text-base">
           Browse, track, and manage job listings
         </p>
-        <button
-          onClick={handleAddJob}
-          className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
-        >
-          + Add Job
-        </button>
-        {/* Back to Dashboard Button */}
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all shadow-lg"
-        >
-          ← Back to Dashboard
-        </button>
       </div>
+      {/* Inner wrapper for column layout */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "12px", // spacing between gif and text
+        }}
+      >
+        <img
+          src="/resource/cat_chilling.gif"
+          alt="Loading..."
+          style={{ borderRadius: "12px" }}
+          width={100}
+        />
+      </div>
+      
+      <JobSearch
+        initialValues={jobReq}
+        onSearch={(result) => setJobs(Array.isArray(result) ? result : [])}
+      />
 
       {/* Job Listings */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 gap-6">
         {jobs.map((job) => (
           <div
             key={job.id}
@@ -109,14 +96,6 @@ function JobBoard() {
               <span className="text-[var(--primary-purple)] font-semibold">
                 {job.salaryRange}
               </span>
-              {job.badge && (
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ backgroundColor: job.badge.color, color: "#fff" }}
-                >
-                  {job.badge.text}
-                </span>
-              )}
             </div>
 
             {/* Buttons */}

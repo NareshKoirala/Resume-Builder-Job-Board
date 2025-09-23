@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { dbCredentialsInsert } from '@/app/api/supabase/dbInsert';
-import { emailFetch } from '@/app/api/supabase/dbFetch';
+import { dbCredentialsInsert } from '../supabase/dbInsert';
+import { emailFetch } from '../supabase/dbFetch';
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { emailFetch } from '@/app/api/supabase/dbFetch';
+import { emailFetch } from '../supabase/dbFetch';
 
 export async function POST(request: NextRequest) {
   try {

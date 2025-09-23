@@ -68,8 +68,6 @@ export async function PUT(request: NextRequest) {
             body: JSON.stringify(data),
         });
 
-        // console.log("Response Raw:", response);
-
         if (!response.ok) {
             const errorData = await response.json();
             console.error("Error response from Resume API:", errorData);

@@ -1,4 +1,8 @@
-export default function Loading() {
+interface LoadingProp {
+  message?: string;
+}
+
+export default function Loading({ message = "Loading..." }: LoadingProp) {
   return (
     <div
       style={{
@@ -13,14 +17,25 @@ export default function Loading() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: 9999, // make sure it's on top
+        zIndex: 9999,
       }}
     >
-      <img
-        src="/resource/loading.gif"
-        alt="Loading..."
-        style={{ borderRadius: "12px" }}
-      />
+      {/* Inner wrapper for column layout */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "12px", // spacing between gif and text
+        }}
+      >
+        <img
+          src="/resource/loading.gif"
+          alt="Loading..."
+          style={{ borderRadius: "12px" }}
+        />
+        <p className="text-lg font-semibold text-white">{message}</p>
+      </div>
     </div>
   );
 }

@@ -23,6 +23,9 @@ export async function handleUserUpdateFunc(
       userSummary: updateUserData.userSummary,
     };
 
+    console.log(userInfo);
+    console.log(userData);
+
     const education = updateUserData.education.map((edu) => ({
       institutionName: edu.institutionName,
       date: edu.date,
