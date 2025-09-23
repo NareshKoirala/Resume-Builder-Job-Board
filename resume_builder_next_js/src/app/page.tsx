@@ -6,8 +6,21 @@ import { useState } from "react";
 export default function Home() {
   const [showApiFeatures, setShowApiFeatures] = useState(false);
   const router = useRouter();
+
   const handleSignIn = () => {
-    router.push("/auth");
+    // Perform sign-in logic here
+    const publicId = async () => {
+      const response = await fetch("./api/cookies/get?key=publicId");
+      const data = await response.json();
+      
+      if (data.data && data.data !== "undefined") {
+        router.push("/dashboard");
+      } else {
+        router.push("/auth");
+      }
+    };
+
+    publicId();
   };
 
   return (
@@ -145,6 +158,21 @@ export default function Home() {
               </div>
             </div>
           )}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center", // horizontal
+            alignItems: "center", // vertical
+          }}
+        >
+          <img
+            src="./resource/cat_dancing.gif"
+            alt="Dancing Cat"
+            width={200}
+            height={200}
+          />
         </div>
 
         <div className="mt-8">

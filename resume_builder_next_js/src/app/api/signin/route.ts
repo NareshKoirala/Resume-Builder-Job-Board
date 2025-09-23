@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { emailFetch } from '@/api/supabase/dbFetch';
+import { emailFetch } from '../supabase/dbFetch';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Success - In a real app, you might want to create a JWT token here
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       success: true, 
       message: 'Signed in successfully',
       user: {
@@ -43,6 +43,8 @@ export async function POST(request: NextRequest) {
         email: user.email
       }
     });
+
+    return response;
     
   } catch (error) {
     console.error('Sign-in error:', error);

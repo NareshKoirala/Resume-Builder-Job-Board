@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../css/auth.module.css';
+import { emailFetch } from '../app/api/supabase/dbFetch';
+import Loading from './loading';
 
 interface SignInFormData {
   email: string;
@@ -99,9 +101,24 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
         setErrors({ general: result.message });
         return;
       }
-      
-      // Redirect to dashboard with email parameter
-      router.push(`/dashboard?email=${encodeURIComponent(formData.email)}`);
+
+      // Set user data in context or state management
+      const userData = await emailFetch(formData.email);
+
+      await fetch('/api/cookies/set', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          age: formData.rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 2, // 30 days or 2 hours
+          data: userData[0].public_id,
+          id: 'publicId',
+        }),
+      });
+
+      // Redirect to dashboard on successful sign-in
+      router.push(`/dashboard`);
       
     } catch (error) {
       setErrors({ general: 'Failed to sign in. Please try again.' });
@@ -109,6 +126,15 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
       setIsSubmitting(false);
     }
   };
+
+  if (isSubmitting)
+  {
+    return(
+      <>
+        <Loading message='Validating User Information' />
+      </>
+    )    
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

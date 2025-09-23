@@ -3,11 +3,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../css/auth.module.css';
+import  Loading  from './loading';
 
 interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  passKey: string;
 }
 
 interface SignUpErrors {
@@ -15,6 +17,7 @@ interface SignUpErrors {
   password?: string;
   confirmPassword?: string;
   general?: string;
+  passKey?: string;
 }
 
 interface SignUpProps {
@@ -27,6 +30,7 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
     email: '',
     password: '',
     confirmPassword: '',
+    passKey: '',
   });
 
   const [errors, setErrors] = useState<SignUpErrors>({});
@@ -69,6 +73,11 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
+    // Pass Key validation
+    if (!formData.passKey) {
+      newErrors.general = 'Pass Key is required';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -89,6 +98,10 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
     }
   };
 
+  if (isSubmitting) {
+    return <Loading />;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -97,6 +110,37 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
     }
 
     setIsSubmitting(true);
+
+    try{
+      const resumeResponse = await fetch('./api/resume-api/User/Auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          path: 'Users/Auth',
+          passKey: formData.passKey,
+          Email: formData.email
+        }),
+      });
+
+      if (!resumeResponse.ok) {
+        const errorData = await resumeResponse.json();
+        setErrors({ general: errorData.error || 'Resume API error occurred. Please try again.' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const resumeResult = await resumeResponse.json();
+
+      console.log('Resume API result:', resumeResult);
+
+    }
+    catch (error) {
+      setErrors({ general: 'Resume API error occurred. Please try again.' });
+      setIsSubmitting(false);
+      return;
+    }
     
     try {
       const response = await fetch('./api/signup', {
@@ -125,13 +169,14 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
       alert('Account created successfully!');
       
       // Redirect to dashboard with email parameter
-      router.push(`/dashboard?email=${encodeURIComponent(formData.email)}`);
+      router.push(`/dashboard`);
       
       // Reset form
       setFormData({
         email: '',
         password: '',
         confirmPassword: '',
+        passKey: '',
       });
       
     } catch (error) {
@@ -162,6 +207,28 @@ const SignUp: React.FC<SignUpProps> = ({ onToggleMode }) => {
         )}
 
         <form onSubmit={handleSubmit}>
+          {/* Pass Key */}
+          <div className={styles.fieldGroup}>
+            <label htmlFor="passKey" className={styles.label}>
+              Pass Key *
+            </label>
+            <input
+              type="text"
+              id="passKey"
+              name="passKey"
+              value={formData.passKey}
+              onChange={handleInputChange}
+              className={`purple-input ${styles.input}`}
+              placeholder="Enter your pass key"
+              disabled={isSubmitting}
+            />
+            {errors.passKey && (
+              <p className={styles.errorText}>
+                {errors.passKey}
+              </p>
+            )}
+          </div>
+
           {/* Email Field */}
           <div className={styles.fieldGroup}>
             <label htmlFor="email" className={styles.label}>

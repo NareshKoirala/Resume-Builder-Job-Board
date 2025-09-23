@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { dbCredentialsInsert } from '@/api/supabase/dbInsert';
-import { emailFetch } from '@/api/supabase/dbFetch';
-import { randomUUID } from 'crypto';
+import { dbCredentialsInsert } from '../supabase/dbInsert';
+import { emailFetch } from '../supabase/dbFetch';
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
-    
+
+    // Get publicId from cookies
+    const reqPublicId = request.cookies.get('publicId')?.value;
+    console.log("Public ID from cookie:", reqPublicId);
+
+    // Validate input
+    if (!email || !password || !reqPublicId) {
+      return NextResponse.json(
+        { success: false, message: 'Email, password, and Public ID are required' },
+        { status: 400 }
+      );
+    }
+
     // Check if email already exists
     const existingUser = await emailFetch(email);
     if (existingUser && existingUser.length > 0) {
@@ -22,7 +33,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     
     // Insert into database
-    const result = await dbCredentialsInsert(randomUUID(), {
+    const result = await dbCredentialsInsert(reqPublicId, {
       email,
       password_hash: hashedPassword
     });

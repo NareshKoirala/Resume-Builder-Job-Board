@@ -26,9 +26,9 @@ interface StarsProps {
 }
 
 const Stars: React.FC<StarsProps> = ({
-  count = 100,
-  minSize = 1,
-  maxSize = 3,
+  count = 150,
+  minSize = 0.5,
+  maxSize = 2,
   className = ''
 }) => {
   const [stars, setStars] = useState<Star[]>([]);
@@ -48,7 +48,7 @@ const Stars: React.FC<StarsProps> = ({
         const centerY = 50; // Center of screen (Y)
         const radius = Math.random() * 40 + 5; // Radius between 5-45 (distance from center)
         const angle = Math.random() * 360; // Starting angle
-        const speed = 0.1; // Same speed for all stars - galaxy-like rotation
+        const speed = 0.35; // Same speed for all stars - galaxy-like rotation
 
         // Calculate initial position
         const x = centerX + (radius * Math.cos(angle * Math.PI / 180));
@@ -59,7 +59,7 @@ const Stars: React.FC<StarsProps> = ({
           x: Math.max(0, Math.min(100, x)), // Clamp to screen bounds
           y: Math.max(0, Math.min(100, y)), // Clamp to screen bounds
           size: Math.random() * (maxSize - minSize) + minSize,
-          opacity: Math.random() * 0.8 + 0.2, // Between 0.2 and 1
+          opacity: Math.random() * 0.8 + 0.1, // Between 0.1 and 0.9
           animationClass: randomAnimation,
           animationDelay: randomDelay,
           radius: radius,

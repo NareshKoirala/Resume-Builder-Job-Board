@@ -1,23 +1,6 @@
 import { UUID } from "crypto";
 import supabase from "./connection";
 
-export const usersUpdate = async (userId: UUID, updates: object) => {
-  console.log('usersUpdate called with:', { userId, updates });
-  
-  const { data, error } = await supabase
-    .from("users")
-    .update(updates)
-    .eq("id", userId)
-    .select(); // Add select() to return the updated data
-
-  if (error) {
-    console.error("Error updating user data:", error);
-    return null;
-  }
-
-  console.log('usersUpdate result:', data);
-  return data;
-};
 
 export const credentialsUserIdUpdate = async (email: string, updates: object) => {
   const { data, error } = await supabase
