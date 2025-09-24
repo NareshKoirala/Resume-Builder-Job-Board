@@ -130,9 +130,7 @@ const SignIn: React.FC<SignInProps> = ({ onToggleMode }) => {
   if (isSubmitting)
   {
     return(
-      <>
         <Loading message='Validating User Information' />
-      </>
     )    
   }
 

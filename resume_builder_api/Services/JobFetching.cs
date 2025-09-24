@@ -22,7 +22,7 @@ namespace resume_builder_api.Services
         {
             var results = new List<JobBoardReturn>();
 
-            const string resultsPerPage = "20";
+            const string resultsPerPage = "30";
             const string sortBy = "date";
 
 
@@ -79,16 +79,26 @@ namespace resume_builder_api.Services
                 var resultsElement = (JsonElement)jsonDict["results"];
                 foreach (var job in resultsElement.EnumerateArray())
                 {
+                    job.TryGetProperty("company", out var companyProp);
+                    job.TryGetProperty("location", out var locationProp);
+                    job.TryGetProperty("contract_time", out var contractTimeProp);
+
                     results.Add(new JobBoardReturn
                     {
-                        id = job.GetProperty("id").GetString() ?? string.Empty,
-                        title = job.GetProperty("title").GetString() ?? string.Empty,
-                        company = job.GetProperty("company").GetProperty("display_name").GetString() ?? string.Empty,
-                        location = string.Join(" ", job.GetProperty("location").GetProperty("area").EnumerateArray().Select(x => x.GetString())),
-                        description = job.GetProperty("description").GetString() ?? string.Empty,
-                        salaryRange = job.GetProperty("salary_is_predicted").GetString() == "0" ? "Unavailable" : job.GetProperty("salary_is_predicted").GetString() ?? "Unavailable"
+                        id = job.TryGetProperty("id", out var idProp) ? idProp.GetString() ?? "" : "",
+                        title = job.TryGetProperty("title", out var titleProp) ? titleProp.GetString() ?? "" : "",
+                        company = companyProp.ValueKind != JsonValueKind.Undefined && companyProp.TryGetProperty("display_name", out var displayProp)
+                                    ? displayProp.GetString() ?? ""
+                                    : "",
+                        location = locationProp.ValueKind != JsonValueKind.Undefined
+                                    ? string.Join(" ", locationProp.GetProperty("area").EnumerateArray().Select(x => x.GetString()))
+                                    : "",
+                        description = job.TryGetProperty("description", out var descProp) ? descProp.GetString() ?? "" : "",
+                        contract_time = contractTimeProp.ValueKind == JsonValueKind.Undefined ? "Unavailable" : contractTimeProp.GetString() ?? "Unavailable",
+                        redirect_url = job.TryGetProperty("redirect_url", out var urlProp) ? urlProp.GetString() ?? "" : ""
                     });
                 }
+
             }
             catch (Exception ex)
             {
