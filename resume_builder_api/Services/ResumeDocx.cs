@@ -69,7 +69,7 @@ namespace resume_builder_api.Services
 
             foreach (var data in workData)
             {
-                var splitData = data.Split(':');
+                var splitData = data.Split('\n');
 
                 if (splitData.Length < 2) continue;
 
@@ -134,7 +134,7 @@ namespace resume_builder_api.Services
 
 
             string skills = string.Join(" | ", skillsData);
-            skills = skills.Replace(",", " |");
+            skills = skills.Replace(",", "|");
 
             Paragraph bulletPara = new Paragraph();
 

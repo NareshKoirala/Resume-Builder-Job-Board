@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(userData), // send the actual payload
     });
     
-    console.log(response);
+    // console.log(response);
 
     const responseData = await response.json();
     // console.log("Response From api (Job Board Route)", responseData);

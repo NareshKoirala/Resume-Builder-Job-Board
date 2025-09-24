@@ -15,14 +15,14 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   }
 
   return (
-    <nav className="flex justify-center p-6">
-      <ul className="inline-flex items-center space-x-2">
+    <nav className="flex justify-center p-4 sm:p-6">
+      <ul className="inline-flex flex-wrap justify-center items-center gap-2">
         {/* Previous Button */}
         <li>
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-2 sm:px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Previous
           </button>
@@ -33,7 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <li key={number}>
             <button
               onClick={() => onPageChange(number)}
-              className={`px-3 py-1 rounded-md transition-colors ${
+              className={`px-2 sm:px-3 py-1 rounded-md transition-colors ${
                 number === currentPage
                   ? "bg-purple-900 text-white shadow-lg"
                   : "bg-purple-600 text-white hover:bg-purple-700"
@@ -49,7 +49,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-2 sm:px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next
           </button>

@@ -24,7 +24,7 @@ const tags: string[] = [
   "Node.js",
   "DevOps",
   "Edmonton",
-  "Toronto"
+  "Toronto",
 ];
 
 interface JobReq {
@@ -38,7 +38,7 @@ interface JobReq {
 
 interface JobSearchProps {
   initialValues?: JobReq;
-  onSearch: (jobs: any[]) => void; // callback to pass jobs to parent
+  onSearch: (jobs: any[]) => void;
 }
 
 export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
@@ -52,30 +52,25 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
       what_or: [],
     }
   );
+  const [needUpdate, UpdateJob] = useState(true);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  // Add a separate state for the raw keyword input
+  const [keywordInput, setKeywordInput] = useState(form.what.join(", "));
 
-  const [needUpdate, UpdateJob] = useState<Boolean>(true);
-
-  if(needUpdate)
-  {
+  useEffect(() => {
+    if (!needUpdate) return;
     const fetchJob = async () => {
-      const response = await fetch("./api/resume-api/JobBoard", {
+      const response = await fetch("/api/resume-api/JobBoard", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
       const respData = await response.json();
-
       onSearch(respData);
+      UpdateJob(false);
     };
-
     fetchJob();
-    UpdateJob(false);
-  }
-
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  }, [needUpdate, form, onSearch]);
 
   const handleArrayChange = (name: keyof JobReq, value: string) => {
     setForm((prev) => ({
@@ -84,11 +79,22 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
     }));
   };
 
-  const handleSearch = async () => {
+  const handleKeywordChange = (value: string) => {
+    setKeywordInput(value);
+  };
+
+  // When submitting, update the form state
+  const handleSearch = () => {
+    setForm((prev) => ({
+      ...prev,
+      what: keywordInput
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean),
+    }));
     UpdateJob(true);
   };
 
-  // --- Tag State Helpers ---
   const getTagState = (tag: string) => {
     if (form.what_or.includes(tag)) return "include";
     if (form.what_exclude.includes(tag)) return "exclude";
@@ -97,42 +103,25 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
 
   const toggleTag = (tag: string) => {
     const state = getTagState(tag);
-
     setForm((prev) => {
       let newOr = [...prev.what_or];
       let newEx = [...prev.what_exclude];
-
-      if (state === "default") {
-        // add to include
-        newOr.push(tag);
-      } else if (state === "include") {
-        // move to exclude
+      if (state === "default") newOr.push(tag);
+      else if (state === "include") {
         newOr = newOr.filter((t) => t !== tag);
         newEx.push(tag);
-      } else if (state === "exclude") {
-        // remove from exclude (back to default)
-        newEx = newEx.filter((t) => t !== tag);
-      }
-
+      } else newEx = newEx.filter((t) => t !== tag);
       return { ...prev, what_or: newOr, what_exclude: newEx };
     });
   };
 
-
-
-  const handlePageChange = async (page: number) => {
-
-    // Update form state immutably
-    setForm((prev) => {
-      const updated = { ...prev, page: String(page) };
-      console.log("Updated form inside setter:", updated);
-      UpdateJob(true);
-      return updated;
-    });
+  const handlePageChange = (page: number) => {
+    setForm((prev) => ({ ...prev, page: String(page) }));
+    UpdateJob(true);
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <Pagination
         currentPage={Number(form.page)}
         totalPages={10}
@@ -144,35 +133,33 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
           e.preventDefault();
           handleSearch();
         }}
-        className="flex rounded-lg border shadow-sm"
+        className="flex flex-col sm:flex-row rounded-lg border shadow-sm overflow-hidden"
       >
         {/* Keywords */}
-        <div className="flex items-center flex-1 px-4 border-r">
+        <div className="flex items-center flex-1 px-3 py-2 border-b sm:border-b-0 sm:border-r">
           <Search className="w-5 h-5 text-gray-500 mr-2" />
           <input
             id="what"
             name="what"
-            value={form.what.join(", ")}
-            onChange={(e) => handleArrayChange("what", e.target.value)}
+            value={keywordInput}
+            onChange={(e) => handleKeywordChange(e.target.value)}
             placeholder="Job title, keywords, or company"
-            className="w-full p-3 outline-none"
+            className="w-full p-2 outline-none text-sm sm:text-base"
             required
           />
         </div>
+
         {/* Country Dropdown */}
-        <div className="flex items-center flex-1 px-4 border-r">
-          <MapPin className="w-5 h-5" />
+        <div className="flex items-center flex-1 px-3 py-2 border-b sm:border-b-0 sm:border-r">
+          <MapPin className="w-5 h-5 mr-2 text-gray-500" />
           <select
             id="country"
             name="country"
             value={form.country}
             onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                country: e.target.value,
-              }))
+              setForm((prev) => ({ ...prev, country: e.target.value }))
             }
-            className="w-full p-3"
+            className="w-full p-2 text-sm sm:text-base"
           >
             <option value="ca">Canada</option>
             <option value="gb">United Kingdom</option>
@@ -183,7 +170,7 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
         {/* Search Button */}
         <button
           type="submit"
-          className="text-white px-6 font-semibold hover:bg-purple-700 transition"
+          className="w-full sm:w-auto text-white px-4 py-2 sm:px-6 sm:py-2.5 font-semibold bg-purple-600 hover:bg-purple-700 transition"
         >
           Find jobs
         </button>
@@ -196,42 +183,35 @@ export default function JobSearch({ initialValues, onSearch }: JobSearchProps) {
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"
         >
-          <SlidersHorizontal className="w-4 h-4" />
-          Tags
+          <SlidersHorizontal className="w-4 h-4" /> Tags
         </button>
       </div>
 
       {showAdvanced && (
-        <div className="rounded-lg shadow-md space-y-4">
-          <div className="flex flex-wrap gap-6">
-            {tags
-              .filter((x) => x.trim() !== "")
-              .map((tag) => {
-                const state = getTagState(tag);
-
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={`px-4 py-3 rounded-md border text-sm font-medium transition-colors
-                      ${
-                        state === "default"
-                          ? "bg-white border-gray-100 text-black hover:bg-gray-300"
-                          : state === "include"
-                          ? "bg-green-500 border-green-600 text-white hover:bg-green-600"
-                          : "bg-red-500 border-red-600 text-white hover:bg-red-600"
-                      }`}
-                  >
-                    {tag}{" "}
-                  </button>
-                );
-              })}
-          </div>
+        <div className="rounded-lg shadow-md p-3 sm:p-4 flex flex-wrap gap-3 sm:gap-4">
+          {tags.map((tag) => {
+            const state = getTagState(tag);
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                className={`px-3 sm:px-4 py-1 sm:py-2 rounded-md border text-sm sm:text-base font-medium transition-colors
+                  ${
+                    state === "default"
+                      ? "bg-white border-gray-200 text-black hover:bg-gray-200"
+                      : state === "include"
+                      ? "bg-green-500 border-green-600 text-white hover:bg-green-600"
+                      : "bg-red-500 border-red-600 text-white hover:bg-red-600"
+                  }`}
+              >
+                {tag}
+              </button>
+            );
+          })}
         </div>
       )}
-      <br />
-      <hr />
+      <hr className="mt-4 border-gray-300" />
     </div>
   );
 }

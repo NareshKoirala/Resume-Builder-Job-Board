@@ -40,8 +40,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
-    // window.location.reload();
+    if (onSubmit) {
+      localStorage.setItem("savedUser", JSON.stringify(formData));
+      onSubmit(formData);
+    }
   };
 
   const addEntry = <T extends object>(field: keyof UpdateUserDto, entry: T) =>
@@ -64,64 +66,63 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
     }));
 
   const dictsData = {
-  education: "Education",
-  workExperience: "Work",
-  certificates: "Certificate",
-  skills: "Skill",
-  projects: "Project",
-};
+    education: "Education",
+    workExperience: "Work",
+    certificates: "Certificate",
+    skills: "Skill",
+    projects: "Project",
+  };
 
-const removeEntry = async <T extends object>(
-  field: keyof UpdateUserDto,
-  index: number
-) => {
-  const data = (formData[field] as T[])[index];
-  console.log("Data you want to remove ->", data);
+  const removeEntry = async <T extends object>(
+    field: keyof UpdateUserDto,
+    index: number
+  ) => {
+    const data = (formData[field] as T[])[index];
+    console.log("Data you want to remove ->", data);
 
-  const strField = dictsData[field as keyof typeof dictsData];
-  console.log("Mapped field ->", strField);
+    const strField = dictsData[field as keyof typeof dictsData];
+    console.log("Mapped field ->", strField);
 
     // ✅ Ensure the entry has an id before calling backend
-  if (!data?.id) {
-    // Still remove locally if you want:
-    setFormData((prev) => ({
-      ...prev,
-      [field]: (prev[field] as T[]).filter((_, i) => i !== index),
-    }));
-    return;
-  }
-
-  try {
-    // Call your Next.js API route (the one you made earlier)
-    const res = await fetch("./api/resume-api/User/Delete", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        field: strField, // "Education", "Work", etc.
-        data,            // the actual entry being removed
-      }),
-    });
-
-    const result = await res.json();
-    if (!res.ok) {
-      console.error("Failed to delete:", result);
+    if (!data?.id) {
+      // Still remove locally if you want:
+      setFormData((prev) => ({
+        ...prev,
+        [field]: (prev[field] as T[]).filter((_, i) => i !== index),
+      }));
       return;
     }
 
-    console.log("Successfully deleted:", result);
+    try {
+      // Call your Next.js API route (the one you made earlier)
+      const res = await fetch("./api/resume-api/User/Delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          field: strField, // "Education", "Work", etc.
+          data, // the actual entry being removed
+        }),
+      });
 
-    // ✅ Update frontend state only if backend delete succeeds
-    setFormData((prev) => ({
-      ...prev,
-      [field]: (prev[field] as T[]).filter((_, i) => i !== index),
-    }));
-  } catch (err) {
-    console.error("Error deleting entry:", err);
-  }
-};
+      const result = await res.json();
+      if (!res.ok) {
+        console.error("Failed to delete:", result);
+        return;
+      }
 
+      console.log("Successfully deleted:", result);
+
+      // ✅ Update frontend state only if backend delete succeeds
+      setFormData((prev) => ({
+        ...prev,
+        [field]: (prev[field] as T[]).filter((_, i) => i !== index),
+      }));
+    } catch (err) {
+      console.error("Error deleting entry:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col items-center py-6 px-4 md:px-0">
