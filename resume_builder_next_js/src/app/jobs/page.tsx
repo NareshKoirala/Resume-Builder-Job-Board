@@ -19,13 +19,6 @@ function JobBoard() {
   const [popup, setPopup] = useState<{ status: boolean | null; message: string } | null>(null);
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [savedJobsResume, setSavedJobsResume] = useState<Job[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("activeResume");
-      return saved ? JSON.parse(saved) : [];
-    }
-    return [];
-  });
   const [savedJobs, setSavedJobs] = useState<Job[]>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("savedJobs");
@@ -41,20 +34,6 @@ function JobBoard() {
       localStorage.setItem("savedJobs", JSON.stringify(updatedJobs));
     } else {
       setPopup({ status: false, message: "Job already saved!" });
-    }
-  };
-
-  const handleGenerateResume = (job: Job) => {
-    if (savedJobsResume.length + 1 > 10) {
-      setPopup({ status: false, message: "You have MAX Resume Saved!!" });
-      return;
-    }
-    if (!savedJobsResume.find((j) => j.id === job.id)) {
-      const updatedJobs = [...savedJobsResume, job];
-      setSavedJobsResume(updatedJobs);
-      localStorage.setItem("activeResume", JSON.stringify(updatedJobs));
-    } else {
-      setPopup({ status: false, message: "Job Resume Generate active already!" });
     }
   };
 
@@ -109,12 +88,6 @@ function JobBoard() {
                 className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-[var(--input-bg)] text-[var(--foreground)] border border-[var(--border-color)] hover:bg-[var(--accent-purple)] hover:text-white transition-colors"
               >
                 Save Job
-              </button>
-              <button
-                onClick={() => handleGenerateResume(job)}
-                className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all"
-              >
-                Generate Resume
               </button>
             </div>
           </div>

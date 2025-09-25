@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { generateJSON } from "./generateResume";
 
 interface Job {
   id: string;
@@ -48,7 +49,10 @@ const PurpleTab = styled(Tab)({
 export default function Your_Jobs() {
   const router = useRouter();
 
-  const [popup, setPopup] = useState<{ status: boolean; message: string } | null>(null);
+  const [popup, setPopup] = useState<{
+    status: boolean;
+    message: string;
+  } | null>(null);
   const [currentTab, setCurrentTab] = useState<true | false | null>(true);
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
   const [activeResume, setActiveResume] = useState<Job[]>([]);
@@ -74,8 +78,10 @@ export default function Your_Jobs() {
     }
   }, []);
 
-  const handleChange = (_: React.SyntheticEvent, newValue: true | false | null) =>
-    setCurrentTab(newValue);
+  const handleChange = (
+    _: React.SyntheticEvent,
+    newValue: true | false | null
+  ) => setCurrentTab(newValue);
 
   const handleGenerateResume = (job: Job) => {
     if (activeResume.length >= 10) {
@@ -89,13 +95,19 @@ export default function Your_Jobs() {
     const updatedJobs = [...activeResume, job];
     setActiveResume(updatedJobs);
     localStorage.setItem("activeResume", JSON.stringify(updatedJobs));
+    console.log("Generating Resume for Job");
+    generateJSON(job);
+    setPopup({ status: true, message: "Resume Generated Successfully!" });
   };
 
   const Applied = (job: Job) => {
+    const updatedSaved = savedJobs.filter((j) => j.id !== job.id);
     const updatedActive = activeResume.filter((j) => j.id !== job.id);
     const updatedApplications = [...applications, job];
+    setSavedJobs(updatedSaved);
     setActiveResume(updatedActive);
     setApplications(updatedApplications);
+    localStorage.setItem("savedJobs", JSON.stringify(updatedSaved));
     localStorage.setItem("activeResume", JSON.stringify(updatedActive));
     localStorage.setItem("application", JSON.stringify(updatedApplications));
   };
@@ -111,6 +123,11 @@ export default function Your_Jobs() {
         const updatedResume = activeResume.filter((j) => j.id !== job.id);
         setActiveResume(updatedResume);
         localStorage.setItem("activeResume", JSON.stringify(updatedResume));
+        let existingResumes = JSON.parse(
+          localStorage.getItem("savedResumes") || "[]"
+        );
+        existingResumes = existingResumes.filter((r: any) => r.id !== job.id);
+        localStorage.setItem("savedResumes", JSON.stringify(existingResumes));
         break;
       case null:
         const updatedApplied = applications.filter((j) => j.id !== job.id);
@@ -151,6 +168,47 @@ export default function Your_Jobs() {
     setOpenForm(false);
   };
 
+  const handleDownload = async (job: Job) => {
+    let existingResumes = JSON.parse(
+      localStorage.getItem("savedResumes") || "[]"
+    );
+
+    if (!existingResumes.some((r: any) => r.id === job.id)) {
+      setPopup({
+        status: false,
+        message: "No Resume for this job to Download!",
+      });
+      return;
+    }
+
+    const data = {
+      type: "Resume",
+      data: existingResumes.find((r: any) => r.id === job.id).resume,
+    };
+
+    console.log("Downloading Resume for Job", data.data);
+
+    const res = await fetch(`/api/resume-api/Job/docx`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data), // send the actual payload
+    }); // your API endpoint
+
+    if (!res.ok) return;
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${job.title}.docx`; // filename
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
   const renderJobs = (jobs: Job[]) =>
     jobs.length === 0 ? (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
@@ -176,7 +234,9 @@ export default function Your_Jobs() {
               <p className="text-purple-300 text-sm mb-3">
                 {job.company} • {job.location} • {job.contract_time}
               </p>
-              <p className="text-purple-200 text-sm line-clamp-4">{job.description}</p>
+              <p className="text-purple-200 text-sm line-clamp-4">
+                {job.description}
+              </p>
             </div>
 
             <div className="flex justify-between items-center mt-4">
@@ -193,8 +253,11 @@ export default function Your_Jobs() {
               )}
 
               {currentTab === false && (
-                <button className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all">
-                  View
+                <button
+                  className="flex-1 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:opacity-90 transition-all"
+                  onClick={() => handleDownload(job)}
+                >
+                  Download .docx
                 </button>
               )}
 
@@ -308,7 +371,13 @@ export default function Your_Jobs() {
         </DialogActions>
       </Dialog>
 
-      {popup && <Popup status={popup.status} message={popup.message} onClose={() => setPopup(null)} />}
+      {popup && (
+        <Popup
+          status={popup.status}
+          message={popup.message}
+          onClose={() => setPopup(null)}
+        />
+      )}
     </div>
   );
 }

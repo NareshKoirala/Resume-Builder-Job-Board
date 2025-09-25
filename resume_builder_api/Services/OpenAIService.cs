@@ -72,53 +72,49 @@ public class OpenAIService
 
         string GetSectionContent(string sectionTitle)
         {
-            var section = sections.FirstOrDefault(s => s.StartsWith(sectionTitle + ":", StringComparison.OrdinalIgnoreCase));
-            if (section == null) return string.Empty;
-            var index = section.IndexOf(':');
-            return index >= 0 ? section.Substring(index + 1).Trim() : section.Trim();
+            var match = Regex.Match(reply,
+                $@"{sectionTitle}:\s*([\s\S]*?)(?=\n[A-Z ]+:|$)",
+                RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
         }
 
+
+        // Basic fields
         resume.TitleKeyword = GetSectionContent("TITLE");
         resume.Summary = GetSectionContent("SUMMARY");
 
+        // Skills
         var skillsText = GetSectionContent("SKILLS");
         if (!string.IsNullOrWhiteSpace(skillsText))
         {
             string ExtractGroup(Match m) => m.Success ? m.Groups[1].Value.Trim() : "";
 
             resume.ProgramingLanguage = ExtractGroup(Regex.Match(skillsText, @"Programming Languages\s*:?\s*(.+?)(?=Frameworks|Relevant|$)", RegexOptions.IgnoreCase | RegexOptions.Singleline));
-            resume.Frameworks = ExtractGroup(Regex.Match(skillsText, @"Frameworks\s*&\s*Libraries\s*:?\s*(.+?)(?=Relevant|$)", RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            resume.Frameworks = ExtractGroup(Regex.Match(skillsText, @"Frameworks\s*&?\s*Libraries\s*:?\s*(.+?)(?=Relevant|$)", RegexOptions.IgnoreCase | RegexOptions.Singleline));
             resume.RelevantKeywords = ExtractGroup(Regex.Match(skillsText, @"Relevant Keywords\s*:?\s*(.+)", RegexOptions.IgnoreCase | RegexOptions.Singleline));
         }
 
-        if (string.IsNullOrWhiteSpace(resume.RelevantKeywords) || string.IsNullOrWhiteSpace(resume.ProgramingLanguage) || string.IsNullOrWhiteSpace(resume.Frameworks))
-        {
-            resume.RelevantKeywords = GetSectionContent("RELEVANT KEYWORDS");
+        // Fallbacks only if still empty
+        if (string.IsNullOrWhiteSpace(resume.ProgramingLanguage))
             resume.ProgramingLanguage = GetSectionContent("PROGRAMMING LANGUAGES");
+
+        if (string.IsNullOrWhiteSpace(resume.Frameworks))
             resume.Frameworks = GetSectionContent("FRAMEWORKS & LIBRARIES");
-        }
-        
-        if (string.IsNullOrWhiteSpace(resume.RelevantKeywords) || string.IsNullOrWhiteSpace(resume.ProgramingLanguage) || string.IsNullOrWhiteSpace(resume.Frameworks))
-        {
-            resume.RelevantKeywords = GetSectionContent("SKILLS");
-            resume.ProgramingLanguage = GetSectionContent("SKILLS");
-            resume.Frameworks = GetSectionContent("SKILLS");
-        }
+
+        if (string.IsNullOrWhiteSpace(resume.RelevantKeywords))
+            resume.RelevantKeywords = GetSectionContent("RELEVANT KEYWORDS");
+
 
         var projectsText = GetSectionContent("PROJECTS");
         var projects = new List<ProjectsModel>();
 
         if (!string.IsNullOrWhiteSpace(projectsText))
         {
-            // Split on bold project titles wrapped in **
-            var projectMatches = Regex.Split(projectsText, @"\*\*(.+?)\*\*")
-                                      .Where(p => !string.IsNullOrWhiteSpace(p))
-                                      .ToList();
-
-            for (int i = 0; i + 1 < projectMatches.Count; i += 2)
+            var projectPattern = @"\*\*(?<name>.+?)\*\*\s*(?<desc>.*?)(?=\n\*\*|$)";
+            foreach (Match match in Regex.Matches(projectsText, projectPattern, RegexOptions.Singleline))
             {
-                var name = projectMatches[i].Trim();
-                var details = projectMatches[i + 1].Trim();
+                var name = match.Groups["name"].Value.Trim();
+                var details = match.Groups["desc"].Value.Trim();
 
                 var lines = details.Split('\n')
                                    .Select(l => l.Trim())
@@ -131,7 +127,8 @@ public class OpenAIService
                     Description = lines.FirstOrDefault() ?? ""
                 };
 
-                var bullets = lines.Where(l => Regex.IsMatch(l, @"^(\•|-)\s")).ToList();
+                // Bullets
+                var bullets = lines.Where(l => Regex.IsMatch(l, @"^(\•|-)\s?")).ToList();
                 if (bullets.Count > 0) project.Bullet1 = bullets[0].TrimStart('•', '-', ' ').Trim();
                 if (bullets.Count > 1) project.Bullet2 = bullets[1].TrimStart('•', '-', ' ').Trim();
                 if (bullets.Count > 2) project.Bullet3 = bullets[2].TrimStart('•', '-', ' ').Trim();
@@ -139,26 +136,38 @@ public class OpenAIService
                 projects.Add(project);
             }
         }
+
         resume.Projects = projects;
 
+
+        // Work Experience
         var workExpText = GetSectionContent("WORK EXPERIENCE");
-        resume.WorkExperience.Add(workExpText);
+        if (!string.IsNullOrWhiteSpace(workExpText))
+            resume.WorkExperience.Add(workExpText);
 
+        // Education
         var educationText = GetSectionContent("EDUCATION");
-        var eduSplit = educationText.Trim().Split('\n');
-        EducationModel educationModel = new EducationModel()
+        if (!string.IsNullOrWhiteSpace(educationText))
         {
-            Title = eduSplit[0],
-            Details = eduSplit.Length == 2 ? eduSplit[1] : eduSplit[1] + "\n" + eduSplit[2]
-        };
-        resume.Education.Add(educationModel);
+            var eduSplit = educationText.Trim().Split('\n');
+            var educationModel = new EducationModel
+            {
+                Title = eduSplit.FirstOrDefault()?.Trim() ?? "",
+                Details = string.Join("\n", eduSplit.Skip(1).Select(e => e.Trim()))
+            };
+            resume.Education.Add(educationModel);
+        }
 
+        // Certificates
         var certificationText = GetSectionContent("CERTIFICATES");
-        var certSplit = certificationText.Split('\n');
-        foreach(var i in certSplit)
-            resume.Certificates.Add(new CertificationModel() { Details = i });
+        if (!string.IsNullOrWhiteSpace(certificationText))
+        {
+            var certSplit = certificationText.Split('\n');
+            foreach (var i in certSplit.Where(c => !string.IsNullOrWhiteSpace(c)))
+                resume.Certificates.Add(new CertificationModel { Details = i.Trim() });
+        }
 
-        // Alternative simple extraction if regex fails
+        // Cover Letter
         coverLetter.Title = GetSectionContent("COVER LETTER");
         coverLetter.Body1 = GetSectionContent("Body 1");
         coverLetter.Body2 = GetSectionContent("Body 2");
@@ -166,5 +175,6 @@ public class OpenAIService
 
         return (resume, coverLetter);
     }
+
 
 }

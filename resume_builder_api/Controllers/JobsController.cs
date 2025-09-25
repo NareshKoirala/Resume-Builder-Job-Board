@@ -137,7 +137,7 @@ namespace resume_builder_api.Controllers
                 return File(
                         memStream.ToArray(),
                         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        $"Resume.docx"
+                        $"resume.docx"
                     );
             }
         }
