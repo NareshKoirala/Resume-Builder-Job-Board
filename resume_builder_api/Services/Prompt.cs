@@ -5,7 +5,7 @@ namespace resume_builder_api.Services
 {
     public static class Prompt
     {
-        private static readonly string JsonFilePath = "Resources/prompt.json";
+        private static readonly string JsonFilePath = "Resources/Prompt.json";
         private static readonly Lazy<PromptData> _data = new(LoadPromptData);
 
         public static string PercentPrompt => _data.Value.PercentPrompt ?? "";
@@ -16,9 +16,12 @@ namespace resume_builder_api.Services
             try
             {
                 var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, JsonFilePath);
+
+                Console.WriteLine("Loading prompt data from: " + path);
+                
                 if (!File.Exists(path))
                 {
-                    // Log error here if you have a logger
+                    Console.WriteLine("Prompt JSON file not found.");
                     return new PromptData();
                 }
                 var json = File.ReadAllText(path);

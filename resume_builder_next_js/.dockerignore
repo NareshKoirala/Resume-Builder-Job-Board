@@ -1,0 +1,36 @@
+# Node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Next.js build output
+.next
+out
+
+# Logs
+logs
+*.log
+
+# Local environment files
+.env.local
+.env.development
+.env.test
+.env.production
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea
+.vscode
+*.iml
+
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile

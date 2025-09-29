@@ -6,6 +6,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const RESUME_API_URL = process.env.RESUME_API_URL;
 
 export async function POST(request: NextRequest) {
+    console.log("Received POST request to /api/resume-api/User/Public @ ", RESUME_API_URL);
+
     if (!RESUME_API_URL) {
         return NextResponse.json({ error: "RESUME_API_URL is not defined" }, { status: 500 });
     }
@@ -14,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     const apiUrl = `${RESUME_API_URL}/${path}/${publicId}`;
 
-    // console.log(`Making ${process} request to:`, apiUrl);
+    console.log(`Making ${process} request to:`, apiUrl);
 
     try {
         const response = await fetch(apiUrl, {
@@ -34,7 +36,7 @@ export async function POST(request: NextRequest) {
         }
         const responseData = await response.json();
 
-        // console.log("Response from Resume API:", responseData);
+        console.log("Response from Resume API:", responseData);
 
         return NextResponse.json({ response: responseData });
 

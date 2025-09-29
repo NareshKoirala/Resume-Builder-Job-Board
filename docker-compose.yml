@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  api:
+    image: naresh69/resume_builder_api:v3
+    env_file:
+      - .env.api
+    ports:
+      - "7194:7194"
+
+  web:
+    image: naresh69/resume_builder_web_app:v1
+    env_file:
+      - .env.web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api

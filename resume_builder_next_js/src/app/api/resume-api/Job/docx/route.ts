@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const RESUME_API_URL = process.env.RESUME_API_URL;
 

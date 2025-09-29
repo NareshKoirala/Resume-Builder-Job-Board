@@ -78,13 +78,13 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
     index: number
   ) => {
     const data = (formData[field] as T[])[index];
-    console.log("Data you want to remove ->", data);
+    // console.log("Data you want to remove ->", data);
 
     const strField = dictsData[field as keyof typeof dictsData];
-    console.log("Mapped field ->", strField);
+    // console.log("Mapped field ->", strField);
 
     // ✅ Ensure the entry has an id before calling backend
-    if (!data?.id) {
+    if (!("id" in data) || !(data as any).id) {
       // Still remove locally if you want:
       setFormData((prev) => ({
         ...prev,
@@ -320,7 +320,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
                             updateEntry(
                               section.field as keyof UpdateUserDto,
                               index,
-                              key as any,
+                              key as string,
                               e.target.value
                             )
                           }
@@ -340,7 +340,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ userInfo = null, onSubmit }) => {
                           updateEntry(
                             section.field as keyof UpdateUserDto,
                             index,
-                            key as any,
+                            key as string,
                             e.target.value
                           )
                         }

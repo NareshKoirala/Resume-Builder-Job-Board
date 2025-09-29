@@ -64,7 +64,7 @@ function DashboardContent() {
 
       if (!resp.ok) {
         const errorData = await resp.json();
-        window.location.href = "/";
+        // window.location.href = "/";
         setPopup({ status: false, message: errorData.error || "Failed to fetch user data" });
         return;
       }
