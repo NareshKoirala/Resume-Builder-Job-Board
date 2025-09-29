@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import JobSearch from "@/components/seach_bar";
 import Popup from "@/components/pop-up";
 
@@ -16,8 +16,23 @@ interface Job {
 }
 
 function JobBoard() {
-  const [popup, setPopup] = useState<{ status: boolean | null; message: string } | null>(null);
   const router = useRouter();
+  const [popup, setPopup] = useState<{ status: boolean | null; message: string } | null>(null);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch("./api/cookies/get?key=publicId");
+        const data = await response.json();
+  
+        if (!data.data) {
+          window.location.href = "/";
+          localStorage.clear();
+          return;
+        }
+      };
+      fetchData();
+    }, []);
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [savedJobs, setSavedJobs] = useState<Job[]>(() => {
     if (typeof window !== "undefined") {

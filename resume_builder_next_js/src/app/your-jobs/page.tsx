@@ -6,14 +6,7 @@ import Tab from "@mui/material/Tab";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 import Popup from "@/components/pop-up";
-import {
-  Button,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
+import { Button } from "@mui/material"; // kept only button+textfield since you use them outside dialog
 import { generateJSON } from "./generateResume";
 
 interface Job {
@@ -49,10 +42,21 @@ const PurpleTab = styled(Tab)({
 export default function Your_Jobs() {
   const router = useRouter();
 
-  const [popup, setPopup] = useState<{
-    status: boolean;
-    message: string;
-  } | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("./api/cookies/get?key=publicId");
+      const data = await response.json();
+
+      if (!data.data) {
+        window.location.href = "/";
+        localStorage.clear();
+        return;
+      }
+    };
+    fetchData();
+  }, []);
+
+  const [popup, setPopup] = useState<{ status: boolean; message: string } | null>(null);
   const [currentTab, setCurrentTab] = useState<true | false | null>(true);
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
   const [activeResume, setActiveResume] = useState<Job[]>([]);
@@ -78,10 +82,8 @@ export default function Your_Jobs() {
     }
   }, []);
 
-  const handleChange = (
-    _: React.SyntheticEvent,
-    newValue: true | false | null
-  ) => setCurrentTab(newValue);
+  const handleChange = (_: React.SyntheticEvent, newValue: true | false | null) =>
+    setCurrentTab(newValue);
 
   const handleGenerateResume = (job: Job) => {
     if (activeResume.length >= 10) {
@@ -95,7 +97,6 @@ export default function Your_Jobs() {
     const updatedJobs = [...activeResume, job];
     setActiveResume(updatedJobs);
     localStorage.setItem("activeResume", JSON.stringify(updatedJobs));
-    console.log("Generating Resume for Job");
     generateJSON(job);
     setPopup({ status: true, message: "Resume Generated Successfully!" });
   };
@@ -123,9 +124,7 @@ export default function Your_Jobs() {
         const updatedResume = activeResume.filter((j) => j.id !== job.id);
         setActiveResume(updatedResume);
         localStorage.setItem("activeResume", JSON.stringify(updatedResume));
-        let existingResumes = JSON.parse(
-          localStorage.getItem("savedResumes") || "[]"
-        );
+        let existingResumes = JSON.parse(localStorage.getItem("savedResumes") || "[]");
         existingResumes = existingResumes.filter((r: any) => r.id !== job.id);
         localStorage.setItem("savedResumes", JSON.stringify(existingResumes));
         break;
@@ -169,9 +168,7 @@ export default function Your_Jobs() {
   };
 
   const handleDownload = async (job: Job) => {
-    let existingResumes = JSON.parse(
-      localStorage.getItem("savedResumes") || "[]"
-    );
+    let existingResumes = JSON.parse(localStorage.getItem("savedResumes") || "[]");
 
     if (!existingResumes.some((r: any) => r.id === job.id)) {
       setPopup({
@@ -186,15 +183,13 @@ export default function Your_Jobs() {
       data: existingResumes.find((r: any) => r.id === job.id).resume,
     };
 
-    console.log("Downloading Resume for Job", data.data);
-
     const res = await fetch(`/api/resume-api/Job/docx`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data), // send the actual payload
-    }); // your API endpoint
+      body: JSON.stringify(data),
+    });
 
     if (!res.ok) return;
 
@@ -202,7 +197,7 @@ export default function Your_Jobs() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${job.title}.docx`; // filename
+    a.download = `${job.title}.docx`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -315,68 +310,45 @@ export default function Your_Jobs() {
         {currentTab === null && renderJobs(applications)}
       </div>
 
-      <Dialog
-        open={openForm}
-        onClose={() => setOpenForm(false)}
-        fullWidth
-        maxWidth="sm"
-        disableEnforceFocus
-        disablePortal
-        slotProps={{
-          paper: {
-            className:
-              "bg-gradient-to-tr from-slate-900 via-purple-900 to-slate-950 text-white",
-          },
-        }}
-      >
-        <DialogTitle className="font-semibold">Add Job Manually</DialogTitle>
+      {/* Custom Dialog (replacing MUI Dialog) */}
+      {openForm && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/60">
+          <div className="bg-gradient-to-tr from-slate-900 via-purple-900 to-slate-950 text-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-xl font-semibold mb-4">Add Job Manually</h2>
 
-        <DialogContent className="flex flex-col gap-4 mt-2">
-          {Object.keys(formData).map((key) => (
-            <TextField
-              key={key}
-              label={key.replace("_", " ").toUpperCase()}
-              name={key}
-              value={(formData as any)[key]}
-              onChange={handleFormChange}
-              fullWidth
-              sx={{
-                "& .MuiInputLabel-root": { color: "#c4b5fd" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#6d28d9" },
-                  "&:hover fieldset": { borderColor: "#8b5cf6" },
-                  "&.Mui-focused fieldset": { borderColor: "#a78bfa" },
-                },
-              }}
-            />
-          ))}
-        </DialogContent>
+            <div className="flex flex-col gap-4">
+              {Object.keys(formData).map((key) => (
+                <input
+                  key={key}
+                  name={key}
+                  placeholder={key.replace("_", " ").toUpperCase()}
+                  value={(formData as any)[key]}
+                  onChange={handleFormChange}
+                  className="w-full rounded-lg border border-purple-700 bg-transparent px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              ))}
+            </div>
 
-        <DialogActions>
-          <Button onClick={() => setOpenForm(false)} sx={{ color: "#c4b5fd" }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleFormSubmit}
-            variant="contained"
-            sx={{
-              background: "linear-gradient(to right, #6b21a8, #4c1d95)",
-              borderRadius: "12px",
-              fontWeight: "600",
-              "&:hover": { opacity: 0.9 },
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setOpenForm(false)}
+                className="px-4 py-2 rounded-lg border border-purple-600 text-purple-300 hover:bg-purple-800/40"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleFormSubmit}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold hover:opacity-90"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {popup && (
-        <Popup
-          status={popup.status}
-          message={popup.message}
-          onClose={() => setPopup(null)}
-        />
+        <Popup status={popup.status} message={popup.message} onClose={() => setPopup(null)} />
       )}
     </div>
   );

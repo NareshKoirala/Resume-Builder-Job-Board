@@ -8,8 +8,6 @@ interface Job {
   redirect_url: string;
 }
 
-
-
 export async function generateJSON(data: Job){
     const jobData = {
         jobName: data.title + " at " + data.company,

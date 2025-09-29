@@ -14,8 +14,8 @@ namespace resume_builder_api.Services
         public JobFetching(IConfiguration iconfiguration) {
             _configuration = iconfiguration;
 
-            appId = _configuration["appId"];  // Replace with your App ID
-            appKey = _configuration["appKey"]; // Replace with your App Key
+            appId = _configuration["ConnectionStrings:appId"];  // Replace with your App ID
+            appKey = _configuration["ConnectionStrings:appKey"]; // Replace with your App Key
         }
 
         public async Task<List<JobBoardReturn>?> AdzunaJobFetch(JobBoard jobBoard)

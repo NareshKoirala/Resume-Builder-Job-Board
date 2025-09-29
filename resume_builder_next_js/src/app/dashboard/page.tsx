@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import DashboardHeader from "@/components/dashboard-header";
 import DashboardStats from "@/components/dashboard-stats";
 import QuickActions, { QuickAction } from "@/components/quick-actions";
-import Stars from "@/components/stars";
 import UserInfo from "@/components/user-info";
 import { UpdateUserDto } from "@/model/data-structure";
 import Loading from "@/components/loading";
@@ -46,6 +45,14 @@ function DashboardContent() {
       setPublicId(data.data);
       setUserExists(Boolean(data.data));
 
+      if (!data.data) {
+        setIsLoading(false);
+        window.location.href = "/";
+        localStorage.clear();
+        setPopup({ status: false, message: "Please log in to access the dashboard." });
+        return;
+      }
+
       const savedUser = localStorage.getItem("savedUser");
       if (savedUser) {
         const userJSON = JSON.parse(savedUser);
@@ -64,7 +71,7 @@ function DashboardContent() {
 
       if (!resp.ok) {
         const errorData = await resp.json();
-        // window.location.href = "/";
+        window.location.href = "/";
         setPopup({ status: false, message: errorData.error || "Failed to fetch user data" });
         return;
       }
@@ -116,7 +123,6 @@ function DashboardContent() {
   if ((showSettings && currentUserData) || userExists === false) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950 to-black p-6">
-        <Stars />
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white text-center md:text-left">Update User Information</h1>
