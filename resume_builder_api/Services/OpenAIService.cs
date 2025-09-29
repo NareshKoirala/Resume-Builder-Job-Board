@@ -17,7 +17,7 @@ public class OpenAIService
         _configuration = configuration;
         client = new ChatClient(
             apiKey: _configuration["OPENAI_API_KEY"],
-            model: "gpt-5-mini-2025-08-07"
+            model: "o4-mini-2025-08-07"
         );
     }
 
