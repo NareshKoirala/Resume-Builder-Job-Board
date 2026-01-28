@@ -9,7 +9,7 @@ Built with **ASP.NET Core Web API**, **PostgreSQL + EF Core**, **MAUI** for mobi
 
 ## 📊 System Architecture
 
-![Architecture Diagram](./assets/resume_builder_schema.png)
+![Architecture Diagram](./resume-builder.png)
 
 *Diagram shows API controllers, endpoints, integrations (OpenAI API, Swagger, PostgreSQL), and clients (Web App + MAUI App).*
 
